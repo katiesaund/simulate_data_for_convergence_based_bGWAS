@@ -180,6 +180,45 @@ phylo.d2 <- function(data,
 }
 # ----
 
+select_BM_traits <- function(binary_mat_list, 
+                             phylo_signal_list, 
+                             num_to_pick = NULL) {
+  num_trees <- length(binary_mat_list)
+  BM_trait_names_list <- rep(list(), num_trees)
+  for (i in 1:num_trees) {
+    BM_trait_logical <- phylo_signal_list[[i]] < 0.05 & phylo_signal_list[[i]] > -0.05
+    BM_colnames <- colnames(binary_mat_list[[i]][, BM_trait_logical, drop = FALSE])
+    if (!is.null(num_to_pick)) {
+      if (num_to_pick <= length(BM_colnames)){
+       BM_colnames <- BM_colnames[1:num_to_pick]
+      } else {
+      stop("Not enough BM traits")
+      }
+    }
+    BM_trait_names_list[[i]] <- BM_colnames
+  } 
+  return(BM_trait_names_list)
+}
+
+select_WN_traits <- function(binary_mat_list, 
+                             phylo_signal_list, 
+                             num_to_pick = NULL) {
+  num_trees <- length(binary_mat_list)
+  WN_trait_names_list <- rep(list(), num_trees)
+  for (i in 1:num_trees) {
+    WN_trait_logical <- phylo_signal_list[[i]] < 1.05 & phylo_signal_list[[i]] > 0.95
+    WN_colnames <- colnames(binary_mat_list[[i]][, WN_trait_logical, drop = FALSE])
+    if (!is.null(num_to_pick)) {
+      if (num_to_pick <= length(WN_colnames)){
+        WN_colnames <- WN_colnames[1:num_to_pick]
+      } else {
+        stop("Not enough WN traits")
+      }
+    }
+    WN_trait_names_list[[i]] <- WN_colnames
+  } 
+  return(WN_trait_names_list)
+}
 
 
 

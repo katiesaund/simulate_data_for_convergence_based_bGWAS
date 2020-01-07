@@ -1,4 +1,5 @@
 generate_trees <- function(num_trees, num_tips){
+  # Generate a series of trees with a set number of tips
   simulated_trees <- rep(list(0), num_trees)
   set.seed(1)
   for (i in 1:num_trees) {

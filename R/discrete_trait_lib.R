@@ -1,3 +1,44 @@
+generate_disc_mat <- function(tree_list){
+  # Generate a huge discrete, binary matrix. 
+  num_genotypes <- 10000 # TODO User defined input? Just some very large number?
+  num_sim_trees <- length(tree_list)
+  geno_mat_list <- geno_AR_mat_list <- rep(list(NULL), num_sim_trees)
+  for (i in 1:num_sim_trees) {
+    set.seed(1)
+    
+    # Create a matrix: 
+    # Rows = tips then nodes
+    # Columns = individual, simulated genotypes
+    geno_tip_and_AR_mat <-
+      replicate(num_genotypes,
+                ape::rTraitDisc(tree_list[[i]],
+                                ancestor = TRUE,
+                                root.value = sample(x = c(1,2), size = 1, replace = FALSE, prob = c(0.5, 0.5)), # Root.value refers to which factor (1 or 2) of the two states (k=2, states are either 0 or 1).
+                                type = "ER",
+                                k = 2,
+                                states = c(0,1)))
+    geno_mat <- geno_tip_and_AR_mat[1:ape::Ntip(tree_list[[i]]), , drop = FALSE]
+    storage.mode(geno_mat) <- "numeric"
+    storage.mode(geno_tip_and_AR_mat) <- "numeric"
+    cols_to_keep <- colSums(geno_mat) > 1 & colSums(geno_mat) < nrow(geno_mat) - 1
+    geno_mat <- geno_mat[, cols_to_keep, drop = FALSE]
+    geno_tip_and_AR_mat <- geno_tip_and_AR_mat[, cols_to_keep, drop = FALSE]
+    geno_mat <- as.data.frame(geno_mat)
+    geno_tip_and_AR_mat <- as.data.frame(geno_tip_and_AR_mat)
+    colnames(geno_tip_and_AR_mat) <- colnames(geno_mat) <- paste0("sim", 1:ncol(geno_mat))
+    geno_mat_list[[i]] <- geno_mat
+    geno_AR_mat_list[[i]] <- geno_tip_and_AR_mat
+  }
+  return(geno_AR_mat_list)
+}
+
+
+
+
+
+
+## OLD STUFF BELOW
+
 save_tree_specific_mat <- function(sim_geno_mat,
                                    tree,
                                    index){

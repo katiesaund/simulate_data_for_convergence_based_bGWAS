@@ -12,9 +12,10 @@ source("generate_disc_traits.R")
 
 # Initialize variables / read in user input
 num_trees <- 1 # change to user defined input
+num_tips <- 50 # change to user defined input
 
 # Generate huge matrix of binary traits specific to trees
-tree_list <- generate_trees(num_trees)
+tree_list <- generate_trees(num_trees, num_tips)
 binary_mat_list <- generate_disc_mat(trees)
 
 # Separate traits into BM and WN

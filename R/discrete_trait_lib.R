@@ -1,6 +1,6 @@
 generate_disc_mat <- function(tree_list){
   # Generate a huge discrete, binary matrix. 
-  num_genotypes <- 10000 # TODO User defined input? Just some very large number?
+  num_genotypes <- 1000 # TODO User defined input? Just some very large number?
   num_sim_trees <- length(tree_list)
   geno_mat_list <- geno_AR_mat_list <- rep(list(NULL), num_sim_trees)
   for (i in 1:num_sim_trees) {
@@ -32,35 +32,44 @@ generate_disc_mat <- function(tree_list){
   return(geno_AR_mat_list)
 }
 
-
-
-
-
-
-## OLD STUFF BELOW
-
-save_tree_specific_mat <- function(sim_geno_mat,
-                                   tree,
-                                   index){
-  if (nrow(sim_geno_mat) != Ntip(tree)) {
-    stop("genotype matrix should have 1 row per tree tip")
+# Phylogenetic signal functions -------
+calculate_phylo_signal <- function(tree_list, binary_AR_mat_list){
+  num_tree <- length(tree_list)
+  d_stat_list <- rep(list(), num_tree)
+  for (i in 1:num_tree) {
+    bin_no_AR_mat <- binary_AR_mat_list[[i]][1:ape::Ntip(tree_list[[i]]), , drop = FALSE]
+    d_stat_list[[i]] <- estimate_d_stat(bin_no_AR_mat, tree_list[[i]])
   }
+  return(d_stat_list)
+}
 
-  row.names(sim_geno_mat) <- tree$tip.label
+estimate_d_stat <- function(trait_df, tree){
+  # Calculate the D statistic for the discrete trait we made
+  tree$node.label <- NULL
+  num_genotype <- ncol(trait_df)
+  d_stat_vec <- rep(NA, num_genotype)
+  for (i in 1:num_genotype) {
+    temp_trait <- trait_df[, i, drop = FALSE]
+    temp_trait <- convert_trait_vec_to_df(temp_trait, tree)
+    compar_data_obj <- 
+      caper::comparative.data(data = temp_trait,
+                              phy = tree,
+                              names.col = "ID")
+    d_stat_results <- phylo.d2(data = compar_data_obj,
+                               phy = tree,
+                               binvar = "trait")
+    d_stat_vec[i] <- d_stat_results$DEstimate
+  }
+  return(d_stat_vec)
+}
 
-  write.table(sim_geno_mat,
-              sep = "\t",
-              row.names = TRUE,
-              file = paste0("../data/",
-                            "simulated_genotype_",
-                            index,
-                            ".tsv"))
-  write.tree(tree,
-             file = paste0("../data/",
-                           "simulated_tree_",
-                           index,
-                           ".tree"))
-} # end save_tree_specific_mat()
+convert_trait_vec_to_df <- function(trait_vec, tree){
+  trait_df <- as.data.frame(trait_vec)
+  trait_df <- cbind(tree$tip.label, trait_df)
+  colnames(trait_df) <- c("ID", "trait")
+  row.names(trait_df) <- NULL
+  return(trait_df)
+}
 
 #' phylo.d2
 #' @details This is a modification of the phylo.d function originally a part of
@@ -169,6 +178,37 @@ phylo.d2 <- function(data,
   class(dvals) <- "phylo.d"
   return(dvals)
 }
+# ----
+
+
+
+
+## OLD STUFF BELOW
+
+save_tree_specific_mat <- function(sim_geno_mat,
+                                   tree,
+                                   index){
+  if (nrow(sim_geno_mat) != Ntip(tree)) {
+    stop("genotype matrix should have 1 row per tree tip")
+  }
+
+  row.names(sim_geno_mat) <- tree$tip.label
+
+  write.table(sim_geno_mat,
+              sep = "\t",
+              row.names = TRUE,
+              file = paste0("../data/",
+                            "simulated_genotype_",
+                            index,
+                            ".tsv"))
+  write.tree(tree,
+             file = paste0("../data/",
+                           "simulated_tree_",
+                           index,
+                           ".tree"))
+} # end save_tree_specific_mat()
+
+
 
 # make_discrete_phenotypes <- function(tree_list, num_pheno){
 #   # Generate two discrete traits that follows a given tree, one BM, one WN
@@ -238,26 +278,7 @@ phylo.d2 <- function(data,
 #   return(NULL)
 # }
 
-estimate_d_stat <- function(trait_df, tree){
-  # Calculate the D statistic for the discrete trait we made
-  tree$node.label <- NULL
-  compar_data_obj <- caper::comparative.data(data = trait_df,
-                                             phy = tree,
-                                             names.col = "ID")
-  d_stat_results <- phylo.d2(data = compar_data_obj,
-                             phy = tree,
-                             binvar = "trait")
-  current_d_stat <- d_stat_results$DEstimate
-  return(current_d_stat)
-}
 
-convert_trait_vec_to_df <- function(trait_vec, tree){
-  trait_df <- as.data.frame(trait_vec)
-  trait_df <- cbind(tree$tip.label, trait_df)
-  colnames(trait_df) <- c("ID", "trait")
-  row.names(trait_df) <- NULL
-  return(trait_df)
-}
 
 #' #' Title
 #' #'

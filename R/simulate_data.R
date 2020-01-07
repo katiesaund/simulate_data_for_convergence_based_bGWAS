@@ -11,7 +11,7 @@ source("generate_disc_traits.R")
 # pseudocode / outline
 
 # Initialize variables / read in user input
-num_trees <- 1 # change to user defined input
+num_trees <- 2 # change to user defined input
 num_tips <- 50 # change to user defined input
 
 # Generate huge matrix of binary traits specific to trees
@@ -19,7 +19,9 @@ tree_list <- generate_trees(num_trees, num_tips)
 binary_AR_mat_list <- generate_disc_mat(tree_list)
 
 # Separate traits into BM and WN
-phylo_signal <- calculate_phylo_signal(binary_mat_list)
+phylo_signal <- calculate_phylo_signal(tree_list, binary_AR_mat_list) # Left off here, still all pseudocode below
+
+
 BM_mat_list <- select_BM_traits(binary_mat_list, phylo_signal)
 WN_mat_list <- select_WN_traits(binary_mat_list, phylo_signal)
 

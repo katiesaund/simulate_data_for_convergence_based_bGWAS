@@ -158,3 +158,16 @@ find_transition_edges <- function(tree_list,
   }
   return(nested_trans_list)
 }
+
+convert_to_phyc_trans <- function(genotype_AR_mat_list, 
+                                  genotype_sync_trans_list){
+  num_mat <- length(genotype_AR_mat_list)
+  phyc_trans_list <- rep(list(), num_mat)
+  for (i in 1:num_mat){
+    current_trans_list <- genotype_sync_trans_list[[i]]
+    num_tip <- ape::Ntip(tree_list[[i]])
+    just_tips_mat <- genotype_AR_mat_list[[i]][1:num_tip, , drop = FALSE]
+    phyc_trans_list[[i]] <- prep_geno_trans_for_phyc(just_tips_mat, current_trans_list)
+  }
+  return(phyc_trans_list)
+}

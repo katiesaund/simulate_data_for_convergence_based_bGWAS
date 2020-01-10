@@ -42,7 +42,7 @@ WN_phenotype_sync_trans_list <- find_transition_edges(tree_list, WN_phenotype_AR
 genotype_sync_trans_list <- find_transition_edges(tree_list, genotype_AR_mat_list, "discrete")
 # Everything below is psuedocode
 
-genotype_phyc_trans_list <- convert_to_phyc_trans(genotype_sync_trans_list)
+genotype_phyc_trans_list <- convert_to_phyc_trans(genotype_AR_mat_list, genotype_sync_trans_list)
 
 # Calculate gamma
 phyc_gamma_list <- calc_phyc_gamma(genotype_phyc_trans_list, phenotype_mat_list)

@@ -16,9 +16,9 @@
 #' @return genotype_transition. List with $transition and $trans_dir.
 prep_geno_trans_for_phyc <- function(geno, genotype_transition){
   # Check inputs ---------------------------------------------------------------
-  check_if_binary_matrix(geno)
-  check_equal(length(genotype_transition), ncol(geno))
-  check_if_binary_vector(genotype_transition[[1]]$transition)
+  # check_if_binary_matrix(geno)
+  # check_equal(length(genotype_transition), ncol(geno))
+  # check_if_binary_vector(genotype_transition[[1]]$transition)
 
   # Function -------------------------------------------------------------------
   for (k in 1:ncol(geno)) {
@@ -36,6 +36,28 @@ prep_geno_trans_for_phyc <- function(geno, genotype_transition){
   return(genotype_transition)
 } # end prep_geno_trans_for_phyc()
 
+#' is_tip
+#'
+#' @description Test if a node is a tree tip. An internal node should return
+#'  false.
+#'
+#' @param node_num Integer. Index of node.
+#' @param tr Phylo.
+#'
+#' @return Logical. TRUE OR FALSE.
+#' @noRd
+is_tip <- function(node_num, tr){
+  # Check input ----------------------------------------------------------------
+  # check_tree_is_valid(tr)
+  # check_is_number(node_num)
+  if (node_num < 1 || node_num %% 1 != 0) {
+    stop("Node number must be a positive integer")
+  }
+  #check_node_is_in_tree(node_num, tr)
+  
+  # Function & return output ---------------------------------------------------
+  return(node_num <= ape::Ntip(tr))
+} # end is_tip()
 
 #' identify_transition_edges
 #'
@@ -64,10 +86,10 @@ prep_geno_trans_for_phyc <- function(geno, genotype_transition){
 #' @noRd
 identify_transition_edges <- function(tr, mat, num, node_recon, disc_cont){
   # Check input ----------------------------------------------------------------
-  check_for_root_and_bootstrap(tr)
-  check_tree_is_valid(tr)
-  check_is_number(num)
-  check_str_is_discrete_or_continuous(disc_cont)
+  # check_for_root_and_bootstrap(tr)
+  # check_tree_is_valid(tr)
+  # check_is_number(num)
+  # check_str_is_discrete_or_continuous(disc_cont)
 
   # FUNCTION -------------------------------------------------------------------
   transition <- transition_direction <-
@@ -116,3 +138,23 @@ identify_transition_edges <- function(tr, mat, num, node_recon, disc_cont){
   return(results)
 } # end identify_transition_edges()
 
+find_transition_edges <- function(tree_list, 
+                                  mat_list, 
+                                  cont_disc_str){
+  num_tree <- length(tree_list)
+  nested_trans_list <- rep(list(), num_tree)
+  for (i in 1:num_tree) {
+    num_tip <- ape::Ntip(tree_list[[i]])
+    num_col <- ncol(mat_list[[i]])
+    num_row <- nrow(mat_list[[i]])
+    just_tips_mat <- mat_list[[i]][1:num_tip, , drop = FALSE]
+    node_recon <- mat_list[[i]][(num_tip + 1):num_row, , drop = FALSE]
+    temp_trans_list <- rep(list(), num_col)
+    for (j in 1:num_col) {
+      temp_node_recon <- node_recon[, j, drop = TRUE]
+      temp_trans_list[[j]] <- identify_transition_edges(tree_list[[i]], just_tips_mat, j, temp_node_recon, cont_disc_str)
+    }
+    nested_trans_list[[i]] <- temp_trans_list
+  }
+  return(nested_trans_list)
+}

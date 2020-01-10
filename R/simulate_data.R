@@ -5,7 +5,7 @@ suppressWarnings(library(optparse))
 suppressWarnings(library(phylolm))
 suppressWarnings(library(dplyr))
 
-source("generate_disc_traits.R")
+source("tree.R")
 
 
 # pseudocode / outline

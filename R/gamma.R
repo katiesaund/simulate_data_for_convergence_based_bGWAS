@@ -1,3 +1,22 @@
+calc_phyc_gamma_list <- function(tree_list, 
+                                 genotype_phyc_trans_list, 
+                                 phenotype_AR_mat_list){
+  # left off on 2020-01-10 with error in this function
+  num_tree <- length(tree_list) 
+  phyc_gamma_list <- rep(list(), num_tree)
+  for (i in 1:num_tree) {
+    num_pheno <- ncol(phenotype_AR_mat_list[[i]])
+    temp_gamma_list <- rep(list(), num_pheno)
+    num_tip <- ape::Ntip(tree_list[[i]])
+    for (j in 1:num_pheno){
+      pheno_recon_vec <- phenotype_AR_mat_list[[i]][1:num_tip, j, drop = TRUE]
+      hi_conf_vec <- rep(1, length(pheno_recon_vec))
+      temp_gamma_list[[j]] <- calculate_phyc_gamma(genotype_phyc_trans_list[[i]], pheno_recon_vec, hi_conf_vec)
+    }
+    phyc_gamma_list[[i]] <- temp_gamma_list
+  }
+}
+
 #' Calculate gamma within PhyC test
 #'
 #' @param geno_trans_edge_list A list of genotypes. Length == number of

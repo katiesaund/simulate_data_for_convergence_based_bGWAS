@@ -8,6 +8,7 @@ suppressWarnings(library(dplyr))
 source("tree.R")
 source("discrete_trait_lib.R")
 source("transition_edges.R")
+source("gamma.R")
 
 
 # pseudocode / outline
@@ -40,12 +41,11 @@ WN_phenotype_AR_mat_list <- subsample_to_phenotypes(binary_AR_mat_list, WN_pheno
 BM_phenotype_sync_trans_list <- find_transition_edges(tree_list, BM_phenotype_AR_mat_list, "discrete")
 WN_phenotype_sync_trans_list <- find_transition_edges(tree_list, WN_phenotype_AR_mat_list, "discrete")
 genotype_sync_trans_list <- find_transition_edges(tree_list, genotype_AR_mat_list, "discrete")
-# Everything below is psuedocode
-
 genotype_phyc_trans_list <- convert_to_phyc_trans(genotype_AR_mat_list, genotype_sync_trans_list)
 
+# Everything below is psuedocode
 # Calculate gamma
-phyc_gamma_list <- calc_phyc_gamma(genotype_phyc_trans_list, phenotype_mat_list)
+BM_phyc_gamma_list <- calc_phyc_gamma_list(tree_list, genotype_phyc_trans_list, BM_phenotype_AR_mat_list)
 sync_gamma_list <- calc_sync_gamma(genotype_sync_trans_list, phenotype_sync_trans_list)
 
 genotype_keeper_list <- subset_genotype(phyc_gamma_list, sync_gamma_list)

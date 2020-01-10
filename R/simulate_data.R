@@ -30,7 +30,6 @@ phenotype_names_list <- combine_phenotype_names_lists(BM_phenotype_names_list, W
 # Select genotypes and phenotypes
 genotype_mat_list <- subsample_to_genotypes(binary_AR_mat_list,
                                             phylo_signal_list,
-                                            phenotype_names_list, 
                                             lower_bound = -1.5, 
                                             upper_bound = 1.5, 
                                             num_genos = 100)

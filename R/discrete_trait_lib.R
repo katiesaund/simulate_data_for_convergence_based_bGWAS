@@ -232,7 +232,6 @@ subsample_to_phenotypes <- function(binary_AR_mat_list,
 
 subsample_to_genotypes <- function(binary_AR_mat_list, 
                                    phylo_signal_list,
-                                   phenotype_names_list, 
                                    lower_bound = NULL, 
                                    upper_bound = NULL, 
                                    num_genos = NULL){

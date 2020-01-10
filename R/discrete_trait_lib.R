@@ -221,13 +221,50 @@ select_WN_traits <- function(binary_mat_list,
 }
 
 subsample_to_phenotypes <- function(binary_AR_mat_list, 
-                                    BM_phenotype_names_list){
+                                    phenotype_names_list){
   num_mat <- length(binary_AR_mat_list)
   temp_mat_list <- rep(list(), num_mat)
   for (i in 1:num_mat){
-    temp_mat_list[[i]] <- binary_AR_mat_list[[i]][, colnames(binary_AR_mat_list[[i]]) %in% BM_phenotype_names_list[[i]], drop = FALSE]
+    temp_mat_list[[i]] <- binary_AR_mat_list[[i]][, colnames(binary_AR_mat_list[[i]]) %in% phenotype_names_list[[i]], drop = FALSE]
   }
   return(temp_mat_list)
+}
+
+subsample_to_genotypes <- function(binary_AR_mat_list, 
+                                   phylo_signal_list,
+                                   phenotype_names_list, 
+                                   lower_bound = NULL, 
+                                   upper_bound = NULL, 
+                                   num_genos = NULL){
+  num_mat <- length(binary_AR_mat_list)
+  geno_mat_list <- binary_AR_mat_list
+  for (i in 1:num_mat) {
+    if (!is.null(lower_bound)) {
+      greater_than_lower_log <- phylo_signal_list[[i]] > lower_bound
+      phylo_signal_list[[i]] <- phylo_signal_list[[i]][greater_than_lower_log]
+      geno_mat_list[[i]] <- geno_mat_list[[i]][, greater_than_lower_log, drop = FALSE]
+    }
+    if (!is.null(upper_bound)) {
+      less_than_upper_log <- phylo_signal_list[[i]] < upper_bound
+      phylo_signal_list <- phylo_signal_list[[i]][less_than_upper_log]
+      geno_mat_list[[i]] <- geno_mat_list[[i]][, less_than_upper_log, drop = FALSE]
+    }
+    if (!is.null(num_genos)) {
+      if (ncol(geno_mat_list[[i]]) < num_genos) {
+        stop(paste0("Geno mat", i, "doesn't have enough genotypes"))
+      }
+    }
+  }
+  return(geno_mat_list)
+}
+
+combine_phenotype_names_lists <- function(list_1, list_2){
+  num_names <- length(list_1)
+  name_list <- rep(list(), num_names)
+  for (i in 1:num_names) {
+    name_list[[i]] <- unique(c(list_1[[i]], list_2[[i]]))
+  }
+  return(name_list)
 }
 
 ## OLD STUFF BELOW

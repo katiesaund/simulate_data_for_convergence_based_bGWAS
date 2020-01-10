@@ -26,12 +26,21 @@ phylo_signal_list <- calculate_phylo_signal(tree_list, binary_AR_mat_list)
 # Select BM and WN phenotypes
 BM_phenotype_names_list <- select_BM_traits(binary_AR_mat_list, phylo_signal_list, num_phenos) 
 WN_phenotype_names_list <- select_WN_traits(binary_AR_mat_list, phylo_signal_list, num_phenos) # We're not getting enough WN, presumably because the traits are being created by evolving on the tree. I'll need to randomize them somehow.
+phenotype_names_list <- combine_phenotype_names_lists(BM_phenotype_names_list, WN_phenotype_names_list)
 # Select genotypes and phenotypes
-genotype_mat_list <- ???()
-phenotype_mat_list <- subsample_to_phenotypes(binary_AR_mat_list, BM_phenotype_names_list)
+genotype_mat_list <- subsample_to_genotypes(binary_AR_mat_list,
+                                            phylo_signal_list,
+                                            phenotype_names_list, 
+                                            lower_bound = -1.5, 
+                                            upper_bound = 1.5, 
+                                            num_genos = 100)
+BM_phenotype_mat_list <- subsample_to_phenotypes(binary_AR_mat_list, BM_phenotype_names_list)
+WN_phenotype_mat_list <- subsample_to_phenotypes(binary_AR_mat_list, WN_phenotype_names_list)
+
+# Left off here, still all pseudocode below
 genotype_AR_list <- ??()
 phenotype_AR_list <- subsample_to_phenotypes(binary_AR_mat_list, WN_phenotype_names_list)
-# Left off here, still all pseudocode below
+
 
 # Identify transition edges
 genotype_sync_trans_list <- find_transition_edges(tree_list, genotype_mat_list, genotype_AR_list, "discrete")

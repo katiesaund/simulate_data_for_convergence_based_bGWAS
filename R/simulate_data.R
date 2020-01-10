@@ -6,13 +6,14 @@ suppressWarnings(library(phylolm))
 suppressWarnings(library(dplyr))
 
 source("tree.R")
+source("discrete_trait_lib.R")
 
 
 # pseudocode / outline
 
 # Initialize variables / read in user input
 num_trees <- 2 # change to user defined input
-num_tips <- 50 # change to user defined input
+num_tips <- 30 # change to user defined input
 num_phenos <- 2 # change to user defined input
 
 # Generate huge matrix of binary traits specific to trees
@@ -24,13 +25,13 @@ phylo_signal_list <- calculate_phylo_signal(tree_list, binary_AR_mat_list)
 
 # Select BM and WN phenotypes
 BM_phenotype_names_list <- select_BM_traits(binary_AR_mat_list, phylo_signal_list, num_phenos) 
-WN_phenotype_names_list <- select_WN_traits(binary_AR_mat_list, phylo_signal_list, num_phenos)
-# Left off here, still all pseudocode below
+WN_phenotype_names_list <- select_WN_traits(binary_AR_mat_list, phylo_signal_list, num_phenos) # We're not getting enough WN, presumably because the traits are being created by evolving on the tree. I'll need to randomize them somehow.
 # Select genotypes and phenotypes
 genotype_mat_list <- ???()
-phenotype_mat_list <- ???()
+phenotype_mat_list <- subsample_to_phenotypes(binary_AR_mat_list, BM_phenotype_names_list)
 genotype_AR_list <- ??()
-phenotype_AR_list <- ?()
+phenotype_AR_list <- subsample_to_phenotypes(binary_AR_mat_list, WN_phenotype_names_list)
+# Left off here, still all pseudocode below
 
 # Identify transition edges
 genotype_sync_trans_list <- find_transition_edges(tree_list, genotype_mat_list, genotype_AR_list, "discrete")

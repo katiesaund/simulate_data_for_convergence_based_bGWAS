@@ -220,7 +220,15 @@ select_WN_traits <- function(binary_mat_list,
   return(WN_trait_names_list)
 }
 
-
+subsample_to_phenotypes <- function(binary_AR_mat_list, 
+                                    BM_phenotype_names_list){
+  num_mat <- length(binary_AR_mat_list)
+  temp_mat_list <- rep(list(), num_mat)
+  for (i in 1:num_mat){
+    temp_mat_list[[i]] <- binary_AR_mat_list[[i]][, colnames(binary_AR_mat_list[[i]]) %in% BM_phenotype_names_list[[i]], drop = FALSE]
+  }
+  return(temp_mat_list)
+}
 
 ## OLD STUFF BELOW
 

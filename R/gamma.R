@@ -1,7 +1,6 @@
 calc_phyc_gamma_list <- function(tree_list, 
                                  genotype_phyc_trans_list, 
                                  phenotype_AR_vec_list){
-  # left off on 2020-01-13 with error in this function
   num_tree <- length(tree_list) 
   phyc_gamma_list <- list()
   high_conf_edge_list <- list()
@@ -77,6 +76,29 @@ calculate_phyc_gamma <- function(geno_trans_edge_list,
   return(results)
 }
 
+calc_sync_gamma_list <- function(tree_list, 
+                                 genotype_sync_trans_list, 
+                                 phenotype_sync_trans_list){
+  num_tree <- length(tree_list) 
+  sync_gamma_list <- list()
+  high_conf_edge_list <- list()
+  
+  for (i in 1:num_tree) {
+    high_conf_edge_list[[i]] <- rep(list(rep(1, ape::Nedge(tree_list[[i]]))), length(genotype_sync_trans_list[[i]]))
+    num_pheno <- length(phenotype_sync_trans_list[[i]])
+    temp_gamma_list <- list()
+    num_tip <- ape::Ntip(tree_list[[i]])
+    for (j in 1:num_pheno){
+      temp_gamma_list[[j]] <- 
+        calculate_synchronous_gamma(genotype_sync_trans_list[[i]], 
+                                    phenotype_sync_trans_list[[i]][[j]], 
+                                    high_conf_edge_list[[i]])
+    }
+    sync_gamma_list[[i]] <- temp_gamma_list
+  }
+  return(sync_gamma_list)
+}
+
 #' Calculate gamma within synchronous test
 #'
 #' @description Given phenotype and genotype information, calculate a summary
@@ -108,25 +130,25 @@ calculate_phyc_gamma <- function(geno_trans_edge_list,
 #'
 calculate_synchronous_gamma <- function(geno_trans_edge_list,
                                         pheno_trans_vec,
-                                        high_conf){
-  high_conf_edge_list <- high_conf$high_conf_ordered_by_edges
-  check_equal(length(geno_trans_edge_list), length(high_conf_edge_list))
-  check_equal(length(geno_trans_edge_list[[1]]), length(high_conf_edge_list[[1]]))
-  check_equal(length(geno_trans_edge_list[[1]]), length(pheno_trans_vec$transition))
-  epsilon <- geno_beta <- gamma_count <- gamma_percent <-
+                                        high_conf_edge_list){
+  # check_equal(length(geno_trans_edge_list), length(high_conf_edge_list))
+  # check_equal(length(geno_trans_edge_list[[1]]), length(high_conf_edge_list[[1]]))
+  # check_equal(length(geno_trans_edge_list[[1]]), length(pheno_trans_vec$transition))
+  epsilon <- geno_beta <- gamma_count <- gamma_percent <- pheno_beta <-
     rep(0, length(geno_trans_edge_list))
-  pheno_beta <-
-    sum(pheno_trans_vec$transition == 1 & high_conf$tr_and_pheno_hi_conf == 1)
+
   for (i in 1:length(geno_trans_edge_list)) {
     pheno_trans_and_geno_trans <-
       sum(pheno_trans_vec$transition == 1 &
-            geno_trans_edge_list[[i]] == 1 &
+            geno_trans_edge_list[[i]]$transition == 1 &
             high_conf_edge_list[[i]] == 1)
     gamma_count[i] <- pheno_trans_and_geno_trans
     gamma_percent[i] <- gamma_count[i] / sum(high_conf_edge_list[[i]])
-    geno_beta[i] <- sum(geno_trans_edge_list[[i]] == 1 &
+    geno_beta[i] <- sum(geno_trans_edge_list[[i]]$transition == 1 &
                           high_conf_edge_list[[i]] == 1)
-    epsilon[i] <- (2 * gamma_count[i]) / (pheno_beta + geno_beta[i])
+    pheno_beta[i] <-
+      sum(pheno_trans_vec$transition == 1 & high_conf_edge_list[[i]] == 1)
+    epsilon[i] <- (2 * gamma_count[i]) / (pheno_beta[i] + geno_beta[i])
   }
   gamma_avg <- mean(gamma_percent)
   num_hi_conf_edges <- unlist(lapply(high_conf_edge_list, sum))

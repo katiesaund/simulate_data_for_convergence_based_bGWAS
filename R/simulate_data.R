@@ -1,21 +1,17 @@
 suppressWarnings(library(ape))
 suppressWarnings(library(caper))
 suppressWarnings(library(phytools))
-suppressWarnings(library(optparse))
 suppressWarnings(library(phylolm))
-suppressWarnings(library(dplyr))
 
-source("tree.R")
-source("discrete_trait_lib.R")
-source("transition_edges.R")
-source("gamma.R")
-
-# pseudocode / outline
+source("../../simulate_data_for_convergence_based_bGWAS/R/tree.R")
+source("../../simulate_data_for_convergence_based_bGWAS/R/discrete_trait_lib.R")
+source("../../simulate_data_for_convergence_based_bGWAS/R/transition_edges.R")
+source("../../simulate_data_for_convergence_based_bGWAS/R/gamma.R")
 
 # Initialize variables / read in user input
-num_trees <- 8 # change to user defined input
-num_tips <- 30 # change to user defined input
-num_phenos <- 9 # change to user defined input
+num_trees <- 3 # change to user defined input
+num_tips <- 100 # change to user defined input
+num_phenos <- 2 # change to user defined input
 
 # Generate huge matrix of binary traits specific to trees
 tree_list <- generate_trees(num_trees, num_tips)
@@ -27,7 +23,7 @@ phylo_signal_list <- calculate_phylo_signal(tree_list, binary_AR_mat_list)
 #temp stuff
 phylo_signal_list[[1]][1:2] <- phylo_signal_list[[2]][1:2]  <- 0
 phylo_signal_list[[1]][3:4] <- phylo_signal_list[[2]][3:4] <- 1
-save(phylo_signal_list, file = "phylo_signal_list.Rdata")
+save(phylo_signal_list, file = "../data/phylo_signal_list.Rdata")
 # end temp stuff
 
 # Select BM and WN phenotypes

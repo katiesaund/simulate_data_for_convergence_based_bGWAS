@@ -53,6 +53,35 @@ save_data <- function(tree_list,
                                 "_pheno_", 
                                 j, 
                                 ".tsv"))
+      BM_phyc_gamma <- BM_phyc_gamma_list[[i]][[j]]
+      save(BM_phyc_gamma, file = paste0("../data/",
+                                        "discrete_pheno_BM_tree_",
+                                        i, 
+                                        "_pheno_",
+                                        j,
+                                        "_phyc_gamma.RData"))
+      BM_sync_gamma <- BM_sync_gamma_list[[i]][[j]]
+      save(BM_sync_gamma, file = paste0("../data/",
+                                        "discrete_pheno_BM_tree_",
+                                        i, 
+                                        "_pheno_",
+                                        j,
+                                        "_sync_gamma.RData"))
+      
+      WN_phyc_gamma <- WN_phyc_gamma_list[[i]][[j]]
+      save(WN_phyc_gamma, file = paste0("../data/", 
+                                        "discrete_pheno_WN_tree_",
+                                        i, 
+                                        "_pheno_",
+                                        j, 
+                                        "_phyc_gamma.RData"))
+      WN_sync_gamma <- WN_sync_gamma_list[[i]][[j]]
+      save(WN_sync_gamma, file = paste0("../data/", 
+                                        "discrete_pheno_WN_tree_",
+                                        i, 
+                                        "_pheno_",
+                                        j, 
+                                        "_sync_gamma.RData"))
     }
   }
 }

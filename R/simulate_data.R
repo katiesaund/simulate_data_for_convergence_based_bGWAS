@@ -12,10 +12,11 @@ source("../../simulate_data_for_convergence_based_bGWAS/R/gamma.R")
 num_trees <- 3 # change to user defined input
 num_tips <- 100 # change to user defined input
 num_phenos <- 2 # change to user defined input
+num_start_trait <- 10000 # change to user defined input
 
 # Generate huge matrix of binary traits specific to trees
 tree_list <- generate_trees(num_trees, num_tips)
-binary_AR_mat_list <- generate_disc_mat(tree_list)
+binary_AR_mat_list <- generate_disc_mat(tree_list, num_start_trait)
 
 # Separate traits into BM and WN
 phylo_signal_list <- calculate_phylo_signal(tree_list, binary_AR_mat_list) 

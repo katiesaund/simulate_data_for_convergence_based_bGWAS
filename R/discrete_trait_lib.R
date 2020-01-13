@@ -1,6 +1,5 @@
-generate_disc_mat <- function(tree_list){
+generate_disc_mat <- function(tree_list, num_genotypes){
   # Generate a huge discrete, binary matrix. 
-  num_genotypes <- 10000 # TODO User defined input? Just some very large number?
   num_sim_trees <- length(tree_list)
   geno_mat_list <- geno_AR_mat_list <- rep(list(NULL), num_sim_trees)
   for (i in 1:num_sim_trees) {

@@ -20,12 +20,10 @@ generate_disc_mat <- function(tree_list, num_genotypes){
     storage.mode(geno_mat) <- "numeric"
     storage.mode(geno_tip_and_AR_mat) <- "numeric"
     cols_to_keep <- colSums(geno_mat) > 1 & colSums(geno_mat) < nrow(geno_mat) - 1
-    geno_mat <- geno_mat[, cols_to_keep, drop = FALSE]
     geno_tip_and_AR_mat <- geno_tip_and_AR_mat[, cols_to_keep, drop = FALSE]
-    geno_mat <- as.data.frame(geno_mat)
+    geno_tip_and_AR_mat <- unique(geno_tip_and_AR_mat, MARGIN = 2)
     geno_tip_and_AR_mat <- as.data.frame(geno_tip_and_AR_mat)
-    colnames(geno_tip_and_AR_mat) <- colnames(geno_mat) <- paste0("sim", 1:ncol(geno_mat))
-    geno_mat_list[[i]] <- geno_mat
+    colnames(geno_tip_and_AR_mat) <- paste0("sim", 1:ncol(geno_tip_and_AR_mat))
     geno_AR_mat_list[[i]] <- geno_tip_and_AR_mat
   }
   return(geno_AR_mat_list)

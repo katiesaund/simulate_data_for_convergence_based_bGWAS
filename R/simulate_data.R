@@ -48,9 +48,16 @@ WN_phenotype_sync_trans_list <- find_transition_edges(tree_list, WN_phenotype_AR
 genotype_sync_trans_list <- find_transition_edges(tree_list, genotype_AR_mat_list, "discrete")
 genotype_phyc_trans_list <- convert_to_phyc_trans(genotype_AR_mat_list, genotype_sync_trans_list)
 
-# Everything below is psuedocode
+# Prep phenotype reconstruction by edges 
+BM_pheno_recon_by_edge_list <- prep_pheno_recon_edges(BM_phenotype_AR_mat_list, 
+                                                      tree_list)
+WN_pheno_recon_by_edge_list <- prep_pheno_recon_edges(WN_phenotype_AR_mat_list, 
+                                                      tree_list)
+
 # Calculate gamma
-BM_phyc_gamma_list <- calc_phyc_gamma_list(tree_list, genotype_phyc_trans_list, BM_phenotype_AR_mat_list)
+BM_phyc_gamma_list <- calc_phyc_gamma_list(tree_list, genotype_phyc_trans_list, BM_pheno_recon_by_edge_list)
+WN_phyc_gamma_list <- calc_phyc_gamma_list(tree_list, genotype_phyc_trans_list, WN_pheno_recon_by_edge_list)
+# Everything below is psuedocode
 sync_gamma_list <- calc_sync_gamma(genotype_sync_trans_list, phenotype_sync_trans_list)
 
 genotype_keeper_list <- subset_genotype(phyc_gamma_list, sync_gamma_list)

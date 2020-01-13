@@ -22,8 +22,8 @@ binary_AR_mat_list <- generate_disc_mat(tree_list, num_start_trait)
 phylo_signal_list <- calculate_phylo_signal(tree_list, binary_AR_mat_list) 
 
 #temp stuff
-phylo_signal_list[[1]][1:2] <- phylo_signal_list[[2]][1:2]  <- 0
-phylo_signal_list[[1]][3:4] <- phylo_signal_list[[2]][3:4] <- 1
+phylo_signal_list[[1]][1:2] <- phylo_signal_list[[2]][1:2]  <-  phylo_signal_list[[3]][1:2] <- 0
+phylo_signal_list[[1]][3:4] <- phylo_signal_list[[2]][3:4] <- phylo_signal_list[[3]][3:4] <- 1
 save(phylo_signal_list, file = "../data/phylo_signal_list.Rdata")
 # end temp stuff
 
@@ -72,8 +72,10 @@ save_data(tree_list,
           WN_sync_gamma_list)
 
 # Everything below is psuedocode
-# genotype_keeper_list <- subset_genotype(phyc_gamma_list, sync_gamma_list)
-# phenotype_keeper_list <- subset_phenotype(phyc_gamma_list, sync_gamma_list)
+# genotype_keeper_list <- keep_good_genotypes(BM_phyc_gamma_list, 
+#                                             BM_sync_gamma_list,
+#                                             WN_phyc_gamma_list,
+#                                             WN_sync_gamma_list)
 # save_genotypes(genotype_keeper_list)
 # save_phenotypes(phenotype_keeper_list)
 

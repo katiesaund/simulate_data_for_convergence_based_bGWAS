@@ -1,15 +1,28 @@
-# keep_good_genotypes <- function(BM_phyc_gamma_list, 
-#                                 BM_sync_gamma_list,
-#                                 WN_phyc_gamma_list,
-#                                 WN_sync_gamma_list){
-#   num_trees <- length(BM_phyc_gamma_list)
-#   for (i in 1:num_trees) {
-#     num_pheno <- length(BM_phyc_gamma_list[[i]])
-#     for (j in 1:num_pheno) {
-#       num_geno <- length(BM_phyc_gamma_list[[i]][[j]]$geno_beta)
-#       unique_geno_beta <- unique(BM_phyc_gamma_list[[i]][[j]]$geno_beta)
-#       unique_pheno_beta <- unique(BM_phyc_gamma_list[[i]][[j]]$pheno_beta)
-#       
-#     }
-#   }
-# }
+keep_good_genotypes <- function(gamma_list){
+  keepers <- list()
+  num_trees <- length(gamma_list)
+  for (i in 1:num_trees) {
+    num_pheno <- length(gamma_list[[i]])
+    temp_keepers <- list()
+    for (j in 1:num_pheno) {
+      current_index <- NULL
+      num_geno <- length(gamma_list[[i]][[j]]$geno_beta)
+      unique_geno_beta <- unique(gamma_list[[i]][[j]]$geno_beta)
+      unique_pheno_beta <- unique(gamma_list[[i]][[j]]$pheno_beta)
+      for (k in 1:length(unique_geno_beta)) {
+        for (l in 1:length(unique_pheno_beta)) {
+          temp_index <- which(gamma_list[[i]][[j]]$geno_beta == unique_geno_beta[k] & 
+                                gamma_list[[i]][[j]]$pheno_beta == unique_pheno_beta[l])
+          if (length(temp_index) > 10) {
+            temp_index <- temp_index[1:10]
+          }
+          current_index <- c(current_index, temp_index)
+          current_index <- unique(sort(current_index))
+        }
+      }
+    temp_keepers[[j]] <- current_index
+    }
+  keepers[[i]] <- temp_keepers
+  }
+  return(keepers)
+}

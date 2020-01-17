@@ -1,11 +1,13 @@
-generate_trees <- function(num_trees, num_tips){
+generate_trees <- function(num_trees, num_tips, edge_multiplier){
   # Generate a series of trees with a set number of tips
   simulated_trees <- rep(list(0), num_trees)
   set.seed(1)
   for (i in 1:num_trees) {
-    # Use rcoal instead of rtree to get realistic branch lengths. 
-    simulated_trees[[i]] <- ape::rcoal(n = num_tips, rooted = TRUE) 
+    # Use rcoal instead of rtree to get realistic branch lengths.
+    simulated_trees[[i]] <- ape::rcoal(n = num_tips, rooted = TRUE)
     simulated_trees[[i]]$node.label <- rep(100, Nnode(simulated_trees[[i]]))
+    simulated_trees[[i]]$edge.length <-
+      edge_multiplier * simulated_trees[[i]]$edge.length
   }
   return(simulated_trees)
 }
@@ -32,13 +34,13 @@ reorder_tip_and_node_to_edge <- function(tips_and_node_vector, tr){
   # check_for_root_and_bootstrap(tr)
   # check_equal(length(tips_and_node_vector), sum(ape::Ntip(tr), ape::Nnode(tr)))
   # check_is_number(tips_and_node_vector[1])
-  
+
   # Function -------------------------------------------------------------------
   ordered_by_edges <- rep(NA, ape::Nedge(tr))
   for (i in 1:ape::Nedge(tr)) {
     ordered_by_edges[i] <- tips_and_node_vector[tr$edge[i, 2]]
   }
-  
+
   # Return output --------------------------------------------------------------
   return(ordered_by_edges)
 }# end reorder_tip_and_node_to_edge()
@@ -53,7 +55,7 @@ prep_pheno_recon_edges <- function(phenotype_AR_mat_list, tree_list) {
       temp_recon_by_edges[[j]] <- reorder_tip_and_node_to_edge(phenotype_AR_mat_list[[i]][, j, drop = TRUE], tree_list[[i]])
     }
     pheno_recon_by_edges_list[[i]] <- temp_recon_by_edges
-  } 
+  }
   return(pheno_recon_by_edges_list)
 }
 

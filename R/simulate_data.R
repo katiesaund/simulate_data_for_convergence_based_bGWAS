@@ -22,16 +22,23 @@ tree_list <- generate_trees(num_trees, num_tips, tree_edge_multiplier)
 
 binary_AR_mat_list <- generate_disc_mat(tree_list, num_start_trait)
 
+# Pseudocode:
+binary_AR_mat_list <- add_WN(binary_AR_mat_list, tree_list)
+
+# binary_AR_conf_and_mat <- ancestral_reconstruction
+# binary_AR_conf_list <- binary_AR_conf_and_mat$confidence
+# binary_AR_mat_list <- binary_AR_conf_and_mat$AR_mat
+
 # Separate traits into BM and WN
 phylo_signal_list <- calculate_phylo_signal(tree_list, binary_AR_mat_list)
 
-#temp stuff
-phylo_signal_list[[1]][1:2] <- phylo_signal_list[[2]][1:2] <- 0
-phylo_signal_list[[1]][3:4] <- phylo_signal_list[[2]][3:4] <- 1
-#phylo_signal_list[[3]][1:2] <- 0
-# phylo_signal_list[[3]][3:4] <- 1
-# save(phylo_signal_list, file = "../data/phylo_signal_list.Rdata")
-# end temp stuff
+# #temp stuff
+# phylo_signal_list[[1]][1:2] <- phylo_signal_list[[2]][1:2] <- 0
+# phylo_signal_list[[1]][3:4] <- phylo_signal_list[[2]][3:4] <- 1
+# #phylo_signal_list[[3]][1:2] <- 0
+# # phylo_signal_list[[3]][3:4] <- 1
+# # save(phylo_signal_list, file = "../data/phylo_signal_list.Rdata")
+# # end temp stuff
 
 # Select BM and WN phenotypes
 BM_phenotype_names_list <- select_BM_traits(binary_AR_mat_list, phylo_signal_list, num_phenos)

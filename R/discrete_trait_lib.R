@@ -1,11 +1,11 @@
 generate_disc_mat <- function(tree_list, num_genotypes){
-  # Generate a huge discrete, binary matrix. 
+  # Generate a huge discrete, binary matrix.
   num_sim_trees <- length(tree_list)
   geno_mat_list <- geno_AR_mat_list <- rep(list(NULL), num_sim_trees)
   for (i in 1:num_sim_trees) {
     set.seed(1)
-    
-    # Create a matrix: 
+
+    # Create a matrix:
     # Rows = tips then nodes
     # Columns = individual, simulated genotypes
     geno_tip_and_AR_mat <-
@@ -48,7 +48,7 @@ estimate_d_stat <- function(trait_df, tree){
   for (i in 1:num_genotype) {
     temp_trait <- trait_df[, i, drop = FALSE]
     temp_trait <- convert_trait_vec_to_df(temp_trait, tree)
-    compar_data_obj <- 
+    compar_data_obj <-
       caper::comparative.data(data = temp_trait,
                               phy = tree,
                               names.col = "ID")
@@ -177,8 +177,8 @@ phylo.d2 <- function(data,
 }
 # ----
 
-select_BM_traits <- function(binary_mat_list, 
-                             phylo_signal_list, 
+select_BM_traits <- function(binary_mat_list,
+                             phylo_signal_list,
                              num_to_pick = NULL) {
   num_trees <- length(binary_mat_list)
   BM_trait_names_list <- rep(list(), num_trees)
@@ -193,12 +193,12 @@ select_BM_traits <- function(binary_mat_list,
       }
     }
     BM_trait_names_list[[i]] <- BM_colnames
-  } 
+  }
   return(BM_trait_names_list)
 }
 
-select_WN_traits <- function(binary_mat_list, 
-                             phylo_signal_list, 
+select_WN_traits <- function(binary_mat_list,
+                             phylo_signal_list,
                              num_to_pick = NULL) {
   num_trees <- length(binary_mat_list)
   WN_trait_names_list <- rep(list(), num_trees)
@@ -213,11 +213,11 @@ select_WN_traits <- function(binary_mat_list,
       }
     }
     WN_trait_names_list[[i]] <- WN_colnames
-  } 
+  }
   return(WN_trait_names_list)
 }
 
-subsample_to_phenotypes <- function(binary_AR_mat_list, 
+subsample_to_phenotypes <- function(binary_AR_mat_list,
                                     phenotype_names_list){
   num_mat <- length(binary_AR_mat_list)
   temp_mat_list <- rep(list(), num_mat)
@@ -227,10 +227,10 @@ subsample_to_phenotypes <- function(binary_AR_mat_list,
   return(temp_mat_list)
 }
 
-select_geno_within_range <- function(binary_AR_mat_list, 
+select_geno_within_range <- function(binary_AR_mat_list,
                                      phylo_signal_list,
-                                     lower_bound = NULL, 
-                                     upper_bound = NULL, 
+                                     lower_bound = NULL,
+                                     upper_bound = NULL,
                                      num_genos = NULL){
   num_mat <- length(binary_AR_mat_list)
   geno_mat_list <- binary_AR_mat_list
@@ -261,4 +261,46 @@ combine_phenotype_names_lists <- function(list_1, list_2){
     name_list[[i]] <- unique(c(list_1[[i]], list_2[[i]]))
   }
   return(name_list)
+}
+
+
+add_WN <- function (binary_AR_mat_list, tree_list) {
+  num_trees <- length(tree_list)
+  for (i in 1:num_trees) {
+    num_trait <- ncol(binary_AR_mat_list[[i]])
+    num_tip <- ape::Ntip(tree_list[[i]])
+    num_to_add <- round(num_trait / 4, 0)
+    random_col_to_add <- a_few_flips_col_to_add <-
+      binary_AR_mat_list[[i]][, 1:num_to_add, drop = FALSE]
+    for (j in 1:ncol(random_col_to_add)) {
+      current_col <- random_col_to_add[1:num_tip, j]
+      jumbled_tips <- sample(current_col,
+                             size = length(current_col),
+                             replace = FALSE)
+      random_col_to_add[1:num_tip, j] <- jumbled_tips
+      flipped_tips <- flip_some_tips(current_col)
+      a_few_flips_col_to_add[1:num_tip, j] <- flipped_tips
+    }
+    binary_AR_mat_list[[i]] <- cbind(binary_AR_mat_list[[i]],
+                                     random_col_to_add,
+                                     a_few_flips_col_to_add)
+
+    temp_only_tips <- binary_AR_mat_list[[i]][1:num_tip, , drop = FALSE]
+    cols_to_keep <- colSums(temp_only_tips) > 1 & colSums(temp_only_tips) < nrow(temp_only_tips) - 1
+    binary_AR_mat_list[[i]] <- binary_AR_mat_list[[i]][, cols_to_keep, drop = FALSE]
+    binary_AR_mat_list[[i]] <- unique(binary_AR_mat_list[[i]], MARGIN = 2)
+    colnames(binary_AR_mat_list[[i]]) <-
+      paste0("sim", 1:ncol(binary_AR_mat_list[[i]]))
+  }
+  return(binary_AR_mat_list)
+}
+
+flip_some_tips <- function(numeric_vec) {
+  len <- length(numeric_vec)
+  index <- 1:len
+  indices_to_flip <- sample(index, round(len * 0.10, 0), replace = FALSE)
+  for (i in indices_to_flip) {
+    numeric_vec[i] <- as.numeric(!numeric_vec[i])
+  }
+  return(numeric_vec)
 }

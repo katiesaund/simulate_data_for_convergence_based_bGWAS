@@ -54,8 +54,12 @@ genotype_AR_and_conf_mat_list <- select_geno_within_range(binary_AR_mat_list,
                                                           min_genos = 10) # TODO change to min_num_genes
 genotype_AR_mat_list <- genotype_AR_and_conf_mat_list$AR_mat
 genotype_conf_mat_list <- genotype_AR_and_conf_mat_list$conf_mat
-BM_phenotype_AR_mat_list <- subsample_to_phenotypes(binary_AR_mat_list, BM_phenotype_names_list)
-WN_phenotype_AR_mat_list <- subsample_to_phenotypes(binary_AR_mat_list, WN_phenotype_names_list)
+BM_phenotype_AR_and_conf_mat_list <- subsample_to_phenotypes(binary_AR_mat_list, binary_conf_mat_list, BM_phenotype_names_list)
+BM_phenotype_AR_mat_list <- BM_phenotype_AR_and_conf_mat_list$AR_mat
+BM_phenotype_conf_mat_list <- BM_phenotype_AR_and_conf_mat_list$conf_mat
+WN_phenotype_AR_and_conf_mat_list <- subsample_to_phenotypes(binary_AR_mat_list, binary_conf_mat_list, WN_phenotype_names_list)
+WN_phenotype_AR_mat_list <- WN_phenotype_AR_and_conf_mat_list$AR_mat
+WN_phenotype_conf_mat_list <- WN_phenotype_AR_and_conf_mat_list$conf_mat
 
 BM_phenotype_sync_trans_list <- find_transition_edges(tree_list, BM_phenotype_AR_mat_list, "discrete")
 WN_phenotype_sync_trans_list <- find_transition_edges(tree_list, WN_phenotype_AR_mat_list, "discrete")
@@ -67,6 +71,10 @@ BM_pheno_recon_by_edge_list <- prep_pheno_recon_edges(BM_phenotype_AR_mat_list,
                                                       tree_list)
 WN_pheno_recon_by_edge_list <- prep_pheno_recon_edges(WN_phenotype_AR_mat_list,
                                                       tree_list)
+
+# TODO ID high confidence phenotype recon and phenotype/genotype transitions by edges
+# TODO incorporate high confidence information into the gamma calcuations next
+
 
 # Calculate gamma
 BM_phyc_gamma_list <- calc_phyc_gamma_list(tree_list, genotype_phyc_trans_list, BM_pheno_recon_by_edge_list)

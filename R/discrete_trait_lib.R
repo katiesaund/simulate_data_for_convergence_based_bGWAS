@@ -218,13 +218,17 @@ select_WN_traits <- function(binary_mat_list,
 }
 
 subsample_to_phenotypes <- function(binary_AR_mat_list,
+                                    binary_conf_mat_list,
                                     phenotype_names_list){
   num_mat <- length(binary_AR_mat_list)
-  temp_mat_list <- rep(list(), num_mat)
+  AR_mat_list <- conf_mat_list <- rep(list(), num_mat)
   for (i in 1:num_mat) {
-    temp_mat_list[[i]] <- binary_AR_mat_list[[i]][, colnames(binary_AR_mat_list[[i]]) %in% phenotype_names_list[[i]], drop = FALSE]
+    AR_mat_list[[i]] <- binary_AR_mat_list[[i]][, colnames(binary_AR_mat_list[[i]]) %in% phenotype_names_list[[i]], drop = FALSE]
+    conf_mat_list[[i]] <- binary_conf_mat_list[[i]][, colnames(binary_conf_mat_list[[i]]) %in% phenotype_names_list[[i]], drop = FALSE]
+
   }
-  return(temp_mat_list)
+  return(list("AR_mat", AR_mat_list,
+              "conf_mat", conf_mat_list))
 }
 
 select_geno_within_range <- function(binary_AR_mat_list,

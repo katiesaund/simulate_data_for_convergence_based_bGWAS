@@ -1,6 +1,8 @@
 ancestral_reconstruction <- function(AR_mat_list, tree_list){
   num_trees <- length(tree_list)
   geno_recon_and_conf_list <- rep(list(0), num_trees)
+  AR_mat <- conf_mat <- rep(list(matrix(0)), num_trees)
+
 
   for (i in 1:num_trees) {
     temp_tree <- tree_list[[i]]
@@ -8,12 +10,22 @@ ancestral_reconstruction <- function(AR_mat_list, tree_list){
     tip_mat <- AR_mat_list[[i]][1:num_tips, , drop = FALSE]
     num_geno <- ncol(tip_mat)
     geno_recon_and_conf <- rep(list(0), num_geno)
+
+    num_row <- ape::Ntip(temp_tree) + ape::Nnode(temp_tree)
+    AR_mat[[i]] <- conf_mat[[i]] <- matrix(0, nrow = num_row, ncol = num_geno)
+
     for (j in 1:num_geno) {
       geno_recon_and_conf[[j]] <- ancestral_reconstruction_by_ML(temp_tree, tip_mat, j, "discrete")
+      AR_mat[[i]][, j] <- geno_recon_and_conf[[j]]$tip_and_node_recon
+      conf_mat[[i]][, j] <- geno_recon_and_conf[[j]]$tip_and_node_rec_conf
     }
+    colnames(AR_mat[[i]]) <- colnames(conf_mat[[i]]) <- colnames(AR_mat_list[[i]])
+    row.names(AR_mat[[i]]) <- row.names(conf_mat[[i]]) <- row.names(AR_mat_list[[i]])
     geno_recon_and_conf_list[[i]] <- geno_recon_and_conf
   }
-  return(geno_recon_and_conf_list)
+
+  return(list("conf_mat" = conf_mat,
+              "AR_mat" = AR_mat))
 }
 
 

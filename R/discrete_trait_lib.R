@@ -221,37 +221,47 @@ subsample_to_phenotypes <- function(binary_AR_mat_list,
                                     phenotype_names_list){
   num_mat <- length(binary_AR_mat_list)
   temp_mat_list <- rep(list(), num_mat)
-  for (i in 1:num_mat){
+  for (i in 1:num_mat) {
     temp_mat_list[[i]] <- binary_AR_mat_list[[i]][, colnames(binary_AR_mat_list[[i]]) %in% phenotype_names_list[[i]], drop = FALSE]
   }
   return(temp_mat_list)
 }
 
 select_geno_within_range <- function(binary_AR_mat_list,
+                                     binary_AR_conf_list,
                                      phylo_signal_list,
                                      lower_bound = NULL,
                                      upper_bound = NULL,
-                                     num_genos = NULL){
+                                     min_genos = 1){
   num_mat <- length(binary_AR_mat_list)
   geno_mat_list <- binary_AR_mat_list
   for (i in 1:num_mat) {
+    print(i)
     if (!is.null(lower_bound)) {
+      print("lower")
       greater_than_lower_log <- phylo_signal_list[[i]] > lower_bound
       phylo_signal_list[[i]] <- phylo_signal_list[[i]][greater_than_lower_log]
       geno_mat_list[[i]] <- geno_mat_list[[i]][, greater_than_lower_log, drop = FALSE]
+      binary_AR_conf_list[[i]] <- binary_AR_conf_list[[i]][, greater_than_lower_log, drop = FALSE]
     }
     if (!is.null(upper_bound)) {
+      print("upper")
+      print(phylo_signal_list[[i]])
       less_than_upper_log <- phylo_signal_list[[i]] < upper_bound
-      phylo_signal_list <- phylo_signal_list[[i]][less_than_upper_log]
+      phylo_signal_list[[i]] <- phylo_signal_list[[i]][less_than_upper_log]
       geno_mat_list[[i]] <- geno_mat_list[[i]][, less_than_upper_log, drop = FALSE]
+      binary_AR_conf_list[[i]] <- binary_AR_conf_list[[i]][, less_than_upper_log, drop = FALSE]
+
     }
-    if (!is.null(num_genos)) {
-      if (ncol(geno_mat_list[[i]]) < num_genos) {
+    if (!is.null(min_genos)) {
+      if (ncol(geno_mat_list[[i]]) < min_genos) {
         stop(paste0("Geno mat", i, "doesn't have enough genotypes"))
       }
     }
   }
-  return(geno_mat_list)
+
+  return(list("conf_mat" = binary_AR_conf_list,
+              "AR_mat" = geno_mat_list))
 }
 
 combine_phenotype_names_lists <- function(list_1, list_2){
@@ -286,9 +296,8 @@ add_WN <- function (binary_AR_mat_list, tree_list) {
                                      a_few_flips_col_to_add)
 
     temp_only_tips <- binary_AR_mat_list[[i]][1:num_tip, , drop = FALSE]
-    cols_to_keep <- colSums(temp_only_tips) > 1 & colSums(temp_only_tips) < nrow(temp_only_tips) - 1
+    cols_to_keep <- colSums(temp_only_tips) > 1 & colSums(temp_only_tips) < (nrow(temp_only_tips) - 1)
     binary_AR_mat_list[[i]] <- binary_AR_mat_list[[i]][, cols_to_keep, drop = FALSE]
-    binary_AR_mat_list[[i]] <- unique(binary_AR_mat_list[[i]], MARGIN = 2)
     colnames(binary_AR_mat_list[[i]]) <-
       paste0("sim", 1:ncol(binary_AR_mat_list[[i]]))
   }

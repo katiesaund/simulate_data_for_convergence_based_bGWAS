@@ -12,7 +12,7 @@ source("../../simulate_data_for_convergence_based_bGWAS/R/keep_interesting_genot
 source("../../simulate_data_for_convergence_based_bGWAS/R/ancestral_reconstruction.R")
 
 # Initialize variables / read in user input
-num_trees <- 2 # change to user defined input
+num_trees <- 3 # change to user defined input
 num_tips <- 100 # change to user defined input
 num_phenos <- 2 # change to user defined input
 num_start_trait <- 100 # change to user defined input
@@ -23,12 +23,11 @@ tree_list <- generate_trees(num_trees, num_tips, tree_edge_multiplier)
 
 binary_AR_mat_list <- generate_disc_mat(tree_list, num_start_trait)
 
-# Pseudocode:
 binary_AR_mat_list <- add_WN(binary_AR_mat_list, tree_list) # Due to WN stuff the ancestral reconstructions are now wrong!
 
-binary_AR_conf_and_mat <- ancestral_reconstruction(binary_AR_mat_list, tree_list)
-# binary_AR_conf_list <- binary_AR_conf_and_mat$confidence
-# binary_AR_mat_list <- binary_AR_conf_and_mat$AR_mat
+binary_AR_and_conf_mat <- ancestral_reconstruction(binary_AR_mat_list, tree_list)
+binary_conf_mat_list <- binary_AR_and_conf_mat$conf_mat
+binary_AR_mat_list <- binary_AR_and_conf_mat$AR_mat
 # TODO - Add the confidence information to both gamma calc and the subsetting steps (select_geno_within_range, subsample_to_phenotypes)
 
 # Separate traits into BM and WN
@@ -47,11 +46,14 @@ BM_phenotype_names_list <- select_BM_traits(binary_AR_mat_list, phylo_signal_lis
 WN_phenotype_names_list <- select_WN_traits(binary_AR_mat_list, phylo_signal_list, num_phenos)
 phenotype_names_list <- combine_phenotype_names_lists(BM_phenotype_names_list, WN_phenotype_names_list)
 # Select genotypes and phenotypes
-genotype_AR_mat_list <- select_geno_within_range(binary_AR_mat_list,
-                                                 phylo_signal_list,
-                                                 lower_bound = -1.5,
-                                                 upper_bound = 1.5,
-                                                 num_genos = 10) # TODO change to min_num_genes
+genotype_AR_and_conf_mat_list <- select_geno_within_range(binary_AR_mat_list,
+                                                          binary_conf_mat_list,
+                                                          phylo_signal_list,
+                                                          lower_bound = -1.5,
+                                                          upper_bound = 1.5,
+                                                          min_genos = 10) # TODO change to min_num_genes
+genotype_AR_mat_list <- genotype_AR_and_conf_mat_list$AR_mat
+genotype_conf_mat_list <- genotype_AR_and_conf_mat_list$conf_mat
 BM_phenotype_AR_mat_list <- subsample_to_phenotypes(binary_AR_mat_list, BM_phenotype_names_list)
 WN_phenotype_AR_mat_list <- subsample_to_phenotypes(binary_AR_mat_list, WN_phenotype_names_list)
 

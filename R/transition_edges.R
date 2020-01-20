@@ -54,7 +54,7 @@ is_tip <- function(node_num, tr){
     stop("Node number must be a positive integer")
   }
   #check_node_is_in_tree(node_num, tr)
-  
+
   # Function & return output ---------------------------------------------------
   return(node_num <= ape::Ntip(tr))
 } # end is_tip()
@@ -138,8 +138,8 @@ identify_transition_edges <- function(tr, mat, num, node_recon, disc_cont){
   return(results)
 } # end identify_transition_edges()
 
-find_transition_edges <- function(tree_list, 
-                                  mat_list, 
+find_transition_edges <- function(tree_list,
+                                  mat_list,
                                   cont_disc_str){
   num_tree <- length(tree_list)
   nested_trans_list <- rep(list(), num_tree)
@@ -159,7 +159,7 @@ find_transition_edges <- function(tree_list,
   return(nested_trans_list)
 }
 
-convert_to_phyc_trans <- function(genotype_AR_mat_list, 
+convert_to_phyc_trans <- function(genotype_AR_mat_list,
                                   genotype_sync_trans_list){
   num_mat <- length(genotype_AR_mat_list)
   phyc_trans_list <- rep(list(), num_mat)
@@ -171,3 +171,41 @@ convert_to_phyc_trans <- function(genotype_AR_mat_list,
   }
   return(phyc_trans_list)
 }
+
+#' keep_two_plus_hi_conf_tran_ed
+#'
+#' @description Since we're looking for convergence of transitions we need a
+#'  second quality control step where we remove genotypes that have only 1
+#'  transition-edge or where the transition edges are identical!
+#'
+#' @param genotype_transition List of multiple vectors ($transition and
+#'  $trans_dir). Length(list) = number of genotypes. Length(vector) = Nedge(tr).
+#' @param genotype_confidence List of vectors. Length(list) = number of
+#'  genotypes. Length(vector) = Nedge(tr). Binary.
+#'
+#' @return at_least_two_hi_conf_trans_ed Logical vector.
+#'  Length == length(genotype_transition) == length(genotype_confidence).
+#' @noRd
+keep_two_plus_hi_conf_tran_ed <- function(genotype_transition,
+                                          genotype_confidence){
+  # Check inputs ---------------------------------------------------------------
+  # check_equal(length(genotype_transition), length(genotype_confidence))
+  if (!is.vector(genotype_transition[[1]]$transition)) {
+    stop("Input must be a numeric vector")
+  }
+  # check_if_binary_vector(genotype_confidence[[1]])
+
+  # Function -------------------------------------------------------------------
+  at_least_two_hi_conf_trans_ed <-
+    rep(FALSE, length(genotype_transition))
+  for (p in 1:length(genotype_transition)) {
+    if (sum(genotype_transition[[p]]$transition *
+            genotype_confidence[[p]]) > 1) {
+      at_least_two_hi_conf_trans_ed[p] <- TRUE
+    }
+  }
+
+  # Check and return output ----------------------------------------------------
+  return(at_least_two_hi_conf_trans_ed)
+} # end keep_two_plus_hi_conf_tran_ed()
+

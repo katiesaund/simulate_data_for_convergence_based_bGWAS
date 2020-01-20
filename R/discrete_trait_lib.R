@@ -227,8 +227,8 @@ subsample_to_phenotypes <- function(binary_AR_mat_list,
     conf_mat_list[[i]] <- binary_conf_mat_list[[i]][, colnames(binary_conf_mat_list[[i]]) %in% phenotype_names_list[[i]], drop = FALSE]
 
   }
-  return(list("AR_mat", AR_mat_list,
-              "conf_mat", conf_mat_list))
+  return(list("AR_mat" = AR_mat_list,
+              "conf_mat" = conf_mat_list))
 }
 
 select_geno_within_range <- function(binary_AR_mat_list,
@@ -240,17 +240,13 @@ select_geno_within_range <- function(binary_AR_mat_list,
   num_mat <- length(binary_AR_mat_list)
   geno_mat_list <- binary_AR_mat_list
   for (i in 1:num_mat) {
-    print(i)
     if (!is.null(lower_bound)) {
-      print("lower")
       greater_than_lower_log <- phylo_signal_list[[i]] > lower_bound
       phylo_signal_list[[i]] <- phylo_signal_list[[i]][greater_than_lower_log]
       geno_mat_list[[i]] <- geno_mat_list[[i]][, greater_than_lower_log, drop = FALSE]
       binary_AR_conf_list[[i]] <- binary_AR_conf_list[[i]][, greater_than_lower_log, drop = FALSE]
     }
     if (!is.null(upper_bound)) {
-      print("upper")
-      print(phylo_signal_list[[i]])
       less_than_upper_log <- phylo_signal_list[[i]] < upper_bound
       phylo_signal_list[[i]] <- phylo_signal_list[[i]][less_than_upper_log]
       geno_mat_list[[i]] <- geno_mat_list[[i]][, less_than_upper_log, drop = FALSE]

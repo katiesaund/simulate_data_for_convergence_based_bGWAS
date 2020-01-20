@@ -54,10 +54,16 @@ genotype_AR_and_conf_mat_list <- select_geno_within_range(binary_AR_mat_list,
                                                           min_genos = 10) # TODO change to min_num_genes
 genotype_AR_mat_list <- genotype_AR_and_conf_mat_list$AR_mat
 genotype_conf_mat_list <- genotype_AR_and_conf_mat_list$conf_mat
-BM_phenotype_AR_and_conf_mat_list <- subsample_to_phenotypes(binary_AR_mat_list, binary_conf_mat_list, BM_phenotype_names_list)
+BM_phenotype_AR_and_conf_mat_list <-
+  subsample_to_phenotypes(binary_AR_mat_list,
+                          binary_conf_mat_list,
+                          BM_phenotype_names_list)
 BM_phenotype_AR_mat_list <- BM_phenotype_AR_and_conf_mat_list$AR_mat
 BM_phenotype_conf_mat_list <- BM_phenotype_AR_and_conf_mat_list$conf_mat
-WN_phenotype_AR_and_conf_mat_list <- subsample_to_phenotypes(binary_AR_mat_list, binary_conf_mat_list, WN_phenotype_names_list)
+WN_phenotype_AR_and_conf_mat_list <-
+  subsample_to_phenotypes(binary_AR_mat_list,
+                          binary_conf_mat_list,
+                          WN_phenotype_names_list)
 WN_phenotype_AR_mat_list <- WN_phenotype_AR_and_conf_mat_list$AR_mat
 WN_phenotype_conf_mat_list <- WN_phenotype_AR_and_conf_mat_list$conf_mat
 

@@ -39,30 +39,46 @@ assign_high_confidence_to_transition_edges <- function(all_confidence_by_edge,
 } # end assign_high_confidence_to_transition_edges()
 
 
-prepare_high_confidence_objects_lists <- function(genotype_trans_by_edge_list,
+prepare_high_confidence_objects_lists <- function(genotype_trans_by_edge_mat_list,
                                                   tree_list,
-                                                  phenotype_conf_mat_list,
+                                                  phenotype_conf_by_edge_mat_list,
                                                   boot_threshold,
-                                                  geno,
-                                                  geno_conf_edge,
-                                                  geno_recon_edge,
+                                                  geno_AR_mat_list,
+                                                  geno_conf_edge_mat_list,
+                                                  geno_recon_edge_mat_list,
                                                   snps_in_each_gene = NULL) {
   num_tree <- length(tree_list)
-  results <- rep(list(NULL), num_tree)
+  overall_results <- rep(list(NULL), num_tree)
   for (i in 1:num_tree) {
-
+    num_pheno <- ncol(phenotype_conf_by_edge_mat_list[[i]])
+    mini_results <- rep(list(NULL), num_pheno)
     tree <- tree_list[[i]]
-    genotype_transition <- genotype_trans_by_edge_list[[i]]
-    pheno_tip_node_recon_conf <- phenotype_conf_mat_list[[i]] # TODO left off here First snag -- where does
-    results[[i]] <- prepare_high_confidence_objects(genotype_transition,
-                                                    tr,
-                                                    pheno_tip_node_recon_conf,
-                                                    boot_threshold,
-                                                    geno,
-                                                    geno_conf_edge,
-                                                    geno_recon_edge,
-                                                    snps_in_each_gene)
+    num_tip <- ape::Ntip(tree)
+    genotype_transition <- genotype_trans_by_edge_mat_list[[i]]
+    geno_mat <- geno_AR_mat_list[[i]][1:num_tip, , drop = FALSE]
+
+    # convert matrices to lists of vectors
+    geno_conf_edge <- geno_conf_edge_mat_list[[i]]
+    geno_conf_edge <- tapply(geno_conf_edge, rep(1:ncol(geno_conf_edge), each = nrow(geno_conf_edge)), function(i) i)
+
+    geno_recon_edge <- geno_recon_edge_mat_list[[i]]
+    geno_recon_edge <- tapply(geno_recon_edge, rep(1:ncol(geno_recon_edge), each = nrow(geno_recon_edge)), function(i) i)
+
+    for (j in 1:num_pheno) {
+      temp_pheno_conf_by_edge_vec <- phenotype_conf_by_edge_mat_list[[i]][, j, drop = TRUE]
+      mini_results[[j]] <- prepare_high_confidence_objects(genotype_transition,
+                                                           tree,
+                                                           temp_pheno_conf_by_edge_vec,
+                                                           boot_threshold,
+                                                           geno_mat,
+                                                           geno_conf_edge,
+                                                           geno_recon_edge,
+                                                           snps_in_each_gene)
+    }
+    overall_results[[i]] <- mini_results
   }
+  # do something to drop low confidence genotypes / phenotypes? use the dropped genotype list?
+  return(overall_results)
 }
 
 
@@ -76,8 +92,8 @@ prepare_high_confidence_objects_lists <- function(genotype_trans_by_edge_list,
 #'  genotypes. Each list is made of a $transition and $trans_dir list.
 #'  Length(transition) == Length(trans_dir) == Nedge(tree)
 #' @param tr Phylo.
-#' @param pheno_tip_node_recon_conf List of confidence values. Binary.
-#'  Length(list) == Ntip() + Nedge()
+#' @param pheno_conf_ordered_by_edges List of confidence values. Binary.
+#'  Length(list) == Nedge(tr).
 #' @param boot_threshold Numeric. Between 0 and 1.
 #' @param geno Matrix. Binary. Nrow = Ntip(tree). Ncol = Number of genotypes.
 #' @param geno_conf_edge List of lists. Binary. Number of lists = number of
@@ -108,7 +124,7 @@ prepare_high_confidence_objects_lists <- function(genotype_trans_by_edge_list,
 #'
 prepare_high_confidence_objects <- function(genotype_transition,
                                             tr,
-                                            pheno_tip_node_recon_conf,
+                                            pheno_conf_ordered_by_edges,
                                             boot_threshold,
                                             geno,
                                             geno_conf_edge,
@@ -141,14 +157,15 @@ prepare_high_confidence_objects <- function(genotype_transition,
   }
 
   # Function -------------------------------------------------------------------
-  pheno_conf_ordered_by_edges <-
-    reorder_tip_and_node_to_edge(pheno_tip_node_recon_conf, tr)
   tree_conf <- get_bootstrap_confidence(tr, boot_threshold)
   tree_conf_ordered_by_edges <- reorder_tip_and_node_to_edge(tree_conf, tr)
   short_edges <- identify_short_edges(tr)
 
   high_confidence_edges <-
     pheno_conf_ordered_by_edges + tree_conf_ordered_by_edges + short_edges == 3
+  # print("high_confidence_edges")
+  # print(high_confidence_edges)
+
   # check_equal(length(high_confidence_edges), ape::Nedge(tr))
   all_high_confidence_edges <- rep(list(0), ncol(geno))
 
@@ -209,6 +226,70 @@ reorder_tip_and_node_to_edge_lists <- function(geno_conf_mat_list, tree_list) {
       temp_column <- reorder_tip_and_node_to_edge(unname(geno_conf_mat_list[[i]][, k, drop = TRUE]), tree)
       geno_conf_by_edges_mat_list[[i]][, k] <- temp_column
     }
+    colnames(geno_conf_by_edges_mat_list[[i]]) <- colnames(geno_conf_mat_list[[i]])
+    row.names(geno_conf_by_edges_mat_list[[i]]) <- paste0("edge", 1:nrow(geno_conf_by_edges_mat_list[[i]]))
   }
   return(geno_conf_by_edges_mat_list)
+}
+
+#' Get names of genotypes dropped from analysis
+#'
+#' @description  Given a matrix with both desirable genotypes (keepers) and
+#'  undesirable genotypes and a numeric index of the keepers, get the names of
+#'  the undesirable genotypes.
+#'
+#' @param geno Matrix. Numeric, binary genotype matrix. Columns = genotypes.
+#'   Rows = samples.
+#' @param keepers Logical vector. Length == length(genotype_transition)  ==
+#'  length(genotype_confidence) == Number of genotypes. True indicates the
+#'  genotype has at least 2 high confidence genotype transition edges. False
+#'  indicates genotype lacks at least 2 high confidence genotype transition
+#'  edges.
+#'
+#' @return dropped_genotype_names. Character vector. Names of the non-keepers
+#'  (genotypes not to be processed downstream).
+#'
+#' @noRd
+#'
+get_dropped_genotypes <- function(geno, keepers){
+  # Check input ----------------------------------------------------------------
+  # check_if_binary_matrix(geno)
+  # check_class(keepers, "logical")
+  # check_if_vector(keepers)
+  if (ncol(geno) != length(keepers)) {
+    stop("Keepers must have an entry for each genotype.")
+  }
+  if (sum(keepers) == 0) {
+    stop("There are no genotypes left to test.")
+  }
+
+  # Function -------------------------------------------------------------------
+  dropped_genotype_names <- colnames(geno)[!keepers]
+
+  # Return output --------------------------------------------------------------
+  return(dropped_genotype_names)
+} # end get_dropped_genotypes()
+
+list_to_matrix_columns <- function(lst) {
+  num_col <- length(lst)
+  num_row <- length(lst[[1]])
+  mat <- matrix(NA, ncol = num_col, nrow = num_row)
+  for (i in 1:num_col) {
+    mat[, i] <- lst[[i]]
+  }
+  return(mat)
+}
+
+convert_conf_obj_to_conf_mat <- function(conf_obj) {
+  num_tree <- length(conf_obj)
+  big_conf_mat_list <- rep(list(NULL), num_tree)
+  for (i in 1:num_tree) {
+    num_pheno <- length(conf_obj[[i]])
+    conf_mat <- rep(list(NULL), num_pheno)
+    for (j in 1:num_pheno) {
+      conf_mat[[j]] <- list_to_matrix_columns(conf_obj[[i]][[j]]$high_conf_ordered_by_edges)
+    }
+    big_conf_mat_list[[i]] <- conf_mat
+  }
+  return(big_conf_mat_list)
 }

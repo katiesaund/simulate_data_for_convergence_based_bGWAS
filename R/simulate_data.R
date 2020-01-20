@@ -10,6 +10,7 @@ source("../../simulate_data_for_convergence_based_bGWAS/R/gamma.R")
 source("../../simulate_data_for_convergence_based_bGWAS/R/save_data.R")
 source("../../simulate_data_for_convergence_based_bGWAS/R/keep_interesting_genotypes.R")
 source("../../simulate_data_for_convergence_based_bGWAS/R/ancestral_reconstruction.R")
+source("../../simulate_data_for_convergence_based_bGWAS/R/high_confidence.R")
 
 # Initialize variables / read in user input
 num_trees <- 3 # change to user defined input
@@ -17,6 +18,7 @@ num_tips <- 100 # change to user defined input
 num_phenos <- 2 # change to user defined input
 num_start_trait <- 100 # change to user defined input
 tree_edge_multiplier <- 100 # change to user defined input
+bootstrap_threshold <- 100
 
 # Generate huge matrix of binary traits specific to trees
 tree_list <- generate_trees(num_trees, num_tips, tree_edge_multiplier)
@@ -28,7 +30,6 @@ binary_AR_mat_list <- add_WN(binary_AR_mat_list, tree_list) # Due to WN stuff th
 binary_AR_and_conf_mat <- ancestral_reconstruction(binary_AR_mat_list, tree_list)
 binary_conf_mat_list <- binary_AR_and_conf_mat$conf_mat
 binary_AR_mat_list <- binary_AR_and_conf_mat$AR_mat
-# TODO - Add the confidence information to both gamma calc and the subsetting steps (select_geno_within_range, subsample_to_phenotypes)
 
 # Separate traits into BM and WN
 phylo_signal_list <- calculate_phylo_signal(tree_list, binary_AR_mat_list)
@@ -83,21 +84,53 @@ WN_pheno_sync_trans_by_edge_list <- find_transition_edges(tree_list, WN_phenotyp
 # Geno
 genotype_sync_trans_by_edge_list <- find_transition_edges(tree_list, genotype_AR_mat_list, "discrete")
 genotype_phyc_trans_by_edge_list <- convert_to_phyc_trans(genotype_AR_mat_list, genotype_sync_trans_by_edge_list)
+genotype_recon_by_edge_list <- reorder_tip_and_node_to_edge_lists(genotype_AR_mat_list, tree_list)
 genotype_recon_conf_by_edge_list <- reorder_tip_and_node_to_edge_lists(genotype_conf_mat_list, tree_list)
 
-# TODO ID high confidence phenotype recon and phenotype/genotype transitions by edges
-BM_pheno_sync_trans_conf_by_edge_list <- assign_high_confidence_to_transition_edges()
-WN_pheno_sync_trans_conf_by_edge_list
-genotype_phyc_trans_conf_by_edge_list
-genotype_sync_trans_conf_by_edge_list
-# TODO incorporate high confidence information into the gamma calcuations next
-
+# Identify high confidence edges ----
+phyc_geno_trans_BM_recon_hi_conf_obj_list <-
+  prepare_high_confidence_objects_lists(genotype_phyc_trans_by_edge_list,
+                                        tree_list,
+                                        BM_pheno_recon_conf_by_edge_list,
+                                        bootstrap_threshold,
+                                        genotype_AR_mat_list,
+                                        genotype_recon_conf_by_edge_list,
+                                        genotype_recon_by_edge_list,
+                                        snps_in_each_gene = NULL)
+phyc_geno_trans_WN_recon_hi_conf_obj_list <-
+  prepare_high_confidence_objects_lists(genotype_phyc_trans_by_edge_list,
+                                        tree_list,
+                                        WN_pheno_recon_conf_by_edge_list,
+                                        bootstrap_threshold,
+                                        genotype_AR_mat_list,
+                                        genotype_recon_conf_by_edge_list,
+                                        genotype_recon_by_edge_list,
+                                        snps_in_each_gene = NULL)
+sync_geno_trans_BM_trans_hi_conf_obj_list <-
+  prepare_high_confidence_objects_lists(genotype_sync_trans_by_edge_list,
+                                        tree_list,
+                                        BM_pheno_recon_conf_by_edge_list,
+                                        bootstrap_threshold,
+                                        genotype_AR_mat_list,
+                                        genotype_recon_conf_by_edge_list,
+                                        genotype_recon_by_edge_list,
+                                        snps_in_each_gene = NULL)
+sync_geno_trans_WM_trans_hi_conf_obj_list <-
+  prepare_high_confidence_objects_lists(genotype_sync_trans_by_edge_list,
+                                        tree_list,
+                                        WN_pheno_recon_conf_by_edge_list,
+                                        bootstrap_threshold,
+                                        genotype_AR_mat_list,
+                                        genotype_recon_conf_by_edge_list,
+                                        genotype_recon_by_edge_list,
+                                        snps_in_each_gene = NULL)
 
 # Calculate gamma
-BM_phyc_gamma_list <- calc_phyc_gamma_list(tree_list, genotype_phyc_trans_by_edge_list, BM_pheno_recon_by_edge_list, phyc_geno_trans_BM_recon_conf_by_edge_list)
-WN_phyc_gamma_list <- calc_phyc_gamma_list(tree_list, genotype_phyc_trans_by_edge_list, WN_pheno_recon_by_edge_list, phyc_geno_trans_WN_recon_conf_by_edge_list)
-BM_sync_gamma_list <- calc_sync_gamma_list(tree_list, genotype_sync_trans_by_edge_list, BM_pheno_sync_trans_by_edge_list)
-WN_sync_gamma_list <- calc_sync_gamma_list(tree_list, genotype_sync_trans_by_edge_list, WN_pheno_sync_trans_by_edge_list)
+BM_phyc_gamma_list <- calc_phyc_gamma_list(tree_list, BM_pheno_recon_by_edge_list, phyc_geno_trans_BM_recon_hi_conf_obj_list)
+WN_phyc_gamma_list <- calc_phyc_gamma_list(tree_list, WN_pheno_recon_by_edge_list, phyc_geno_trans_WN_recon_hi_conf_obj_list)
+# calc_sync_gamma_list() is currently wrong -- not enough outputs
+BM_sync_gamma_list <- calc_sync_gamma_list(tree_list, BM_pheno_sync_trans_by_edge_list, sync_geno_trans_BM_trans_hi_conf_obj_list)
+WN_sync_gamma_list <- calc_sync_gamma_list(tree_list, WN_pheno_sync_trans_by_edge_list, sync_geno_trans_WM_trans_hi_conf_obj_list)
 
 # Subset genotype matrix for each tree - phenotype combo
 BM_phyc_genotype_keeper_list <- keep_good_genotypes(BM_phyc_gamma_list)

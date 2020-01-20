@@ -128,7 +128,6 @@ sync_geno_trans_WM_trans_hi_conf_obj_list <-
 # Calculate gamma
 BM_phyc_gamma_list <- calc_phyc_gamma_list(tree_list, BM_pheno_recon_by_edge_list, phyc_geno_trans_BM_recon_hi_conf_obj_list)
 WN_phyc_gamma_list <- calc_phyc_gamma_list(tree_list, WN_pheno_recon_by_edge_list, phyc_geno_trans_WN_recon_hi_conf_obj_list)
-# calc_sync_gamma_list() is currently wrong -- not enough outputs
 BM_sync_gamma_list <- calc_sync_gamma_list(tree_list, BM_pheno_sync_trans_by_edge_list, sync_geno_trans_BM_trans_hi_conf_obj_list)
 WN_sync_gamma_list <- calc_sync_gamma_list(tree_list, WN_pheno_sync_trans_by_edge_list, sync_geno_trans_WM_trans_hi_conf_obj_list)
 

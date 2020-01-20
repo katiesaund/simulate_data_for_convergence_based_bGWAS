@@ -6,7 +6,6 @@ calc_phyc_gamma_list <- function(tree_list,
   high_conf_edge_list <- list()
 
   for (i in 1:num_tree) {
-    # high_conf_edge_list[[i]] <- rep(list(rep(1, ape::Nedge(tree_list[[i]]))), length(genotype_phyc_trans_list[[i]]))
     num_pheno <- length(phenotype_AR_vec_list[[i]])
     temp_gamma_list <- list()
     num_tip <- ape::Ntip(tree_list[[i]])
@@ -78,23 +77,26 @@ calculate_phyc_gamma <- function(geno_trans_edge_list,
   return(results)
 }
 
+
 calc_sync_gamma_list <- function(tree_list,
-                                 genotype_sync_trans_list,
-                                 phenotype_sync_trans_list){
+                                 phenotype_sync_trans_list,
+                                 hi_conf_obj_list) {
   num_tree <- length(tree_list)
   sync_gamma_list <- list()
   high_conf_edge_list <- list()
 
   for (i in 1:num_tree) {
-    high_conf_edge_list[[i]] <- rep(list(rep(1, ape::Nedge(tree_list[[i]]))), length(genotype_sync_trans_list[[i]]))
     num_pheno <- length(phenotype_sync_trans_list[[i]])
     temp_gamma_list <- list()
     num_tip <- ape::Ntip(tree_list[[i]])
     for (j in 1:num_pheno){
+      high_conf_edge_list <- hi_conf_obj_list[[i]][[j]]$high_conf_ordered_by_edges
+      genotype_sync_trans_list <- hi_conf_obj_list[[i]][[j]]$genotype_transition
+
       temp_gamma_list[[j]] <-
-        calculate_synchronous_gamma(genotype_sync_trans_list[[i]],
+        calculate_synchronous_gamma(genotype_sync_trans_list,
                                     phenotype_sync_trans_list[[i]][[j]],
-                                    high_conf_edge_list[[i]])
+                                    high_conf_edge_list)
     }
     sync_gamma_list[[i]] <- temp_gamma_list
   }

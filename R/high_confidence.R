@@ -39,6 +39,33 @@ assign_high_confidence_to_transition_edges <- function(all_confidence_by_edge,
 } # end assign_high_confidence_to_transition_edges()
 
 
+prepare_high_confidence_objects_lists <- function(genotype_trans_by_edge_list,
+                                                  tree_list,
+                                                  phenotype_conf_mat_list,
+                                                  boot_threshold,
+                                                  geno,
+                                                  geno_conf_edge,
+                                                  geno_recon_edge,
+                                                  snps_in_each_gene = NULL) {
+  num_tree <- length(tree_list)
+  results <- rep(list(NULL), num_tree)
+  for (i in 1:num_tree) {
+
+    tree <- tree_list[[i]]
+    genotype_transition <- genotype_trans_by_edge_list[[i]]
+    pheno_tip_node_recon_conf <- phenotype_conf_mat_list[[i]] # TODO left off here First snag -- where does
+    results[[i]] <- prepare_high_confidence_objects(genotype_transition,
+                                                    tr,
+                                                    pheno_tip_node_recon_conf,
+                                                    boot_threshold,
+                                                    geno,
+                                                    geno_conf_edge,
+                                                    geno_recon_edge,
+                                                    snps_in_each_gene)
+  }
+}
+
+
 #' prepare_high_confidence_objects
 #'
 #' @description Identify high confidence edges (considering: tree bootstrap

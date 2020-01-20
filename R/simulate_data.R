@@ -51,7 +51,7 @@ genotype_AR_and_conf_mat_list <- select_geno_within_range(binary_AR_mat_list,
                                                           phylo_signal_list,
                                                           lower_bound = -1.5,
                                                           upper_bound = 1.5,
-                                                          min_genos = 10) # TODO change to min_num_genes
+                                                          min_genos = 10)
 genotype_AR_mat_list <- genotype_AR_and_conf_mat_list$AR_mat
 genotype_conf_mat_list <- genotype_AR_and_conf_mat_list$conf_mat
 BM_phenotype_AR_and_conf_mat_list <-
@@ -67,26 +67,41 @@ WN_phenotype_AR_and_conf_mat_list <-
 WN_phenotype_AR_mat_list <- WN_phenotype_AR_and_conf_mat_list$AR_mat
 WN_phenotype_conf_mat_list <- WN_phenotype_AR_and_conf_mat_list$conf_mat
 
-BM_phenotype_sync_trans_list <- find_transition_edges(tree_list, BM_phenotype_AR_mat_list, "discrete")
-WN_phenotype_sync_trans_list <- find_transition_edges(tree_list, WN_phenotype_AR_mat_list, "discrete")
-genotype_sync_trans_list <- find_transition_edges(tree_list, genotype_AR_mat_list, "discrete")
-genotype_phyc_trans_list <- convert_to_phyc_trans(genotype_AR_mat_list, genotype_sync_trans_list)
 
-# Prep phenotype reconstruction by edges
+# Order everything by edges instead of by tips then nodes ----
+# BM pheno
 BM_pheno_recon_by_edge_list <- prep_pheno_recon_edges(BM_phenotype_AR_mat_list,
                                                       tree_list)
+BM_pheno_sync_trans_by_edge_list <- find_transition_edges(tree_list, BM_phenotype_AR_mat_list, "discrete")
+
+# WN pheno
 WN_pheno_recon_by_edge_list <- prep_pheno_recon_edges(WN_phenotype_AR_mat_list,
                                                       tree_list)
+WN_pheno_sync_trans_by_edge_list <- find_transition_edges(tree_list, WN_phenotype_AR_mat_list, "discrete")
+
+# Geno
+genotype_sync_trans_by_edge_list <- find_transition_edges(tree_list, genotype_AR_mat_list, "discrete")
+genotype_phyc_trans_by_edge_list <- convert_to_phyc_trans(genotype_AR_mat_list, genotype_sync_trans_by_edge_list)
+
+genotype_sync_trans_conf_by_edge_list <- genotype_phyc_trans_conf_by_edge_list <-
+  reorder_tip_and_node_to_edge_lists(genotype_conf_mat_list, tree_list)
 
 # TODO ID high confidence phenotype recon and phenotype/genotype transitions by edges
+BM_pheno_recon_conf_by_edge_list <- assign_high_confidence_to_transition_edges()
+BM_pheno_sync_trans_conf_by_edge_list
+WN_pheno_recon_conf_by_edge_list
+WN_pheno_sync_trans_conf_by_edge_list
+
+
+
 # TODO incorporate high confidence information into the gamma calcuations next
 
 
 # Calculate gamma
-BM_phyc_gamma_list <- calc_phyc_gamma_list(tree_list, genotype_phyc_trans_list, BM_pheno_recon_by_edge_list)
-WN_phyc_gamma_list <- calc_phyc_gamma_list(tree_list, genotype_phyc_trans_list, WN_pheno_recon_by_edge_list)
-BM_sync_gamma_list <- calc_sync_gamma_list(tree_list, genotype_sync_trans_list, BM_phenotype_sync_trans_list)
-WN_sync_gamma_list <- calc_sync_gamma_list(tree_list, genotype_sync_trans_list, WN_phenotype_sync_trans_list)
+BM_phyc_gamma_list <- calc_phyc_gamma_list(tree_list, genotype_phyc_trans_by_edge_list, BM_pheno_recon_by_edge_list)
+WN_phyc_gamma_list <- calc_phyc_gamma_list(tree_list, genotype_phyc_trans_by_edge_list, WN_pheno_recon_by_edge_list)
+BM_sync_gamma_list <- calc_sync_gamma_list(tree_list, genotype_sync_trans_by_edge_list, BM_pheno_sync_trans_by_edge_list)
+WN_sync_gamma_list <- calc_sync_gamma_list(tree_list, genotype_sync_trans_by_edge_list, WN_pheno_sync_trans_by_edge_list)
 
 # Subset genotype matrix for each tree - phenotype combo
 BM_phyc_genotype_keeper_list <- keep_good_genotypes(BM_phyc_gamma_list)
@@ -97,8 +112,8 @@ WN_sync_genotype_keeper_list <- keep_good_genotypes(WN_sync_gamma_list)
 # Save data
 save_data(tree_list,
           genotype_AR_mat_list,
-          genotype_phyc_trans_list,
-          genotype_sync_trans_list,
+          genotype_phyc_trans_by_edge_list,
+          genotype_sync_trans_by_edge_list,
           BM_phenotype_AR_mat_list,
           BM_pheno_recon_by_edge_list,
           BM_phyc_gamma_list,

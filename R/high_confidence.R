@@ -169,3 +169,19 @@ prepare_high_confidence_objects <- function(genotype_transition,
           "tr_and_pheno_hi_conf" = high_confidence_edges)
   return(results)
 } # end prepare_high_confidence_objects()
+
+reorder_tip_and_node_to_edge_lists <- function(geno_conf_mat_list, tree_list) {
+  num_mat <- length(geno_conf_mat_list)
+  geno_conf_by_edges_mat_list <- rep(list(0), num_mat)
+  for (i in 1:num_mat) {
+    tree <- tree_list[[i]]
+    num_edge <- ape::Nedge(tree)
+    num_geno <- ncol(geno_conf_mat_list[[i]])
+    geno_conf_by_edges_mat_list[[i]] <- matrix(NA, nrow = num_edge, ncol = num_geno)
+    for (k in 1:num_geno) {
+      temp_column <- reorder_tip_and_node_to_edge(unname(geno_conf_mat_list[[i]][, k, drop = TRUE]), tree)
+      geno_conf_by_edges_mat_list[[i]][, k] <- temp_column
+    }
+  }
+  return(geno_conf_by_edges_mat_list)
+}

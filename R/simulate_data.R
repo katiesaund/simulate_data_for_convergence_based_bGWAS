@@ -13,13 +13,13 @@ source("../../simulate_data_for_convergence_based_bGWAS/R/ancestral_reconstructi
 source("../../simulate_data_for_convergence_based_bGWAS/R/high_confidence.R")
 
 # Initialize variables / read in user input
-num_trees <- 3 # change to user defined input
-num_tips <- 100 # change to user defined input
-num_phenos <- 2 # change to user defined input
-num_start_trait <- 100 # change to user defined input
+num_trees <- 10 # change to user defined input
+num_tips <- 400 # change to user defined input
+num_phenos <- 5 # change to user defined input
+num_start_trait <- 5000 # change to user defined input
 tree_edge_multiplier <- 100 # change to user defined input
-bootstrap_threshold <- 100
-bin_size <- 10
+bootstrap_threshold <- 70
+bin_size <- 20
 
 # Generate huge matrix of binary traits specific to trees
 tree_list <- generate_trees(num_trees, num_tips, tree_edge_multiplier)
@@ -28,20 +28,12 @@ binary_AR_mat_list <- generate_disc_mat(tree_list, num_start_trait)
 
 binary_AR_mat_list <- add_WN(binary_AR_mat_list, tree_list) # Due to WN stuff the ancestral reconstructions are now wrong!
 
-binary_AR_and_conf_mat <- ancestral_reconstruction(binary_AR_mat_list, tree_list)
+binary_AR_and_conf_mat <- ancestral_reconstruction(binary_AR_mat_list, tree_list) # So fix the ancestral reconstructions here
 binary_conf_mat_list <- binary_AR_and_conf_mat$conf_mat
 binary_AR_mat_list <- binary_AR_and_conf_mat$AR_mat
 
 # Separate traits into BM and WN
 phylo_signal_list <- calculate_phylo_signal(tree_list, binary_AR_mat_list)
-
-# #temp stuff
-# phylo_signal_list[[1]][1:2] <- phylo_signal_list[[2]][1:2] <- 0
-# phylo_signal_list[[1]][3:4] <- phylo_signal_list[[2]][3:4] <- 1
-# #phylo_signal_list[[3]][1:2] <- 0
-# # phylo_signal_list[[3]][3:4] <- 1
-# # save(phylo_signal_list, file = "../data/phylo_signal_list.Rdata")
-# # end temp stuff
 
 # Select BM and WN phenotypes
 BM_phenotype_names_list <- select_BM_traits(binary_AR_mat_list, phylo_signal_list, num_phenos)

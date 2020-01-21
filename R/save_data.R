@@ -49,8 +49,8 @@ save_data <- function(tree_list,
       WN_keepers <- sort(unique(c(WN_phyc_genotype_keeper_list[[i]][[j]],
                                   WN_sync_genotype_keeper_list[[i]][[j]])))
 
-      BM_geno_mat <- genotype_AR_mat_list[[i]][, BM_keepers, drop = FALSE]
-      WN_geno_mat <- genotype_AR_mat_list[[i]][, WN_keepers, drop = FALSE]
+      BM_geno_mat <- genotype_AR_mat_list[[i]][1:num_tips, BM_keepers, drop = FALSE]
+      WN_geno_mat <- genotype_AR_mat_list[[i]][1:num_tips, WN_keepers, drop = FALSE]
 
       write.table(BM_geno_mat,
                   sep = "\t",

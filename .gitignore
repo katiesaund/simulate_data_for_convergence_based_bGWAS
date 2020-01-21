@@ -7,3 +7,4 @@
 *.Rhistory
 *.tree
 data/*tree
+data/sim*

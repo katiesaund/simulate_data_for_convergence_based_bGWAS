@@ -19,6 +19,7 @@ num_phenos <- 2 # change to user defined input
 num_start_trait <- 100 # change to user defined input
 tree_edge_multiplier <- 100 # change to user defined input
 bootstrap_threshold <- 100
+bin_size <- 10
 
 # Generate huge matrix of binary traits specific to trees
 tree_list <- generate_trees(num_trees, num_tips, tree_edge_multiplier)
@@ -132,10 +133,10 @@ BM_sync_gamma_list <- calc_sync_gamma_list(tree_list, BM_pheno_sync_trans_by_edg
 WN_sync_gamma_list <- calc_sync_gamma_list(tree_list, WN_pheno_sync_trans_by_edge_list, sync_geno_trans_WM_trans_hi_conf_obj_list)
 
 # Subset genotype matrix for each tree - phenotype combo
-BM_phyc_genotype_keeper_list <- keep_good_genotypes(BM_phyc_gamma_list)
-BM_sync_genotype_keeper_list <- keep_good_genotypes(BM_sync_gamma_list)
-WN_phyc_genotype_keeper_list <- keep_good_genotypes(WN_phyc_gamma_list)
-WN_sync_genotype_keeper_list <- keep_good_genotypes(WN_sync_gamma_list)
+BM_phyc_genotype_keeper_list <- keep_good_genotypes(BM_phyc_gamma_list, bin_size)
+BM_sync_genotype_keeper_list <- keep_good_genotypes(BM_sync_gamma_list, bin_size)
+WN_phyc_genotype_keeper_list <- keep_good_genotypes(WN_phyc_gamma_list, bin_size)
+WN_sync_genotype_keeper_list <- keep_good_genotypes(WN_sync_gamma_list, bin_size)
 
 # Save data
 save_data(tree_list,

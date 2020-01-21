@@ -188,5 +188,6 @@ save_data <- function(tree_list,
   save(summary_df, file = "../data/simulated_gamma_summary.RData")
   write.table(summary_df,
               sep = "\t",
-              file = "../data/simulated_gamma_summary.tsv")
+              file = "../data/simulated_gamma_summary.tsv", 
+              row.names = FALSE)
 }

@@ -274,13 +274,14 @@ combine_phenotype_names_lists <- function(list_1, list_2){
 }
 
 
-add_WN <- function (binary_AR_mat_list, tree_list) {
+add_WN <- function(binary_AR_mat_list, tree_list) {
   num_trees <- length(tree_list)
   for (i in 1:num_trees) {
     num_trait <- ncol(binary_AR_mat_list[[i]])
     num_tip <- ape::Ntip(tree_list[[i]])
     num_to_add <- round(num_trait / 4, 0)
-    random_col_to_add <- a_few_flips_col_to_add <-
+    random_col_to_add <- flipped_to_add_10p <- flipped_to_add_25p <- 
+      flipped_to_add_40p <- 
       binary_AR_mat_list[[i]][, 1:num_to_add, drop = FALSE]
     for (j in 1:ncol(random_col_to_add)) {
       current_col <- random_col_to_add[1:num_tip, j]
@@ -288,12 +289,20 @@ add_WN <- function (binary_AR_mat_list, tree_list) {
                              size = length(current_col),
                              replace = FALSE)
       random_col_to_add[1:num_tip, j] <- jumbled_tips
-      flipped_tips <- flip_some_tips(current_col)
-      a_few_flips_col_to_add[1:num_tip, j] <- flipped_tips
+      flipped_tip_10p <- flip_some_tips(current_col, flip_freq = 0.10)
+      flipped_to_add_10p[1:num_tip, j] <- flipped_tip_10p
+      
+      flipped_tip_25p <- flip_some_tips(current_col, flip_freq = 0.25)
+      flipped_to_add_25p[1:num_tip, j] <- flipped_tip_25p
+      
+      flipped_tip_40p <- flip_some_tips(current_col, flip_freq = 0.40)
+      flipped_to_add_40p[1:num_tip, j] <- flipped_tip_40p
     }
     binary_AR_mat_list[[i]] <- cbind(binary_AR_mat_list[[i]],
                                      random_col_to_add,
-                                     a_few_flips_col_to_add)
+                                     flipped_to_add_10p, 
+                                     flipped_to_add_25p, 
+                                     flipped_to_add_40p)
 
     temp_only_tips <- binary_AR_mat_list[[i]][1:num_tip, , drop = FALSE]
     cols_to_keep <- colSums(temp_only_tips) > 1 & colSums(temp_only_tips) < (nrow(temp_only_tips) - 1)
@@ -304,10 +313,11 @@ add_WN <- function (binary_AR_mat_list, tree_list) {
   return(binary_AR_mat_list)
 }
 
-flip_some_tips <- function(numeric_vec) {
+flip_some_tips <- function(numeric_vec, flip_freq = 0.10) {
+  # flip_freq between 0 and 1
   len <- length(numeric_vec)
   index <- 1:len
-  indices_to_flip <- sample(index, round(len * 0.10, 0), replace = FALSE)
+  indices_to_flip <- sample(index, round(len * flip_freq, 0), replace = FALSE)
   for (i in indices_to_flip) {
     numeric_vec[i] <- as.numeric(!numeric_vec[i])
   }

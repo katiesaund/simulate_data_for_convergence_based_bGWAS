@@ -12,8 +12,10 @@ calc_phyc_gamma_list <- function(tree_list,
     for (j in 1:num_pheno) {
       high_conf_edge_list <- hi_conf_obj_list[[i]][[j]]$high_conf_ordered_by_edges
       geno_trans_list <- hi_conf_obj_list[[i]][[j]]$genotype_transition
+      geno_names <- names(hi_conf_obj_list[[i]][[j]]$genotype_transition)
       temp_gamma_list[[j]] <-
-        calculate_phyc_gamma(geno_trans_list,
+        calculate_phyc_gamma(geno_names, 
+                             geno_trans_list,
                              phenotype_AR_vec_list[[i]][[j]],
                              high_conf_edge_list)
     }
@@ -43,7 +45,8 @@ calc_phyc_gamma_list <- function(tree_list,
 #'    number of genotypes.
 #' @noRd
 #'
-calculate_phyc_gamma <- function(geno_trans_edge_list,
+calculate_phyc_gamma <- function(geno_names, 
+                                 geno_trans_edge_list,
                                  pheno_recon_vec,
                                  high_conf_edge_list){
   # check_equal(length(geno_trans_edge_list), length(high_conf_edge_list))
@@ -73,7 +76,8 @@ calculate_phyc_gamma <- function(geno_trans_edge_list,
                   "num_hi_conf_edges" = num_hi_conf_edges,
                   "pheno_beta" = pheno_beta,
                   "geno_beta" = geno_beta,
-                  "epsilon" = epsilon)
+                  "epsilon" = epsilon, 
+                  "genotype" = geno_names)
   return(results)
 }
 
@@ -92,9 +96,11 @@ calc_sync_gamma_list <- function(tree_list,
     for (j in 1:num_pheno){
       high_conf_edge_list <- hi_conf_obj_list[[i]][[j]]$high_conf_ordered_by_edges
       genotype_sync_trans_list <- hi_conf_obj_list[[i]][[j]]$genotype_transition
-
+      geno_names <- names(hi_conf_obj_list[[i]][[j]]$genotype_transition)
+      
       temp_gamma_list[[j]] <-
-        calculate_synchronous_gamma(genotype_sync_trans_list,
+        calculate_synchronous_gamma(geno_names, 
+                                    genotype_sync_trans_list,
                                     phenotype_sync_trans_list[[i]][[j]],
                                     high_conf_edge_list)
     }
@@ -132,7 +138,8 @@ calc_sync_gamma_list <- function(tree_list,
 #'    number of genotypes.
 #' @noRd
 #'
-calculate_synchronous_gamma <- function(geno_trans_edge_list,
+calculate_synchronous_gamma <- function(geno_names, 
+                                        geno_trans_edge_list,
                                         pheno_trans_vec,
                                         high_conf_edge_list){
   # check_equal(length(geno_trans_edge_list), length(high_conf_edge_list))
@@ -162,7 +169,8 @@ calculate_synchronous_gamma <- function(geno_trans_edge_list,
                   "num_hi_conf_edges" = num_hi_conf_edges,
                   "pheno_beta" = pheno_beta,
                   "geno_beta" = geno_beta,
-                  "epsilon" = epsilon)
+                  "epsilon" = epsilon, 
+                  "genotype" = geno_names)
   return(results)
 }
 

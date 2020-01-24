@@ -26,7 +26,8 @@ save_data <- function(tree_list,
                          "num_hi_conf_edges",
                          "pheno_beta",
                          "geno_beta",
-                         "epsilon")
+                         "epsilon", 
+                         "genotype")
   num_cols <- length(summary_col_names)
   summary_df <- data.frame(matrix(NA, nrow = 1 , ncol = num_cols))
   colnames(summary_df) <- summary_col_names
@@ -149,7 +150,8 @@ save_data <- function(tree_list,
       BM_phyc_gamma_df$pheno_beta <- BM_phyc_gamma$pheno_beta
       BM_phyc_gamma_df$geno_beta <- BM_phyc_gamma$geno_beta
       BM_phyc_gamma_df$epsilon <- BM_phyc_gamma$epsilon
-
+      BM_phyc_gamma_df$genotype <- BM_phyc_gamma$genotype
+      
       BM_sync_gamma_df$tree_id <- i
       BM_sync_gamma_df$phenotype_id <- j
       BM_sync_gamma_df$gamma_avg <- rep(BM_sync_gamma$gamma_avg, nrow(BM_sync_gamma_df))
@@ -159,7 +161,8 @@ save_data <- function(tree_list,
       BM_sync_gamma_df$pheno_beta <- BM_sync_gamma$pheno_beta
       BM_sync_gamma_df$geno_beta <- BM_sync_gamma$geno_beta
       BM_sync_gamma_df$epsilon <- BM_sync_gamma$epsilon
-
+      BM_sync_gamma_df$genotype <- BM_sync_gamma_df$genotype
+      
       WN_phyc_gamma_df$tree_id <- i
       WN_phyc_gamma_df$phenotype_id <- j
       WN_phyc_gamma_df$gamma_avg <- rep(WN_phyc_gamma$gamma_avg, nrow(WN_phyc_gamma_df))
@@ -169,7 +172,8 @@ save_data <- function(tree_list,
       WN_phyc_gamma_df$pheno_beta <- WN_phyc_gamma$pheno_beta
       WN_phyc_gamma_df$geno_beta <- WN_phyc_gamma$geno_beta
       WN_phyc_gamma_df$epsilon <- WN_phyc_gamma$epsilon
-
+      WN_phyc_gamma_df$genotype <- WN_phyc_gamma$genotype
+      
       WN_sync_gamma_df$tree_id <- i
       WN_sync_gamma_df$phenotype_id <- j
       WN_sync_gamma_df$gamma_avg <- rep(WN_sync_gamma$gamma_avg, nrow(WN_sync_gamma_df))
@@ -179,7 +183,8 @@ save_data <- function(tree_list,
       WN_sync_gamma_df$pheno_beta <- WN_sync_gamma$pheno_beta
       WN_sync_gamma_df$geno_beta <- WN_sync_gamma$geno_beta
       WN_sync_gamma_df$epsilon <- WN_sync_gamma$epsilon
-
+      WN_sync_gamma_df$genotype <- WN_sync_gamma$genotype
+      
       summary_df <- rbind(summary_df, BM_phyc_gamma_df, BM_sync_gamma_df, WN_phyc_gamma_df, WN_sync_gamma_df)
     }
   }

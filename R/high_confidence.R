@@ -74,6 +74,7 @@ prepare_high_confidence_objects_lists <- function(genotype_trans_by_edge_mat_lis
                                                            geno_conf_edge,
                                                            geno_recon_edge,
                                                            snps_in_each_gene)
+      
     }
     overall_results[[i]] <- mini_results
   }
@@ -163,8 +164,6 @@ prepare_high_confidence_objects <- function(genotype_transition,
 
   high_confidence_edges <-
     pheno_conf_ordered_by_edges + tree_conf_ordered_by_edges + short_edges == 3
-  # print("high_confidence_edges")
-  # print(high_confidence_edges)
 
   # check_equal(length(high_confidence_edges), ape::Nedge(tr))
   all_high_confidence_edges <- rep(list(0), ncol(geno))
@@ -195,6 +194,8 @@ prepare_high_confidence_objects <- function(genotype_transition,
   geno <- geno[, geno_to_keep, drop = FALSE]
   snps_in_each_gene <-
     snps_in_each_gene[names(snps_in_each_gene) %in% colnames(geno)]
+
+  names(genotype_transition) <- names(geno_recon_edge) <- colnames(geno)
 
   # Check output ---------------------------------------------------------------
   if (length(genotype_transition) == 0) {

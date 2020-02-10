@@ -3,7 +3,6 @@
 
 library(tidyverse)
 data_dir <- "../data/"
-simulated_data_dir <- "../data/" # TODO change to user defined input
 phenotype_types <- "discrete" #c("discrete", "continuous")
 data_types <- c("BM", "WN")
 tree_index <- c(1:1)

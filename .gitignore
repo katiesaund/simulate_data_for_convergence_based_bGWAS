@@ -8,3 +8,4 @@
 *.tree
 data/*tree
 data/sim*
+.Rproj.user

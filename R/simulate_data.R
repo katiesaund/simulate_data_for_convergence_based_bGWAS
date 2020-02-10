@@ -14,7 +14,7 @@ source("../../simulate_data_for_convergence_based_bGWAS/R/high_confidence.R")
 
 # Initialize variables / read in user input
 num_trees <- 1 # change to user defined input
-num_tips <- 400 # change to user defined input
+num_tips <- 250 # change to user defined input
 num_phenos <- 3 # change to user defined input
 num_start_trait <- 3000 # change to user defined input
 tree_edge_multiplier <- 100 # change to user defined input

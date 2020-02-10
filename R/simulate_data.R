@@ -13,11 +13,14 @@ source("../../simulate_data_for_convergence_based_bGWAS/R/ancestral_reconstructi
 source("../../simulate_data_for_convergence_based_bGWAS/R/high_confidence.R")
 
 # Initialize variables / read in user input
-num_trees <- 1 # change to user defined input
-num_tips <- 250 # change to user defined input
-num_phenos <- 3 # change to user defined input
-num_start_trait <- 3000 # change to user defined input
-tree_edge_multiplier <- 100 # change to user defined input
+args <- commandArgs(trailingOnly = TRUE)
+num_trees <- as.numeric(args[1]) 
+num_phenos <- as.numeric(args[2]) 
+num_tips <- as.numeric(args[3]) 
+num_start_trait <- as.numeric(args[4])
+
+# Defaults that shouldn't need user input
+tree_edge_multiplier <- 100
 bootstrap_threshold <- 70
 bin_size <- 20
 

@@ -1,13 +1,13 @@
 # TODO Change this script into a function
 # run from /lib/
-
 library(tidyverse)
+args <- commandArgs(trailingOnly = TRUE)
 data_dir <- "../data/"
 phenotype_types <- "discrete" #c("discrete", "continuous")
 data_types <- c("BM", "WN")
-tree_index <- c(1:1)
+tree_index <- c(1:as.numeric(args[1]))
 num_tree <- length(tree_index)
-pheno_index <- c(1:3)
+pheno_index <- c(1:as.numeric(args[2]))
 num_pheno <- length(pheno_index)
 phenotype <- "pheno"
 genotype <- "geno"

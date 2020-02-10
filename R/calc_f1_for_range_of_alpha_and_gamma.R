@@ -55,7 +55,7 @@ colnames(discrete_f1_mat) <- column_names
 
 discrete_f1_tb <- as_tibble(discrete_f1_mat)
 
-col_names_2 <- c(column_names,"genotype", "fdr_corrected_pvals", "gamma_over_beta", "association_with_phenotype")
+col_names_2 <- c(column_names,"genotype", "fdr_corrected_pvals", "epsilon")
 discrete_f1_tb_and_geno <- matrix(NA, nrow = 1, ncol = length(col_names_2))
 colnames(discrete_f1_tb_and_geno) <- col_names_2
 discrete_f1_tb_and_geno <- as.data.frame(discrete_f1_tb_and_geno)

@@ -173,6 +173,6 @@ write_tsv(discrete_f1_tb,
           col_names = TRUE)
 
 write_tsv(discrete_f1_tb_and_geno,
-          path = "../data/F1_scores_by_gneotype_range_of_alpha_gamma.tsv",
+          path = "../data/F1_scores_by_genotype_range_of_alpha_gamma.tsv",
           col_names = TRUE)
 

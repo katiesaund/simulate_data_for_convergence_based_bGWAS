@@ -54,7 +54,11 @@ discrete_f1_mat <- matrix(NA, nrow = discrete_num_rows, ncol = num_col)
 colnames(discrete_f1_mat) <- column_names
 
 discrete_f1_tb <- as_tibble(discrete_f1_mat)
-discrete_f1_tb$phenotype_type <- "discrete"
+
+col_names_2 <- c(column_names,"genotype", "fdr_corrected_pvals", "gamma_over_beta", "association_with_phenotype")
+discrete_f1_tb_and_geno <- matrix(NA, nrow = 1, ncol = length(col_names_2))
+colnames(discrete_f1_tb_and_geno) <- col_names_2
+discrete_f1_tb_and_geno <- as.data.frame(discrete_f1_tb_and_geno)
 
 current_disc_row <- 0 
 
@@ -116,28 +120,38 @@ for (h in 1:length(pheno_index)) {
               assoc_epsilon_dist <- pvals_epsilon_tb$epsilon[pvals_epsilon_tb$epsilon >= epsilons[q]]
               delta_epsilon <- mean(assoc_epsilon_dist) - mean(null_epsilon_dist)
               
+              # TODO: add genotype data
+              temp_tb <- as_tibble(matrix(NA, nrow = 1, ncol = num_col))
+              colnames(temp_tb) <- column_names
+              big_tb <- cbind(pvals_epsilon_tb, temp_tb)
+              
+              
               current_disc_row <- current_disc_row + 1
-              discrete_f1_tb$phenotype_phylogenetic_signal[current_disc_row] <- as.character(data_types[j])
-              discrete_f1_tb$tree_id[current_disc_row]  <- tree_index[k]
-              discrete_f1_tb$test[current_disc_row] <- discrete_test_types[l]
-              discrete_f1_tb$phenotype_id[current_disc_row] <- pheno_index[h]
-              discrete_f1_tb$F1_score[current_disc_row] <- f1_score
-              discrete_f1_tb$true_positive[current_disc_row] <- true_positive
-              discrete_f1_tb$true_negative[current_disc_row] <- true_negative
-              discrete_f1_tb$false_negative[current_disc_row] <- false_negative
-              discrete_f1_tb$false_positive[current_disc_row] <- false_positive
-              discrete_f1_tb$num_geno[current_disc_row] <- nrow(pvals_epsilon_tb)
-              discrete_f1_tb$observed_gamma_value[current_disc_row] <- gamma_value
-              discrete_f1_tb$recall[current_disc_row] <- recall
-              discrete_f1_tb$precision[current_disc_row] <- precision
-              discrete_f1_tb$false_positive_rate[current_disc_row] <- false_positive_rate
-              discrete_f1_tb$positive_predictive_value[current_disc_row] <- positive_predictive_value
-              discrete_f1_tb$observed_delta_epsilon[current_disc_row] <- delta_epsilon
-              discrete_f1_tb$observed_pheno_beta[current_disc_row] <- beta_pheno
-              discrete_f1_tb$observed_mean_geno_beta[current_disc_row] <- mean_beta_geno
-              discrete_f1_tb$phenotype_state_balance[current_disc_row] <- avg_pheno_state_balance
-              discrete_f1_tb$alpha_threshold[current_disc_row] <- alphas[p]
-              discrete_f1_tb$epsilon_threshold[current_disc_row] <- epsilons[q]
+              discrete_f1_tb$phenotype_type[current_disc_row] <- big_tb$phenotype_type <- "discrete"
+              discrete_f1_tb$phenotype_phylogenetic_signal[current_disc_row] <- big_tb$phenotype_phylogenetic_signal <- as.character(data_types[j])
+              discrete_f1_tb$tree_id[current_disc_row] <- big_tb$tree_id <- tree_index[k]
+              discrete_f1_tb$test[current_disc_row] <- big_tb$test <- discrete_test_types[l]
+              discrete_f1_tb$phenotype_id[current_disc_row] <- big_tb$phenotype_id <- pheno_index[h]
+              discrete_f1_tb$F1_score[current_disc_row] <- big_tb$F1_score <- f1_score
+              discrete_f1_tb$true_positive[current_disc_row] <- big_tb$true_positive <- true_positive
+              discrete_f1_tb$true_negative[current_disc_row] <- big_tb$true_negative <- true_negative
+              discrete_f1_tb$false_negative[current_disc_row] <- big_tb$false_negative <- false_negative
+              discrete_f1_tb$false_positive[current_disc_row] <- big_tb$false_positive <- false_positive
+              discrete_f1_tb$num_geno[current_disc_row] <- big_tb$num_geno <- nrow(pvals_epsilon_tb)
+              discrete_f1_tb$observed_gamma_value[current_disc_row] <- big_tb$observed_gamma_value <- gamma_value
+              discrete_f1_tb$recall[current_disc_row] <- big_tb$recall <- recall
+              discrete_f1_tb$precision[current_disc_row] <- big_tb$precision <- precision
+              discrete_f1_tb$false_positive_rate[current_disc_row] <- big_tb$false_positive_rate <- false_positive_rate
+              discrete_f1_tb$positive_predictive_value[current_disc_row] <- big_tb$positive_predictive_value <- positive_predictive_value
+              discrete_f1_tb$observed_delta_epsilon[current_disc_row] <- big_tb$observed_delta_epsilon <- delta_epsilon
+              discrete_f1_tb$observed_pheno_beta[current_disc_row] <- big_tb$observed_pheno_beta <- beta_pheno
+              discrete_f1_tb$observed_mean_geno_beta[current_disc_row] <- big_tb$observed_mean_geno_beta <- mean_beta_geno
+              discrete_f1_tb$phenotype_state_balance[current_disc_row] <- big_tb$phenotype_state_balance <- avg_pheno_state_balance
+              discrete_f1_tb$alpha_threshold[current_disc_row] <- big_tb$alpha_threshold <- alphas[p]
+              discrete_f1_tb$epsilon_threshold[current_disc_row] <- big_tb$epsilon_threshold <- epsilons[q]
+              
+              discrete_f1_tb_and_geno <- rbind(discrete_f1_tb_and_geno, big_tb)
+              
             }
           }
         } else {
@@ -151,8 +165,14 @@ for (h in 1:length(pheno_index)) {
 
 
 discrete_f1_tb$test[discrete_f1_tb$test == "synchronous"] <- "sync"
+discrete_f1_tb_and_geno$test[discrete_f1_tb_and_geno$test == "synchronous"] <- "sync"
+discrete_f1_tb_and_geno <- discrete_f1_tb_and_geno %>% filter(!is.na(phenotype_type))
 
 write_tsv(discrete_f1_tb,
           path = "../data/F1_scores_range_of_alpha_gamma.tsv",
+          col_names = TRUE)
+
+write_tsv(discrete_f1_tb_and_geno,
+          path = "../data/F1_scores_by_gneotype_range_of_alpha_gamma.tsv",
           col_names = TRUE)
 

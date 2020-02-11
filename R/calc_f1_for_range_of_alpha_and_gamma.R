@@ -13,8 +13,8 @@ phenotype <- "pheno"
 genotype <- "geno"
 discrete_test_types <- c("phyc", "synchronous")
 # continuous_test_types <- "continuous"
-alphas <- c(-log(0.05), -log(0.005), -log(0.0005))
-epsilons <- c(0.10, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90)
+alphas <- c(-log(0.05), -log(0.01), -log(0.005), -log(0.001), -log(0.0005), -log(0.0001), -log(0.00005), -log(0.00001))
+epsilons <- c(0.01, 0.05, 0.10, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90, 0.95, 0.99)
 
 discrete_num_rows <- 
   length(pheno_index) * 

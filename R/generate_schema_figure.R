@@ -2,9 +2,8 @@
 source("R/schema_plot_lib.R")
 set.seed(10)
 tree <- ape::rcoal(n = 12)
-plot(tree)
-discrete_phenotype <- c(1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1)
-genotype <- c(1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1)
+discrete_phenotype   <- c( 1,  0,  0, 1, 1, 1, 0, 1,  0,  0,  1,  1)
+genotype             <- c( 1,  1,  0, 1, 1, 1, 1, 0,  0,  0,  1,  1)
 continuous_phenotype <- c(11, 11, 14, 7, 7, 6, 3, 2, 13, 12, 11, 10)
 
 # Discrete phenotype
@@ -81,11 +80,13 @@ disc_geno_trans <- identify_transition_edges(tr = tree,
                                               vec = genotype,
                                               node_recon = disc_geno_ML_anc_rec, 
                                               disc_cont = "discrete")
-
+disc_geno_trans_phyc <- disc_geno_trans$trans_dir 
+disc_geno_trans_phyc[disc_geno_trans_phyc == -1] <- 0
+disc_geno_trans_sync_and_cont <- disc_geno_trans$transition
 
 # Calculate delta pheno per edge
 cont_pheno_edge_recon_mat <- convert_to_edge_mat(tree, cont_pheno_tip_and_node_recon)
-geno_trans_index <- which(disc_geno_trans$transition == 1)
+geno_trans_index <- which(disc_geno_trans_sync_and_cont == 1)
 geno_trans_delta_pheno <- calculate_phenotype_change_on_edge(edge_list = geno_trans_index, phenotype_by_edges = cont_pheno_edge_recon_mat)
 all_delta_pheno <- calculate_phenotype_change_on_edge(edge_list = 1:ape::Nedge(tree), phenotype_by_edges = cont_pheno_edge_recon_mat)
 # Which genotype transition edges have median(delta pheno) > all edge median(delta phenotype)?
@@ -119,113 +120,130 @@ disc_geno_recon_edge_color <- disc_geno_recon_by_edges
 disc_geno_recon_edge_color[disc_geno_recon_edge_color == 1] <- "cyan"
 disc_geno_recon_edge_color[disc_geno_recon_edge_color == 0] <- "black"
 
-disc_geno_trans_edge_color <- disc_geno_trans$transition
-disc_geno_trans_edge_color[disc_geno_trans_edge_color == 1] <- "blue"
-disc_geno_trans_edge_color[disc_geno_trans_edge_color == 0] <- "black"
+disc_geno_phyc_trans_edge_color <- disc_geno_trans_phyc
+disc_geno_phyc_trans_edge_color[disc_geno_phyc_trans_edge_color == 1] <- "blue"
+disc_geno_phyc_trans_edge_color[disc_geno_phyc_trans_edge_color == 0] <- "black"
+
+disc_geno_sync_cont_edge_color <- disc_geno_trans_sync_and_cont 
+disc_geno_sync_cont_edge_color[disc_geno_sync_cont_edge_color == 1] <- "blue"
+disc_geno_sync_cont_edge_color[disc_geno_sync_cont_edge_color == 0] <- "black"
 
 
 
 # Calculate overlap (gamma)
 
-phyc_overlap_color <- as.numeric(disc_pheno_recon_by_edges + disc_geno_trans$transition == 2)
+phyc_overlap_color <- as.numeric(disc_pheno_recon_by_edges + disc_geno_trans_phyc == 2)
 phyc_overlap_color[phyc_overlap_color == 1] <- "purple"
 phyc_overlap_color[phyc_overlap_color == 0] <- "black"
 
-sync_overlap_color <- as.numeric(disc_pheno_trans$transition + disc_geno_trans$transition == 2)
+sync_overlap_color <- as.numeric(disc_pheno_trans$transition + disc_geno_trans_sync_and_cont  == 2)
 sync_overlap_color[sync_overlap_color == 1] <- "purple"
 sync_overlap_color[sync_overlap_color == 0] <- "black"
 
 cont_overlap_color <- rep("black", ape::Nedge(tree))
 cont_overlap_color[edges_with_geno_trans_and_high_delta] <- "purple"
 
-graphics::par(mfrow = c(3, 5), mar = c(1, 1, 1, 1))
+cex_value <- 1
+edge_width <- 2.5
+
+graphics::par(mfrow = c(3, 5), mar = c(3, 3, 3, 3))
 
  # phyc
 graphics::plot(tree,
                font = 1,
+               edge.width = edge_width, 
                edge.color = disc_pheno_recon_edge_color,
-               main = "",
+               main = "Phenotype Reconstruction",
                use.edge.length = FALSE,
                label.offset = 0.25,
                adj = 0,
-               cex = 0.5)
+               cex = cex_value)
 graphics::plot(tree,
                font = 1,
+               edge.width = edge_width, 
                edge.color = disc_pheno_recon_edge_color,
-               main = "",
+               main = "Beta phenotype",
                use.edge.length = FALSE,
                label.offset = 0.25,
                adj = 0,
-               cex = 0.5)
+               cex = cex_value)
 
 graphics::plot(tree,
                font = 1,
+               edge.width = edge_width, 
                edge.color = disc_geno_recon_edge_color,
-               main = "",
+               main = "Genotype Reconstruction",
                use.edge.length = FALSE,
                label.offset = 0.25,
                adj = 0,
-               cex = 0.5)
+               cex = cex_value)
 graphics::plot(tree,
                font = 1,
-               edge.color = disc_geno_trans_edge_color,
-               main = "",
+               edge.width = edge_width, 
+               edge.color = disc_geno_phyc_trans_edge_color,
+               main = "Beta genotype",
                use.edge.length = FALSE,
                label.offset = 0.25,
                adj = 0,
-               cex = 0.5)
+               cex = cex_value)
 graphics::plot(tree,
                font = 1,
+               edge.width = edge_width, 
                edge.color = phyc_overlap_color,
-               main = "",
+               main = "Intersection of Betas",
                use.edge.length = FALSE,
                label.offset = 0.25,
                adj = 0,
-               cex = 0.5)
+               cex = cex_value)
 
 
 # sync
 graphics::plot(tree,
                font = 1,
+               edge.width = edge_width, 
                edge.color = disc_pheno_recon_edge_color,
-               main = "",
+               main = "Phenotype TRecont",
                use.edge.length = FALSE,
                label.offset = 0.25,
                adj = 0,
-               cex = 0.5)
+               cex = cex_value)
 graphics::plot(tree,
                font = 1,
+               edge.width = edge_width, 
                edge.color = disc_pheno_trans_edge_color,
                main = "",
                use.edge.length = FALSE,
                label.offset = 0.25,
                adj = 0,
-               cex = 0.5)
+               cex = cex_value)
 
 graphics::plot(tree,
                font = 1,
+               edge.width = edge_width, 
                edge.color = disc_geno_recon_edge_color,
                main = "",
                use.edge.length = FALSE,
                label.offset = 0.25,
                adj = 0,
-               cex = 0.5)
+               cex = cex_value)
 graphics::plot(tree,
                font = 1,
-               edge.color = disc_geno_trans_edge_color,
+               edge.width = edge_width, 
+               edge.color = disc_geno_sync_cont_edge_color,
                main = "",
                use.edge.length = FALSE,
                label.offset = 0.25,
                adj = 0,
-               cex = 0.5)
+               cex = cex_value)
 graphics::plot(tree,
                font = 1,
+               edge.width = edge_width, 
                edge.color = sync_overlap_color,
                main = "",
                use.edge.length = FALSE,
                label.offset = 0.25,
                adj = 0,
-               cex = 0.5)
+               cex = cex_value)
 
 # continuous phenotype
 plot_p_recon <- phytools::contMap(tree,
@@ -243,36 +261,39 @@ plot(plot_p_recon,
 
 graphics::plot(tree,
                font = 1,
+               edge.width = edge_width, 
                edge.color = cont_pheno_high_delta_color,
                main = "",
                use.edge.length = FALSE,
                label.offset = 0.25,
                adj = 0,
-               cex = 0.5)
+               cex = cex_value)
 
 graphics::plot(tree,
                font = 1,
+               edge.width = edge_width, 
                edge.color = disc_geno_recon_edge_color,
                main = "",
                use.edge.length = FALSE,
                label.offset = 0.25,
                adj = 0,
-               cex = 0.5)
+               cex = cex_value)
 graphics::plot(tree,
                font = 1,
-               edge.color = disc_geno_trans_edge_color,
+               edge.width = edge_width, 
+               edge.color = disc_geno_sync_cont_edge_color,
                main = "",
                use.edge.length = FALSE,
                label.offset = 0.25,
                adj = 0,
-               cex = 0.5)
+               cex = cex_value)
 graphics::plot(tree,
                font = 1,
+               edge.width = edge_width, 
                edge.color = cont_overlap_color,
-               main = "",
+               main = "Union",
                use.edge.length = FALSE,
                label.offset = 0.25,
                adj = 0,
-               cex = 0.5)
-
+               cex = cex_value)
 #dev.off()

@@ -3,9 +3,8 @@
 # Write sbat scripts for hogwash on simulated data. 
 write_hoghwash_sbat_for_sim <- function(num_tree, num_pheno) {
   data_dir <- "../data/"
-  date <- ""
   perm <- 10000
-  fdr <- 0.10
+  fdr <- 0.0005
   bootstrap <- 0.70
   memory <- "5G"
   time <- "240:00:00"

@@ -25,8 +25,6 @@ ggsave("../figures/delta_epsilon_vs_test_tree_vs_phenotype.pdf", height = 6, wid
 
 
 alpha_label <- c("a<0.05", "a<0.01", "a<0.005", "a<0.001", "a<0.0005", "a<0.0001", "a<0.00005", "a<0.00001")
-print(alpha_label)
-print(sort(unique(df$alpha_threshold)))
 names(alpha_label) <- sort(unique(df$alpha_threshold))
 epsilon_label <- c("e>0.01", "e>0.05", "e>0.10", "e>0.20","e>0.30","e>0.40","e>0.50","e>0.60","e>0.70","e>0.80","e>0.90", "e>0.95","e>0.99")
 names(epsilon_label) <- sort(unique(df$epsilon_threshold))

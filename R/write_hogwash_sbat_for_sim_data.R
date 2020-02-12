@@ -7,7 +7,7 @@ write_hoghwash_sbat_for_sim <- function(num_tree, num_pheno) {
   perm <- 10000
   fdr <- 0.10
   bootstrap <- 0.70
-  memory <- "1G"
+  memory <- "5G"
   time <- "240:00:00"
   
   for (i in 1:num_tree) {

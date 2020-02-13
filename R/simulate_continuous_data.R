@@ -3,6 +3,7 @@ suppressWarnings(library(phytools))
 
 source("../../simulate_data_for_convergence_based_bGWAS/R/tree.R")
 source("../../simulate_data_for_convergence_based_bGWAS/R/discrete_trait_lib.R")
+source("../../simulate_data_for_convergence_based_bGWAS/R/continuous_trait_lib.R")
 source("../../simulate_data_for_convergence_based_bGWAS/R/transition_edges.R")
 source("../../simulate_data_for_convergence_based_bGWAS/R/gamma.R")
 source("../../simulate_data_for_convergence_based_bGWAS/R/save_data.R")
@@ -25,6 +26,9 @@ bin_size <- 20
 # Generate huge matrix of binary traits specific to trees
 tree_list <- generate_trees(num_trees, num_tips, tree_edge_multiplier)
 
+cont_pheno <- make_continuous_phenotypes(tree_list, num_phenos) # data stored as [[2]]$WN[[2]] --> [[tree_index]]$BM/WN[[pheno_index]]
+
+# Haven't don't anything below this line to adapt code for continuous data
 binary_AR_mat_list <- generate_disc_mat(tree_list, num_start_trait)
 print("Finish generating first discrete matrix")
 

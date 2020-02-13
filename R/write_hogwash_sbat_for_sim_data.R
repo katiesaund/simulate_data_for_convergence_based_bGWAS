@@ -13,7 +13,7 @@ write_hoghwash_sbat_for_sim <- function(num_tree, num_pheno) {
     for (j in 1:num_pheno) {
       # Continuous BM -----
       # temp_geno <- paste0(data_dir, date, "simulated_genotype_", i, ".tsv")
-      # temp_tree <- paste0(data_dir, date, "simulated_tree_", i, ".tree")
+      # temp_tree <- paste0(data_dir, date, "simulated_continuous_tree_", i, ".tree")
       # temp_pheno <- paste0(data_dir, date, "continuous_pheno_BM_tree_", i, "_pheno_", j, ".tsv")
       # temp_name <- paste0("continuous_pheno_BM_tree_", i, "_pheno_", j)
       # command <- paste("Rscript /nfs/esnitkin/bin_group/pipeline/Github/gwas/gwas_support/run_hogwash_from_pbs.R",
@@ -73,7 +73,7 @@ write_hoghwash_sbat_for_sim <- function(num_tree, num_pheno) {
       #
       
       # Discrete BM ----
-      temp_tree <- paste0(data_dir, "simulated_tree_", i, ".tree")
+      temp_tree <- paste0(data_dir, "simulated_discrete_tree_", i, ".tree")
       temp_geno <- paste0(data_dir, "simulated_genotype_for_discrete_pheno_BM_tree_", i, "_pheno_", j, ".tsv")
       temp_pheno <- paste0(data_dir, "simulated_discrete_pheno_BM_tree_", i, "_pheno_", j, ".tsv")
       temp_name <- paste0("discrete_pheno_BM_tree_", i, "_pheno_", j)

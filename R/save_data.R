@@ -37,11 +37,11 @@ save_data <- function(tree_list,
     num_pheno <- ncol(BM_phenotype_AR_mat_list[[i]])
 
 
-    write.tree(current_tree,
-               file = paste0("../data/",
-                             "simulated_tree_",
-                             i,
-                             ".tree"))
+    ape::write.tree(current_tree,
+                    file = paste0("../data/",
+                                  "simulated_discrete_tree_",
+                                  i,
+                                  ".tree"))
 
     for (j in 1:num_pheno) {
       # Save genotypes ----
@@ -190,9 +190,9 @@ save_data <- function(tree_list,
   }
 
   summary_df <- summary_df[2:nrow(summary_df), , drop = FALSE] # remove the NA row
-  save(summary_df, file = "../data/simulated_gamma_summary.RData")
+  save(summary_df, file = "../data/simulated_discrete_gamma_summary.RData")
   write.table(summary_df,
               sep = "\t",
-              file = "../data/simulated_gamma_summary.tsv", 
+              file = "../data/simulated_discrete_gamma_summary.tsv", 
               row.names = FALSE)
 }

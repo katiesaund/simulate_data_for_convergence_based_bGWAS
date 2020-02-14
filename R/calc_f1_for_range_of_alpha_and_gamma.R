@@ -107,11 +107,10 @@ for (h in 1:length(pheno_index)) {
               false_positive <- pvals_epsilon_tb %>% filter(epsilon < epsilons[q] & fdr_corrected_pvals >= alphas[p]) %>% nrow()
               false_negative <- pvals_epsilon_tb %>% filter(epsilon >= epsilons[q] & fdr_corrected_pvals < alphas[p]) %>% nrow()
               
-              precision <- true_positive / sum(true_positive, false_positive)
+              precision <- positive_predictive_value <- true_positive / sum(true_positive, false_positive)
               recall <- true_positive / sum(false_negative, true_positive)
               false_positive_rate <- false_positive / sum(false_positive, true_negative)
-              positive_predictive_value <- true_positive / sum(true_positive, false_positive)
-              
+
               f1_score <- (2 * precision * recall) / (precision + recall)
               
               # calculate delta epsilon: 

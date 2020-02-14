@@ -52,6 +52,22 @@ df %>%
   ylab("F1 Score")
 ggsave("../figures/F1_score_vs_test_alpha_vs_epsilon.pdf", height = 6, width = 8.5, units = "in")
 
+# Save as line plots
+df %>% 
+  filter(alpha_threshold < 3) %>% 
+  select(F1_score, phenotype_phylogenetic_signal, tree_id, test, phenotype_id, alpha_threshold, epsilon_threshold) %>%
+  unique() %>% 
+  filter(!is.na(F1_score)) %>% 
+  ggplot(mapping = aes(x = epsilon_threshold,
+                       y = F1_score)) +  
+  geom_smooth(aes(linetype = test, color = phenotype_phylogenetic_signal), se = FALSE) + 
+  theme_bw() + 
+  labs(title = "F1 score vs Epsilon (Loess line of best fit") + 
+  xlab("Epsilon Threshold") + 
+  ylab("F1 Score")
+ggsave("../figures/F1_score_vs_epsilon_line_plot.pdf", height = 6, width = 8.5, units = "in")
+
+
 # PPV
 df %>% 
   select(positive_predictive_value, phenotype_phylogenetic_signal, tree_id, test, phenotype_id, alpha_threshold, epsilon_threshold) %>% 

@@ -1,10 +1,26 @@
-generate_disc_mat <- function(tree_list, num_genotypes){
+#' Generate a binary data.frame for each  tree
+#'
+#' @description The function generates a unique data.frame for each tree. The 
+#'   function attempts to create a number of traits equal to num_genotypes, but
+#'   the application of several filters may reduce this number. The filters 
+#'   remove traits that are too ubiquitous or too rare and duplicated traits.
+#'
+#' @param tree_list List of phylogenetic trees. 
+#' @param num_genotypes Integer. The number of discrete traits to initially 
+#'   produce. 
+#'
+#' @return geno_AR_df_list A list with length equal to the number of trees in
+#'   the input tree_list. The list entries are dataframes. Each dataframe has 
+#'   nrow = number of discrete traits that pass the quality control steps. Ncol 
+#'   = number of tips in the corresponding tree. 
+#' @export
+#'
+generate_binary_df_list <- function(tree_list, num_genotypes){
   # Generate a huge discrete, binary matrix.
   num_sim_trees <- length(tree_list)
-  geno_mat_list <- geno_AR_mat_list <- rep(list(NULL), num_sim_trees)
+  geno_AR_df_list <- rep(list(NULL), num_sim_trees)
+  set.seed(1)
   for (i in 1:num_sim_trees) {
-    set.seed(1)
-
     # Create a matrix:
     # Rows = tips then nodes
     # Columns = individual, simulated genotypes
@@ -24,9 +40,9 @@ generate_disc_mat <- function(tree_list, num_genotypes){
     geno_tip_and_AR_mat <- unique(geno_tip_and_AR_mat, MARGIN = 2)
     geno_tip_and_AR_mat <- as.data.frame(geno_tip_and_AR_mat)
     colnames(geno_tip_and_AR_mat) <- paste0("sim", 1:ncol(geno_tip_and_AR_mat))
-    geno_AR_mat_list[[i]] <- geno_tip_and_AR_mat
+    geno_AR_df_list[[i]] <- geno_tip_and_AR_mat
   }
-  return(geno_AR_mat_list)
+  return(geno_AR_df_list)
 }
 
 # Phylogenetic signal functions -------

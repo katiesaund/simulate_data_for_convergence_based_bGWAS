@@ -192,16 +192,20 @@ df$epsilon_category[df$epsilon_category < 0.33] <- "low"
 
 df$epsilon_category <- factor(df$epsilon_category, levels = c("low", "medium", "high"))
 alpha <- 0.0005
+
 df %>% 
-  group_by(phenotype_type, phenotype_phylogenetic_signal, tree_id, phenotype_id, epsilon_category) %>% 
-  mutate(percent_signficant = 100 * sum(fdr_corrected_pvals > -log(alpha)) / length(fdr_corrected_pvals), 
-         percent_not_significant = 100 - percent_signficant) %>% 
-  ggplot(aes(x = epsilon_category, y = percent_signficant)) +
-  geom_bar(stat = "identity", position = "dodge") + 
+  filter(epsilon_threshold < 0.04) %>% 
+  group_by(phenotype_type, phenotype_phylogenetic_signal, tree_id, phenotype_id, epsilon_category, test) %>% 
+  mutate(percent_signficant = 100 * sum(fdr_corrected_pvals > -log(alpha)) / n(), 
+         percent_data = 100 * n() / num_geno) %>% 
+  ggplot() +
+  geom_bar(aes(x = epsilon_category, y = percent_signficant, fill = epsilon_category), stat = "identity", position = "dodge") + 
+  geom_point(aes(x = epsilon_category, y = percent_data), color = "blue") + 
   xlab("Genotype Epsilon") + 
   theme_bw() + 
   ylab("Percent") + 
-  scale_fill_manual(values = c("pink", "red", "maroon")) + 
-  ggtitle("Relative significance by genotype epsilon")   +
-  facet_grid(phenotype_type + phenotype_phylogenetic_signal ~ tree_id + phenotype_id)
+  scale_fill_manual(values = c("pink", "red", "darkred")) + 
+  ggtitle("Relative significance by genotype epsilon; dot=percent of data") +
+  facet_grid(phenotype_type + phenotype_phylogenetic_signal + test ~ tree_id + phenotype_id)
+
 ggsave("../figures/percent_signficance_by_genotype_epsilon_category_bar_plot.pdf", height = 6, width = 8.5, units = "in")

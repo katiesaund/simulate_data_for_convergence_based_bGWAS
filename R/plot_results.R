@@ -194,7 +194,8 @@ df$epsilon_category <- factor(df$epsilon_category, levels = c("low", "medium", "
 alpha <- 0.0005
 
 df %>% 
-  filter(epsilon_threshold < 0.04) %>% 
+  filter(epsilon_threshold < 0.04, 
+         alpha_threshold == -log(0.05)) %>% 
   group_by(phenotype_type, phenotype_phylogenetic_signal, tree_id, phenotype_id, epsilon_category, test) %>% 
   mutate(percent_signficant = 100 * sum(fdr_corrected_pvals > -log(alpha)) / n(), 
          percent_data = 100 * n() / num_geno) %>% 
@@ -209,3 +210,18 @@ df %>%
   facet_grid(phenotype_type + phenotype_phylogenetic_signal + test ~ tree_id + phenotype_id)
 
 ggsave("../figures/percent_signficance_by_genotype_epsilon_category_bar_plot.pdf", height = 6, width = 8.5, units = "in")
+
+
+df %>% 
+  filter(epsilon_threshold < 0.04, 
+         alpha_threshold == -log(0.05)) %>% 
+  ggplot() +
+  geom_jitter(aes(x = epsilon, y = fdr_corrected_pvals)) + 
+  xlab("Epsilon") + 
+  theme_bw() + 
+  ylab("-log(P-value)") + 
+  ggtitle("P-value vs. Epsilon") +
+  facet_grid(phenotype_type + phenotype_phylogenetic_signal + test ~ tree_id + phenotype_id) + 
+  geom_hline(aes(yintercept = -log(0.005)), color = "red")
+ggsave("../figures/pval_vs_epsilon_category_dot_plot.pdf", height = 6, width = 8.5, units = "in")
+

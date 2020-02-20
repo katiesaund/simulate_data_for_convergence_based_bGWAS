@@ -211,7 +211,7 @@ df %>%
 
 ggsave("../figures/percent_signficance_by_genotype_epsilon_category_bar_plot.pdf", height = 6, width = 8.5, units = "in")
 
-
+# signficance vs epsilon 
 df %>% 
   filter(epsilon_threshold < 0.04, 
          alpha_threshold == -log(0.05)) %>% 
@@ -223,5 +223,5 @@ df %>%
   ggtitle("P-value vs. Epsilon") +
   facet_grid(phenotype_type + phenotype_phylogenetic_signal + test ~ tree_id + phenotype_id) + 
   geom_hline(aes(yintercept = -log(0.005)), color = "red")
-ggsave("../figures/pval_vs_epsilon_category_dot_plot.pdf", height = 6, width = 8.5, units = "in")
+ggsave("../figures/pval_vs_epsilon_dot_plot.pdf", height = 6, width = 12, units = "in")
 

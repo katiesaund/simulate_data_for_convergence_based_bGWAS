@@ -26,27 +26,18 @@ bin_size <- 20
 # Generate huge matrix of binary traits specific to trees
 tree_list <- generate_trees(num_trees, num_tips, tree_edge_multiplier)
 
-# cont_pheno <- make_continuous_phenotypes(tree_list, num_phenos) # data stored as [[2]]$WN[[2]] --> [[tree_index]]$BM/WN[[pheno_index]]
-
 # Haven't don't anything below this line to adapt code for continuous data
 binary_AR_df_list <- generate_binary_df_list(tree_list, num_start_trait)
-print("Finish generating first discrete matrix")
+print("Finished generating first discrete matrix")
 
 binary_AR_df_list <- add_WN(binary_AR_df_list, tree_list) # Due to WN stuff the ancestral reconstructions are now wrong!
 
 binary_AR_and_conf_mat <- ancestral_reconstruction(binary_AR_df_list, tree_list) # So fix the ancestral reconstructions here
 binary_conf_mat_list <- binary_AR_and_conf_mat$conf_mat
 binary_AR_df_list <- binary_AR_and_conf_mat$AR_mat
-print("Finish ancestral reconstruction")
+print("Finished binary ancestral reconstruction")
 
-# Separate traits into BM and WN
-phylo_signal_list <- calculate_phylo_signal(tree_list, binary_AR_df_list)
-print("Finish phylogenetic signal calculation")
-
-# Select BM and WN phenotypes
-BM_phenotype_names_list <- select_BM_traits(binary_AR_df_list, phylo_signal_list, num_phenos)
-WN_phenotype_names_list <- select_WN_traits(binary_AR_df_list, phylo_signal_list, num_phenos)
-# Select genotypes and phenotypes
+# Select genotypes
 genotype_AR_and_conf_mat_list <- select_geno_within_range(binary_AR_df_list,
                                                           binary_conf_mat_list,
                                                           phylo_signal_list,
@@ -55,6 +46,23 @@ genotype_AR_and_conf_mat_list <- select_geno_within_range(binary_AR_df_list,
                                                           min_genos = 10)
 genotype_AR_mat_list <- genotype_AR_and_conf_mat_list$AR_mat
 genotype_conf_mat_list <- genotype_AR_and_conf_mat_list$conf_mat
+
+# Make BM and WN phenotypes and then ancestral reconstructions
+cont_pheno <- make_continuous_phenotypes(tree_list, num_phenos) # data stored as [[2]]$WN[[2]] --> [[tree_index]]$BM/WN[[pheno_index]]
+
+# TODO
+# Left off here on Monday 2/24. Need to figure out how to reformat / recode make_continuous_phenotypes function/output so that it's 
+# as easy as possible to incorporate with the code below
+
+# Need to generate a bm_phenotype_conf_mat_list, where each [[tree_num]] and each column is a phenotype. It's ordered by tips and then nodes (rows).
+# Separate traits into BM and WN
+phylo_signal_list <- calculate_phylo_signal(tree_list, binary_AR_df_list)
+print("Finish phylogenetic signal calculation")
+
+# Select BM and WN phenotypes
+BM_phenotype_names_list <- select_BM_traits(binary_AR_df_list, phylo_signal_list, num_phenos)
+WN_phenotype_names_list <- select_WN_traits(binary_AR_df_list, phylo_signal_list, num_phenos)
+
 BM_phenotype_AR_and_conf_mat_list <-
   subsample_to_phenotypes(binary_AR_df_list,
                           binary_conf_mat_list,

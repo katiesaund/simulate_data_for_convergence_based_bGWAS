@@ -280,16 +280,6 @@ select_geno_within_range <- function(binary_AR_mat_list,
               "AR_mat" = geno_mat_list))
 }
 
-combine_phenotype_names_lists <- function(list_1, list_2){
-  num_names <- length(list_1)
-  name_list <- rep(list(), num_names)
-  for (i in 1:num_names) {
-    name_list[[i]] <- unique(c(list_1[[i]], list_2[[i]]))
-  }
-  return(name_list)
-}
-
-
 add_WN <- function(binary_AR_mat_list, tree_list) {
   num_trees <- length(tree_list)
   for (i in 1:num_trees) {

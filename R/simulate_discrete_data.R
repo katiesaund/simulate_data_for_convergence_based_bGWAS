@@ -44,7 +44,6 @@ print("Finish phylogenetic signal calculation")
 # Select BM and WN phenotypes
 BM_phenotype_names_list <- select_BM_traits(binary_AR_df_list, phylo_signal_list, num_phenos)
 WN_phenotype_names_list <- select_WN_traits(binary_AR_df_list, phylo_signal_list, num_phenos)
-phenotype_names_list <- combine_phenotype_names_lists(BM_phenotype_names_list, WN_phenotype_names_list)
 # Select genotypes and phenotypes
 genotype_AR_and_conf_mat_list <- select_geno_within_range(binary_AR_df_list,
                                                           binary_conf_mat_list,

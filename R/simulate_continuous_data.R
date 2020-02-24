@@ -26,7 +26,7 @@ bin_size <- 20
 # Generate huge matrix of binary traits specific to trees
 tree_list <- generate_trees(num_trees, num_tips, tree_edge_multiplier)
 
-cont_pheno <- make_continuous_phenotypes(tree_list, num_phenos) # data stored as [[2]]$WN[[2]] --> [[tree_index]]$BM/WN[[pheno_index]]
+# cont_pheno <- make_continuous_phenotypes(tree_list, num_phenos) # data stored as [[2]]$WN[[2]] --> [[tree_index]]$BM/WN[[pheno_index]]
 
 # Haven't don't anything below this line to adapt code for continuous data
 binary_AR_df_list <- generate_binary_df_list(tree_list, num_start_trait)

@@ -313,6 +313,10 @@ add_WN <- function(binary_AR_mat_list, tree_list) {
     temp_only_tips <- binary_AR_mat_list[[i]][1:num_tip, , drop = FALSE]
     cols_to_keep <- colSums(temp_only_tips) > 1 & colSums(temp_only_tips) < (nrow(temp_only_tips) - 1)
     binary_AR_mat_list[[i]] <- binary_AR_mat_list[[i]][, cols_to_keep, drop = FALSE]
+    # Remove duplicate columns (genotypes)
+    binary_AR_mat_list[[i]] <- as.data.frame(t(unique(t(binary_AR_mat_list[[i]])))) 
+    
+    # Write genotype names (colnames)
     colnames(binary_AR_mat_list[[i]]) <-
       paste0("sim", 1:ncol(binary_AR_mat_list[[i]]))
   }

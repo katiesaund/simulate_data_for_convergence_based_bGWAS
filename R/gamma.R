@@ -187,7 +187,7 @@ calc_cont_gamma_list <- function(tree_list,
     temp_gamma_list <- list()
     num_tip <- ape::Ntip(tree_list[[i]])
     for (j in 1:num_pheno) {
-      high_conf_edge_list <- hi_conf_obj_list[[i]][[j]]$high_conf_ordered_by_edges
+      high_conf_edge_list <- hi_conf_obj_list[[i]][[j]]
       temp_gamma_list[[j]] <-
         calculate_continuous_gamma(phenotype_cont_recon_mat_list[[i]][[j]],
                                    high_conf_edge_list)

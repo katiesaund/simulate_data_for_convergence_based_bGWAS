@@ -196,3 +196,152 @@ save_data <- function(tree_list,
               file = "../data/simulated_discrete_gamma_summary.tsv", 
               row.names = FALSE)
 }
+
+save_continuous_data <- function(tree_list,
+                                 genotype_AR_mat_list,
+                                 genotype_cont_trans_list,
+                                 BM_phenotype_AR_mat_list,
+                                 BM_pheno_recon_by_edge_list,
+                                 BM_cont_gamma_list,
+                                 WN_phenotype_AR_mat_list,
+                                 WN_pheno_recon_by_edge_list,
+                                 WN_cont_gamma_list,
+                                 BM_cont_genotype_keeper_list,
+                                 WN_cont_genotype_keeper_list) {
+  
+  num_trees <- length(tree_list)
+  summary_col_names <- c("phenotype_phylogenetic_signal",
+                         "tree_id",
+                         "phenotype_id",
+                         "test",
+                         "gamma_avg",
+                         "gamma_percent",
+                         "gamma_count",
+                         "num_hi_conf_edges",
+                         "pheno_beta",
+                         "geno_beta",
+                         "epsilon", 
+                         "genotype")
+  num_cols <- length(summary_col_names)
+  summary_df <- data.frame(matrix(NA, nrow = 1 , ncol = num_cols))
+  colnames(summary_df) <- summary_col_names
+  for (i in 1:num_trees) {
+    current_tree <- tree_list[[i]]
+    num_tips <- ape::Ntip(current_tree)
+    num_pheno <- ncol(BM_phenotype_AR_mat_list[[i]])
+    ape::write.tree(current_tree,
+                    file = paste0("../data/",
+                                  "simulated_continuous_tree_",
+                                  i,
+                                  ".tree"))
+    
+    for (j in 1:num_pheno) {
+      # Save genotypes ----
+      BM_keepers <- BM_cont_genotype_keeper_list[[i]][[j]]
+      WN_keepers <- WN_cont_genotype_keeper_list[[i]][[j]]
+      
+      BM_geno_mat <- genotype_AR_mat_list[[i]][1:num_tips, BM_keepers, drop = FALSE]
+      WN_geno_mat <- genotype_AR_mat_list[[i]][1:num_tips, WN_keepers, drop = FALSE]
+      
+      write.table(BM_geno_mat,
+                  sep = "\t",
+                  row.names = TRUE,
+                  file = paste0("../data/",
+                                "simulated_genotype_for_continuous_pheno_BM_tree_",
+                                i,
+                                "_pheno_",
+                                j,
+                                ".tsv"))
+      
+      write.table(WN_geno_mat,
+                  sep = "\t",
+                  row.names = TRUE,
+                  file = paste0("../data/",
+                                "simulated_genotype_for_continuous_pheno_WN_tree_",
+                                i,
+                                "_pheno_",
+                                j,
+                                ".tsv"))
+      
+      # Save phenotypes ----
+      temp_cont_BM_trait <-
+        BM_phenotype_AR_mat_list[[i]][1:num_tips, j, drop = FALSE]
+      write.table(temp_cont_BM_trait,
+                  sep = "\t",
+                  file = paste0("../data/",
+                                "simulated_continuous_pheno_BM_tree_",
+                                i,
+                                "_pheno_",
+                                j,
+                                ".tsv"))
+      
+      temp_cont_WN_trait <-
+        WN_phenotype_AR_mat_list[[i]][1:num_tips, j, drop = FALSE]
+      write.table(temp_cont_WN_trait,
+                  sep = "\t",
+                  file = paste0("../data/",
+                                "simulated_continuous_pheno_WN_tree_",
+                                i,
+                                "_pheno_",
+                                j,
+                                ".tsv"))
+      
+      # Save gamma results ----
+      BM_cont_gamma <- BM_cont_gamma_list[[i]][[j]]
+      save(BM_cont_gamma, file = paste0("../data/",
+                                        "simulated_continuous_pheno_BM_tree_",
+                                        i,
+                                        "_pheno_",
+                                        j,
+                                        "_cont_gamma.RData"))
+      
+
+      WN_cont_gamma <- WN_cont_gamma_list[[i]][[j]]
+      save(WN_cont_gamma, file = paste0("../data/",
+                                        "simulated_continuous_pheno_WN_tree_",
+                                        i,
+                                        "_pheno_",
+                                        j,
+                                        "_cont_gamma.RData"))
+      
+      BM_cont_gamma_df <- as.data.frame(matrix(NA, nrow = length(BM_cont_gamma$gamma_percent), ncol = num_cols))
+      WN_cont_gamma_df <- as.data.frame(matrix(NA, nrow = length(WN_cont_gamma$gamma_percent), ncol = num_cols))
+      
+      colnames(BM_cont_gamma_df) <- colnames(WN_cont_gamma_df) <- summary_col_names
+      
+      BM_cont_gamma_df$test <- WN_cont_gamma_df$test <- "cont"
+      
+      BM_cont_gamma_df$tree_id <- i
+      BM_cont_gamma_df$phenotype_id <- j
+      BM_cont_gamma_df$gamma_avg <- rep(BM_cont_gamma$gamma_avg, nrow(BM_cont_gamma_df))
+      BM_cont_gamma_df$gamma_percent <- BM_cont_gamma$gamma_percent
+      BM_cont_gamma_df$gamma_count <- BM_cont_gamma$gamma_count
+      BM_cont_gamma_df$num_hi_conf_edges <- BM_cont_gamma$num_hi_conf_edges
+      BM_cont_gamma_df$pheno_beta <- BM_cont_gamma$pheno_beta
+      BM_cont_gamma_df$geno_beta <- BM_cont_gamma$geno_beta
+      BM_cont_gamma_df$epsilon <- BM_cont_gamma$epsilon
+      BM_cont_gamma_df$genotype <- BM_cont_gamma_df$genotype
+      
+      WN_cont_gamma_df$tree_id <- i
+      WN_cont_gamma_df$phenotype_id <- j
+      WN_cont_gamma_df$gamma_avg <- rep(WN_cont_gamma$gamma_avg, nrow(WN_cont_gamma_df))
+      WN_cont_gamma_df$gamma_percent <- WN_cont_gamma$gamma_percent
+      WN_cont_gamma_df$gamma_count <- WN_cont_gamma$gamma_count
+      WN_cont_gamma_df$num_hi_conf_edges <- WN_cont_gamma$num_hi_conf_edges
+      WN_cont_gamma_df$pheno_beta <- WN_cont_gamma$pheno_beta
+      WN_cont_gamma_df$geno_beta <- WN_cont_gamma$geno_beta
+      WN_cont_gamma_df$epsilon <- WN_cont_gamma$epsilon
+      WN_cont_gamma_df$genotype <- WN_cont_gamma$genotype
+      
+      summary_df <- rbind(summary_df, BM_cont_gamma_df, WN_cont_gamma_df)
+    }
+  }
+  
+  summary_df <- summary_df[2:nrow(summary_df), , drop = FALSE] # remove the NA row
+  save(summary_df, file = "../data/simulated_continuous_gamma_summary.RData")
+  write.table(summary_df,
+              sep = "\t",
+              file = "../data/simulated_continuous_gamma_summary.tsv", 
+              row.names = FALSE)
+}
+

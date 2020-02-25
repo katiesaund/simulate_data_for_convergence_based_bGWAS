@@ -333,6 +333,12 @@ save_continuous_data <- function(tree_list,
       WN_cont_gamma_df$epsilon <- WN_cont_gamma$epsilon
       WN_cont_gamma_df$genotype <- WN_cont_gamma$genotype
       
+      print("got to just before rbind, i then j, then dim")
+      print(i)
+      print(j)
+      print(dim(summary_df))
+      print(dim(BM_cont_gamma_df))
+      print(dim(WN_cont_gamma_df))
       summary_df <- rbind(summary_df, BM_cont_gamma_df, WN_cont_gamma_df)
     }
   }

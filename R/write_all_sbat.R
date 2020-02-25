@@ -1,4 +1,4 @@
-# write a bash script that will write the 4 sbatch files I need: 
+# This bash script writes the 4 sbatch files I need to run on the cluster: 
 
 # Read in user inputs: 
 library(tidyverse)

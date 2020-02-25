@@ -1,8 +1,8 @@
-ancestral_reconstruction <- function(AR_mat_list, tree_list){
+ancestral_reconstruction <- function(AR_mat_list, tree_list, disc_or_cont){
   num_trees <- length(tree_list)
   geno_recon_and_conf_list <- rep(list(0), num_trees)
   AR_mat <- conf_mat <- rep(list(matrix(0)), num_trees)
-
+  recon_edge_mat <- rep(list(), num_trees)
 
   for (i in 1:num_trees) {
     temp_tree <- tree_list[[i]]
@@ -13,21 +13,30 @@ ancestral_reconstruction <- function(AR_mat_list, tree_list){
 
     num_row <- ape::Ntip(temp_tree) + ape::Nnode(temp_tree)
     AR_mat[[i]] <- conf_mat[[i]] <- matrix(0, nrow = num_row, ncol = num_geno)
+    recon_edge_mat[[i]] <- rep(list(), num_geno)
 
     for (j in 1:num_geno) {
-      geno_recon_and_conf[[j]] <- ancestral_reconstruction_by_ML(temp_tree, tip_mat, j, "discrete")
+      geno_recon_and_conf[[j]] <- ancestral_reconstruction_by_ML(temp_tree, tip_mat, j, disc_or_cont)
       AR_mat[[i]][, j] <- geno_recon_and_conf[[j]]$tip_and_node_recon
       conf_mat[[i]][, j] <- geno_recon_and_conf[[j]]$tip_and_node_rec_conf
+      recon_edge_mat[[i]][[j]] <- geno_recon_and_conf[[j]]$recon_edge_mat
+      storage.mode(recon_edge_mat[[i]][[j]]) <- "numeric"
     }
     colnames(AR_mat[[i]]) <- colnames(conf_mat[[i]]) <- colnames(AR_mat_list[[i]])
-    row.names(AR_mat[[i]]) <- row.names(conf_mat[[i]]) <- row.names(AR_mat_list[[i]])
+    
+    if (nrow(AR_mat_list[[i]]) == nrow(conf_mat[[i]])) {
+      row.names(AR_mat[[i]]) <- row.names(conf_mat[[i]]) <- row.names(AR_mat_list[[i]])
+    } else {
+      row.names(AR_mat[[i]]) <- row.names(conf_mat[[i]]) <- c(row.names(AR_mat_list[[i]]), paste0("node_", 1:ape::Nnode(tree_list[[i]])))
+    }
+    
     geno_recon_and_conf_list[[i]] <- geno_recon_and_conf
   }
 
   return(list("conf_mat" = conf_mat,
-              "AR_mat" = AR_mat))
+              "AR_mat" = AR_mat, 
+              "recon_edge_mat" = recon_edge_mat))
 }
-
 
 #' ancestral_reconstruction_by_ML
 #'
@@ -71,13 +80,16 @@ ancestral_reconstruction_by_ML <- function(tr, mat, num, disc_cont){
 
   # Function -------------------------------------------------------------------
   # Compute ancestral reconstruction
-  recon_method <- "ML" # ML == Maximum Likelihood.
   ML_significance_threshold <- .875 # ML literature suggests that a ratio of 7:1
                                     # suggests a high confidence ancestral
                                     # reconstruction per node .875/.125 = 7.
 
   if (disc_cont == "continuous") {
     # This is only for a continuous phenotype
+    recon_method <- "pic" # To resolve this bug:
+      # Error in nlm(function(p) dev.BM(p), p = c(1, rep(mean(x), nb.node)), 
+      # hessian = TRUE) : missing value in parameter 
+    
     # RECONSTRUCTION
     cont_results <- continuous_ancestral_reconstruction(tr,
                                                         mat,
@@ -93,6 +105,8 @@ ancestral_reconstruction_by_ML <- function(tr, mat, num, disc_cont){
 
   } else {
     # This is always the choice for genotypes and discrete phenotypes
+    recon_method <- "ML" # ML == Maximum Likelihood.
+    
     # RECONSTRUCTION
     discrete_results <-
       discrete_ancestral_reconstruction(tr, mat, num, disc_cont, recon_method)
@@ -563,3 +577,4 @@ discretize_conf_with_cutoff <- function(confidence_vector, threshold){
   # check_if_binary_vector(confidence_vector)
   return(confidence_vector)
 } # end discretize_conf_with_cutoff()
+

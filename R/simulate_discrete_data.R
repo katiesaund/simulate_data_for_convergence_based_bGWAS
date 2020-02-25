@@ -32,7 +32,7 @@ print("Finish generating first discrete matrix")
 
 binary_AR_df_list <- add_WN(binary_AR_df_list, tree_list) # Due to WN stuff the ancestral reconstructions are now wrong!
 
-binary_AR_and_conf_mat <- ancestral_reconstruction(binary_AR_df_list, tree_list) # So fix the ancestral reconstructions here
+binary_AR_and_conf_mat <- ancestral_reconstruction(binary_AR_df_list, tree_list, "discrete") # So fix the ancestral reconstructions here
 binary_conf_mat_list <- binary_AR_and_conf_mat$conf_mat
 binary_AR_df_list <- binary_AR_and_conf_mat$AR_mat
 print("Finish ancestral reconstruction")

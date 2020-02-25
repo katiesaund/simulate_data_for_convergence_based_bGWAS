@@ -93,7 +93,7 @@ calc_sync_gamma_list <- function(tree_list,
     num_pheno <- length(phenotype_sync_trans_list[[i]])
     temp_gamma_list <- list()
     num_tip <- ape::Ntip(tree_list[[i]])
-    for (j in 1:num_pheno){
+    for (j in 1:num_pheno) {
       high_conf_edge_list <- hi_conf_obj_list[[i]][[j]]$high_conf_ordered_by_edges
       genotype_sync_trans_list <- hi_conf_obj_list[[i]][[j]]$genotype_transition
       geno_names <- names(hi_conf_obj_list[[i]][[j]]$genotype_transition)
@@ -174,6 +174,29 @@ calculate_synchronous_gamma <- function(geno_names,
   return(results)
 }
 
+
+calc_cont_gamma_list <- function(tree_list,
+                                 phenotype_cont_recon_mat_list,
+                                 hi_conf_obj_list) {
+  num_tree <- length(tree_list)
+  cont_gamma_list <- list()
+  high_conf_edge_list <- list()
+  
+  for (i in 1:num_tree) {
+    num_pheno <- length(phenotype_cont_recon_mat_list[[i]])
+    temp_gamma_list <- list()
+    num_tip <- ape::Ntip(tree_list[[i]])
+    for (j in 1:num_pheno) {
+      high_conf_edge_list <- hi_conf_obj_list[[i]][[j]]$high_conf_ordered_by_edges
+      temp_gamma_list[[j]] <-
+        calculate_continuous_gamma(phenotype_cont_recon_mat_list[[i]][[j]],
+                                   high_conf_edge_list)
+    }
+    cont_gamma_list[[i]] <- temp_gamma_list
+  }
+  return(cont_gamma_list)
+}
+
 #' Calculate gamma within continuous test
 #'
 #' @description Given phenotype and genotype information, calculate a summary
@@ -205,15 +228,15 @@ calculate_continuous_gamma <- function(pheno_recon_mat,
                                        high_conf){
   high_conf_edge_list <- high_conf$high_conf_ordered_by_edges
   geno_trans_edge_list <- high_conf$genotype_transition
-  check_equal(length(geno_trans_edge_list), length(high_conf_edge_list))
-  check_equal(length(geno_trans_edge_list[[1]]$transition),
-              length(high_conf_edge_list[[1]]))
-  check_equal(nrow(pheno_recon_mat), length(high_conf_edge_list[[1]]))
-  check_dimensions(pheno_recon_mat,
-                   exact_rows = length(high_conf_edge_list[[1]]),
-                   min_rows = 1,
-                   exact_cols = 2,
-                   min_cols = 2)
+  # check_equal(length(geno_trans_edge_list), length(high_conf_edge_list))
+  # check_equal(length(geno_trans_edge_list[[1]]$transition),
+  #             length(high_conf_edge_list[[1]]))
+  # check_equal(nrow(pheno_recon_mat), length(high_conf_edge_list[[1]]))
+  # check_dimensions(pheno_recon_mat,
+  #                  exact_rows = length(high_conf_edge_list[[1]]),
+  #                  min_rows = 1,
+  #                  exact_cols = 2,
+  #                  min_cols = 2)
   pheno_delta <- rep(0, nrow(pheno_recon_mat))
   for (i in 1:nrow(pheno_recon_mat)) {
     pheno_delta[i] <- calculate_phenotype_change_on_edge(i, pheno_recon_mat)

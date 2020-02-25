@@ -229,6 +229,7 @@ calculate_continuous_gamma <- function(pheno_recon_mat,
                                        high_conf){
   high_conf_edge_list <- high_conf$high_conf_ordered_by_edges
   geno_trans_edge_list <- high_conf$genotype_transition
+  geno_names <- colnames(high_conf$genotype)
   # check_equal(length(geno_trans_edge_list), length(high_conf_edge_list))
   # check_equal(length(geno_trans_edge_list[[1]]$transition),
   #             length(high_conf_edge_list[[1]]))
@@ -282,7 +283,8 @@ calculate_continuous_gamma <- function(pheno_recon_mat,
                   "num_hi_conf_edges" = num_hi_conf_edges,
                   "pheno_beta" = pheno_beta,
                   "geno_beta" = geno_beta,
-                  "epsilon" = epsilon)
+                  "epsilon" = epsilon, 
+                  "genotype" = geno_names)
   return(results)
 }
 

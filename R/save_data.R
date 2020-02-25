@@ -161,7 +161,7 @@ save_data <- function(tree_list,
       BM_sync_gamma_df$pheno_beta <- BM_sync_gamma$pheno_beta
       BM_sync_gamma_df$geno_beta <- BM_sync_gamma$geno_beta
       BM_sync_gamma_df$epsilon <- BM_sync_gamma$epsilon
-      BM_sync_gamma_df$genotype <- BM_sync_gamma_df$genotype
+      BM_sync_gamma_df$genotype <- BM_sync_gamma$genotype
       
       WN_phyc_gamma_df$tree_id <- i
       WN_phyc_gamma_df$phenotype_id <- j
@@ -320,7 +320,7 @@ save_continuous_data <- function(tree_list,
       BM_cont_gamma_df$pheno_beta <- BM_cont_gamma$pheno_beta
       BM_cont_gamma_df$geno_beta <- BM_cont_gamma$geno_beta
       BM_cont_gamma_df$epsilon <- BM_cont_gamma$epsilon
-      BM_cont_gamma_df$genotype <- BM_cont_gamma_df$genotype
+      BM_cont_gamma_df$genotype <- BM_cont_gamma$genotype
       
       WN_cont_gamma_df$tree_id <- i
       WN_cont_gamma_df$phenotype_id <- j

@@ -1,6 +1,6 @@
 library(tidyverse)
 
-df <- read_tsv(file = "../data/F1_scores_by_genotype_range_of_alpha_gamma.tsv", col_names = TRUE)
+df <- read_tsv(file = "../data/F1_scores_by_genotype_range_of_alpha_gamma_combined.tsv", col_names = TRUE)
 
 df$phenotype_id <- paste0("pheno_", df$phenotype_id)
 df$tree_id <- paste0("tree_", df$tree_id)

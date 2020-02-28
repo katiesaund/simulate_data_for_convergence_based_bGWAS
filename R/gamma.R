@@ -202,7 +202,7 @@ calc_cont_gamma_list <- function(tree_list,
 #' @description Given phenotype and genotype information, calculate a summary
 #'   statistic that describes the number of edges on the tree where the
 #'   phenotype change is large (delta phenotype > median(delta phenotype on
-#'   genotype transition edges)) and the genotype transitions (0 to 1 or 1 to
+#'   genotype non-transition edges)) and the genotype transitions (0 to 1 or 1 to
 #'   0). This summary stat will be used to evaluate the appropriateness /
 #'   effectiveness of hogwash on this dataset.
 #' @param geno_trans_edge_list List of lists. Each entry has two named lists:
@@ -223,6 +223,7 @@ calc_cont_gamma_list <- function(tree_list,
 #'     number of genotypes.
 #'  $gamma_count Numeric vector. Raw gamma value for each genotype. Length ==
 #'    number of genotypes.
+#'    # TODO THIS LIST IT TOO SHORT
 #' @noRd
 #'
 calculate_continuous_gamma <- function(pheno_recon_mat,
@@ -242,33 +243,33 @@ calculate_continuous_gamma <- function(pheno_recon_mat,
   
   # Get indices for all high confidence genotype transition edges
   num_geno <- length(geno_trans_edge_list)
-  geno_trans_index_list <- high_conf_index_list <- rep(list(0), num_geno)
+  geno_non_trans_index_list <- high_conf_index_list <- rep(list(0), num_geno)
   for (i in 1:num_geno) {
-    geno_trans_index_list[[i]] <- which(geno_trans_edge_list[[i]]$transition == 1 & high_conf_edge_list[[i]] == 1 & high_conf$tr_and_pheno_hi_conf == 1)
+    geno_non_trans_index_list[[i]] <- which(geno_trans_edge_list[[i]]$transition == 0 & high_conf_edge_list[[i]] == 1 & high_conf$tr_and_pheno_hi_conf == 1)
     high_conf_index_list[[i]] <- which(high_conf_edge_list[[i]] == 1 & high_conf$tr_and_pheno_hi_conf == 1)
   }
   
   # Get phenotype delta for all high confidence edges and specifically for high confidence genotype transition edges
   
-  pheno_delta_hi_conf <- pheno_delta_hi_conf_geno_trans <- rep(list(0), num_geno)
+  pheno_delta_hi_conf <- pheno_delta_hi_conf_geno_non_trans <- rep(list(0), num_geno)
   
   for (i in 1:num_geno) {
     pheno_delta_hi_conf[[i]] <- calculate_phenotype_change_on_edge(high_conf_index_list[[i]], pheno_recon_mat)
-    pheno_delta_hi_conf_geno_trans[[i]] <- calculate_phenotype_change_on_edge(geno_trans_index_list[[i]], pheno_recon_mat)
+    pheno_delta_hi_conf_geno_non_trans[[i]] <- calculate_phenotype_change_on_edge(geno_non_trans_index_list[[i]], pheno_recon_mat)
   }
   
   
-  median_pheno_delta_hi_conf_geno_trans <- pheno_beta <- epsilon <- geno_beta <- gamma_count <- gamma_percent <- rep(0, num_geno)
+  median_pheno_delta_hi_conf_geno_non_trans <- pheno_beta <- epsilon <- geno_beta <- gamma_count <- gamma_percent <- rep(0, num_geno)
   for (i in 1:num_geno) {
-    median_pheno_delta_hi_conf_geno_trans[i] <- stats::median(pheno_delta_hi_conf_geno_trans[[i]])
+    median_pheno_delta_hi_conf_geno_non_trans[i] <- stats::median(pheno_delta_hi_conf_geno_non_trans[[i]])
   }
   
   for (i in 1:num_geno) {
-    pheno_beta[i] <- sum(pheno_delta_hi_conf[[i]] > median_pheno_delta_hi_conf_geno_trans[i])
+    pheno_beta[i] <- sum(pheno_delta_hi_conf[[i]] > median_pheno_delta_hi_conf_geno_non_trans[i])
     geno_beta[i] <- sum(geno_trans_edge_list[[i]]$transition == 1 &
                         high_conf_edge_list[[i]] == 1)
     
-    gamma_count[i] <- sum(pheno_delta_hi_conf[[i]] > median_pheno_delta_hi_conf_geno_trans[i] & 
+    gamma_count[i] <- sum(pheno_delta_hi_conf[[i]] > median_pheno_delta_hi_conf_geno_non_trans[i] & 
                           geno_trans_edge_list[[i]]$transition == 1 &
                           high_conf_edge_list[[i]] == 1)
     gamma_percent[i] <- gamma_count[i] / sum(high_conf_edge_list[[i]])
@@ -287,4 +288,3 @@ calculate_continuous_gamma <- function(pheno_recon_mat,
                   "genotype" = geno_names)
   return(results)
 }
-

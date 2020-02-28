@@ -87,14 +87,17 @@ disc_geno_trans_sync_and_cont <- disc_geno_trans$transition
 # Calculate delta pheno per edge
 cont_pheno_edge_recon_mat <- convert_to_edge_mat(tree, cont_pheno_tip_and_node_recon)
 geno_trans_index <- which(disc_geno_trans_sync_and_cont == 1)
-geno_trans_delta_pheno <- calculate_phenotype_change_on_edge(edge_list = geno_trans_index, phenotype_by_edges = cont_pheno_edge_recon_mat)
-all_delta_pheno <- calculate_phenotype_change_on_edge(edge_list = 1:ape::Nedge(tree), phenotype_by_edges = cont_pheno_edge_recon_mat)
-# Which genotype transition edges have median(delta pheno) > all edge median(delta phenotype)?
-all_edge_median_delta <- median(all_delta_pheno)
-geno_trans_median_delta <- median(geno_trans_delta_pheno)
+geno_non_trans_index <- which(disc_geno_trans_sync_and_cont == 0)
 
-edges_with_high_delta <- which(all_delta_pheno > all_edge_median_delta)
-edges_with_geno_trans_and_high_delta <- geno_trans_index[geno_trans_delta_pheno > geno_trans_median_delta]
+geno_trans_delta_pheno <- calculate_phenotype_change_on_edge(edge_list = geno_trans_index, phenotype_by_edges = cont_pheno_edge_recon_mat)
+geno_non_trans_delta_pheno <- calculate_phenotype_change_on_edge(edge_list = geno_non_trans_index, phenotype_by_edges = cont_pheno_edge_recon_mat)
+
+all_delta_pheno <- calculate_phenotype_change_on_edge(edge_list = 1:ape::Nedge(tree), phenotype_by_edges = cont_pheno_edge_recon_mat)
+# Which genotype transition edges have median(delta pheno) > median(delta phenotype on non-transition edges)?
+geno_non_trans_median_delta <- median(geno_non_trans_delta_pheno)
+
+edges_with_high_delta <- which(all_delta_pheno > geno_non_trans_median_delta)
+edges_with_geno_trans_and_high_delta <- geno_trans_index[geno_trans_delta_pheno > geno_non_trans_median_delta]
 
 # Prep for plots
 disc_pheno_recon_by_edges <- reorder_tip_and_node_to_edge(disc_pheno_tip_and_node_recon, tree)
@@ -102,6 +105,10 @@ disc_pheno_recon_by_edges <- reorder_tip_and_node_to_edge(disc_pheno_tip_and_nod
 disc_pheno_recon_edge_color <- disc_pheno_recon_by_edges
 disc_pheno_recon_edge_color[disc_pheno_recon_edge_color == 1] <- "hot pink"
 disc_pheno_recon_edge_color[disc_pheno_recon_edge_color == 0] <- "black"
+
+disc_pheno_recon_by_edges_phyc_beta <- disc_pheno_recon_edge_color
+disc_pheno_recon_by_edges_phyc_beta[disc_pheno_recon_by_edges_phyc_beta == "hot pink"] <- "red"
+
 
 disc_pheno_trans_edge_color <- disc_pheno_trans$transition
 disc_pheno_trans_edge_color[disc_pheno_trans_edge_color == 1] <- "red"
@@ -161,7 +168,7 @@ graphics::plot(tree,
                font = 1,
                edge.width = edge_width, 
                show.tip.label = tip_label_log,
-               edge.color = disc_pheno_recon_edge_color,
+               edge.color = disc_pheno_recon_by_edges_phyc_beta,
                main = bquote(beta[phenotype]),
                use.edge.length = FALSE,
                label.offset = 0.25,

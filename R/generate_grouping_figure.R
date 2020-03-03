@@ -125,7 +125,7 @@ snp_geno_1_trans_edge_color[snp_geno_1_trans_edge_color == 1] <- "violetred2"
 snp_geno_1_trans_edge_color[snp_geno_1_trans_edge_color %in% c(0, -1)] <- "black"
 
 snp_geno_2_trans_edge_color <- snp_geno_2_trans$trans_dir
-snp_geno_2_trans_edge_color[snp_geno_2_trans_edge_color == 1] <- "mediumblue"
+snp_geno_2_trans_edge_color[snp_geno_2_trans_edge_color == 1] <- "dodgerblue"
 snp_geno_2_trans_edge_color[snp_geno_2_trans_edge_color %in% c(0, -1)] <- "black"
 
 snp_geno_3_trans_edge_color <- snp_geno_3_trans$trans_dir
@@ -135,21 +135,21 @@ snp_geno_3_trans_edge_color[snp_geno_3_trans_edge_color %in% c(0, -1)] <- "black
 
 # Gene
 gene_geno_trans_phyc_edge_color <- rep("black", ape::Nedge(tree))
-gene_geno_trans_phyc_edge_color[gene_geno_phyc_trans_index] <- "grey"
+gene_geno_trans_phyc_edge_color[gene_geno_phyc_trans_index] <- "mediumpurple"
 
 cex_value <- 1
 edge_width <- 2.5
 tip_label_log <- FALSE
 
 pdf(file = "img/grouping_examples.pdf", width = 7, height = 5)
-graphics::par(mfrow = c(3, 3), mar = c(3, 3, 3, 3))
+graphics::par(mfrow = c(3, 3), mar = c(1, 1, 1, 1))
 
 graphics::plot(tree,
                font = 1,
                edge.width = edge_width, 
                show.tip.label = tip_label_log,
                edge.color = snp_geno_1_recon_edge_color,
-               main = "SNP 1 Gene A Reconstruction",
+               #main = "SNP 1 Gene A Reconstruction",
                use.edge.length = FALSE,
                label.offset = 0.25,
                adj = 0,
@@ -159,7 +159,7 @@ graphics::plot(tree,
                edge.width = edge_width, 
                show.tip.label = tip_label_log,
                edge.color = snp_geno_1_trans_edge_color,
-               main = "SNP 1 Gene A PhyC Transitions",
+               #main = "SNP 1 Gene A PhyC Transitions",
                use.edge.length = FALSE,
                label.offset = 0.25,
                adj = 0,
@@ -173,7 +173,7 @@ graphics::plot(tree,
                edge.width = edge_width, 
                show.tip.label = tip_label_log,
                edge.color = snp_geno_2_recon_edge_color,
-               main = "SNP 2 Gene A Reconstruction",
+               #main = "SNP 2 Gene A Reconstruction",
                use.edge.length = FALSE,
                label.offset = 0.25,
                adj = 0,
@@ -183,7 +183,7 @@ graphics::plot(tree,
                edge.width = edge_width, 
                show.tip.label = tip_label_log,
                edge.color = snp_geno_2_trans_edge_color,
-               main = "SNP 2 Gene A PhyC Transitions",
+               #main = "SNP 2 Gene A PhyC Transitions",
                use.edge.length = FALSE,
                label.offset = 0.25,
                adj = 0,
@@ -193,7 +193,7 @@ graphics::plot(tree,
                edge.width = edge_width, 
                show.tip.label = tip_label_log,
                edge.color = gene_geno_trans_phyc_edge_color,
-               main = "Gene A PhyC Transitions",
+               #main = "Gene A PhyC Transitions",
                use.edge.length = FALSE,
                label.offset = 0.25,
                adj = 0,
@@ -203,7 +203,7 @@ graphics::plot(tree,
                edge.width = edge_width, 
                show.tip.label = tip_label_log,
                edge.color = snp_geno_3_recon_edge_color,
-               main = "SNP 3 Gene A Reconstruction",
+               #main = "SNP 3 Gene A Reconstruction",
                use.edge.length = FALSE,
                label.offset = 0.25,
                adj = 0,
@@ -213,7 +213,7 @@ graphics::plot(tree,
                edge.width = edge_width, 
                show.tip.label = tip_label_log,
                edge.color = snp_geno_3_trans_edge_color,
-               main = "SNP 3 Gene A PhyC Transitions",
+               #main = "SNP 3 Gene A PhyC Transitions",
                use.edge.length = FALSE,
                label.offset = 0.25,
                adj = 0,

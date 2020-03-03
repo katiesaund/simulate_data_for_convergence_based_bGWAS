@@ -142,7 +142,7 @@ edge_width <- 2.5
 tip_label_log <- FALSE
 
 pdf(file = "img/grouping_examples.pdf", width = 7, height = 5)
-graphics::par(mfrow = c(3, 3), mar = c(1, 1, 1, 1))
+graphics::par(mfrow = c(3, 3), mar = c(1, 3, 1, 1))
 
 graphics::plot(tree,
                font = 1,

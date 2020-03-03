@@ -151,7 +151,7 @@ edge_width <- 2.5
 tip_label_log <- FALSE
 
 pdf(file = "img/hogwash_test_schema.pdf", width = 9, height = 7.5)
-graphics::par(mfrow = c(3, 5), mar = c(3, 3, 3, 3))
+graphics::par(mfrow = c(3, 5), mar = c(1, 1, 1, 1))
 
  # phyc
 graphics::plot(tree,
@@ -278,7 +278,7 @@ plot(plot_p_recon,
      offset = 1.7)
 
 
-graphics::par(mar = c(3, 3, 3, 3))
+graphics::par(mar = c(1, 1, 1, 1))
 
 graphics::plot(tree,
                font = 1,

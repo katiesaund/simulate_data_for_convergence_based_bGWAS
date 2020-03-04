@@ -128,4 +128,80 @@ calculate_phenotype_change_on_edge <- function(edge_list, phenotype_by_edges){
   return(delta)
 }
 
+
+add_geno_continuous <- function(binary_AR_mat_list, tree_list, num_pheno, cont_pheno_BM_mat_list, cont_pheno_WN_mat_list) {
+  num_trees <- length(tree_list)
+  for (i in 1:num_trees) {
+    num_trait <- ncol(binary_AR_mat_list[[i]])
+    num_tip <- ape::Ntip(tree_list[[i]])
+    num_to_add <- round(num_trait / 4, 0)
+    if (num_to_add < 10) {
+      num_to_add <- 10
+    }
+    num_to_add_per_pheno <- round(num_trait / 10, 0)
+    if (num_to_add_per_pheno < 10) {
+      num_to_add_per_pheno <- 10
+    }
+    
+    random_col_to_add <- flipped_to_add_10p <- flipped_to_add_25p <- 
+      flipped_to_add_40p <- 
+      binary_AR_mat_list[[i]][, 1:num_to_add, drop = FALSE]
+    for (j in 1:ncol(random_col_to_add)) {
+      current_col <- random_col_to_add[1:num_tip, j]
+      jumbled_tips <- sample(current_col,
+                             size = length(current_col),
+                             replace = FALSE)
+      random_col_to_add[1:num_tip, j] <- jumbled_tips
+      flipped_tip_10p <- flip_some_tips(current_col, flip_freq = 0.10)
+      flipped_to_add_10p[1:num_tip, j] <- flipped_tip_10p
+      
+      flipped_tip_25p <- flip_some_tips(current_col, flip_freq = 0.25)
+      flipped_to_add_25p[1:num_tip, j] <- flipped_tip_25p
+      
+      flipped_tip_40p <- flip_some_tips(current_col, flip_freq = 0.40)
+      flipped_to_add_40p[1:num_tip, j] <- flipped_tip_40p
+    }
+    
+    genos_to_add_bc_pheno <- matrix(NA, nrow = num_tip, ncol = 0)
+    for (k in 1:num_pheno) {
+      # BM
+      temp_BM_matrix <- cont_pheno_BM_mat_list[[i]][, k, drop = FALSE]
+      geno_like_BM_pheno <- matrix(rep(as.numeric(t(temp_BM_matrix)), each = num_to_add_per_pheno), nrow = nrow(temp_BM_matrix), byrow = TRUE)
+      temp_BM_median <- median(temp_BM_matrix[, 1, drop = TRUE])
+      
+      # WN
+      temp_WN_matrix <- cont_pheno_WN_mat_list[[i]][, k, drop = FALSE]
+      geno_like_WN_pheno <- matrix(rep(as.numeric(t(temp_WN_matrix)), each = num_to_add_per_pheno), nrow = nrow(temp_WN_matrix), byrow = TRUE)
+      temp_WN_median <- median(temp_WN_matrix[, 1, drop = TRUE])
+      
+      geno_like_BM_pheno <- as.numeric(geno_like_BM_pheno > temp_BM_median)
+      geno_like_WN_pheno <- as.numeric(geno_like_WN_pheno > temp_WN_median)
+      
+      flip_sequence <- seq(from = 0, to = 0.99999, by = 1 / num_to_add_per_pheno)
+      for (m in 2:num_to_add_per_pheno) {
+        geno_like_BM_pheno[, m] <- flip_some_tips(geno_like_BM_pheno[, m], flip_freq = flip_sequence[m])
+        geno_like_WN_pheno[, m] <- flip_some_tips(geno_like_WN_pheno[, m], flip_freq = flip_sequence[m])
+      }
+      genos_to_add_bc_pheno <- cbind(geno_like_BM_pheno, geno_like_WN_pheno)
+    }
+    
+    binary_AR_mat_list[[i]] <- cbind(binary_AR_mat_list[[i]],
+                                     random_col_to_add,
+                                     flipped_to_add_10p, 
+                                     flipped_to_add_25p, 
+                                     flipped_to_add_40p, 
+                                     genos_to_add_bc_pheno)
+    
+    temp_only_tips <- binary_AR_mat_list[[i]][1:num_tip, , drop = FALSE]
+    cols_to_keep <- colSums(temp_only_tips) > 1 & colSums(temp_only_tips) < (nrow(temp_only_tips) - 1)
+    binary_AR_mat_list[[i]] <- binary_AR_mat_list[[i]][, cols_to_keep, drop = FALSE]
+    # Remove duplicate columns (genotypes)
+    binary_AR_mat_list[[i]] <- as.data.frame(t(unique(t(binary_AR_mat_list[[i]])))) 
+    
+    # Write genotype names (colnames)
+    colnames(binary_AR_mat_list[[i]]) <-
+      paste0("sim", 1:ncol(binary_AR_mat_list[[i]]))
+  }
+  return(binary_AR_mat_list)
+}
                   

@@ -1,0 +1,10 @@
+name: simulate_data
+channels:
+  - conda-forge
+  - bioconda
+  - default
+  - r
+dependencies:
+  - r-ape=5.3  
+  - r-caper=1.0.1
+  - r-phytools=0.6-99

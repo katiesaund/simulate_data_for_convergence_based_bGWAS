@@ -67,7 +67,7 @@ is_tip <- function(node_num, tr){
 #'
 #' @param tr Phylo.
 #' @param mat Matrix. Phenotype (either continuous or binary) or a binary
-#'   genotype. Dim: nrow = Ntrip(tr) x ncol = {1 if phenotype or number of
+#'   genotype. Dim: nrow = Ntip(tr) x ncol = {1 if phenotype or number of
 #'   genotypes}.
 #' @param num Integer. Index of current genotype (column number in genotype matrix).
 #' @param node_recon Numeric vector. Either pheno_recon_and_conf$node_anc_rec or

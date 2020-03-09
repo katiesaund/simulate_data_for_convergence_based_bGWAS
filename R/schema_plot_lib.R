@@ -73,7 +73,7 @@ reorder_tip_and_node_to_edge <- function(tips_and_node_vector, tr){
 #'    is +1. When parent > child or parent_1_child_0 value is -1.}
 #'   }
 #' @noRd
-identify_transition_edges <- function(tr, vec, node_recon, disc_cont){
+id_transition_edges_from_vec <- function(tr, vec, node_recon, disc_cont){
   # FUNCTION -------------------------------------------------------------------
   transition <- transition_direction <-
     parent_node <- child_node <- integer(ape::Nedge(tr))

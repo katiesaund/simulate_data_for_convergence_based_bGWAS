@@ -175,4 +175,41 @@ add_geno_continuous <- function(binary_AR_mat_list, tree_list, num_pheno, cont_p
   }
   return(binary_AR_mat_list)
 }
+
+#' Calculate phenotype change per tree edge
+#'
+#' @description Quantify absoluate value of phenotype change on each tree edge.
+#'
+#' @param edge_list Numeric vector. Each number is the index of the tree edge to
+#'   be used
+#' @param phenotype_by_edges Mat. Dimensions: Nedge x 2 matrix. Entries are the
+#'   phenotype value at the node, where row is the edge, 1st column is the
+#'   parent node and 2nd column is the child node.
+#'
+#' @return Numeric vector.   Length = length(edge_list).
+#' @noRd
+calculate_phenotype_change_on_edge <- function(edge_list, phenotype_by_edges){
+  # Check input ----------------------------------------------------------------
+  if (max(edge_list) > nrow(phenotype_by_edges)) {
+    stop("Cannot calculate phenotype change on edges.")
+  }
+  if (!is.vector(edge_list)) {
+    stop("edge_list must be a vector of indices of edges")
+  }
+  
+  # Function -------------------------------------------------------------------
+  delta <- rep(NA, length(unique(edge_list)))
+  for (j in 1:length(edge_list)) {
+    delta[j] <-
+      abs(phenotype_by_edges[edge_list[j], 1] -
+            phenotype_by_edges[edge_list[j], 2])
+  }
+  
+  # Check and return output ----------------------------------------------------
+  if (sum(delta < 0) > 0) {
+    stop("Delta phenotype should always be recorded as an absolute value.")
+  }
+  
+  return(delta)
+}
                   

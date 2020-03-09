@@ -1,13 +1,3 @@
-check_if_phenotype_normal <- function(pheno){
-  result <- stats::shapiro.test(unlist(pheno))
-  alpha <- 0.05
-  is_normal <- TRUE
-  if (result$p < alpha) {
-    is_normal <- FALSE
-  }
-  return(is_normal)
-}
-
 make_continuous_phenotypes <- function(tree_list, num_pheno){
   num_trees <- length(tree_list)
   pheno_mat_list_BM <- pheno_mat_list_WN <- rep(list(NULL), num_trees)
@@ -19,18 +9,15 @@ make_continuous_phenotypes <- function(tree_list, num_pheno){
     colnames(pheno_mat_list_WN[[i]]) <- paste0("WN_pheno_", 1:num_pheno)
     
     for (j in 1:num_pheno) {
-      lamdba_not_close_to_1 <- pheno_not_normal <- TRUE
+      lamdba_not_close_to_1 <- TRUE
       
-      while (pheno_not_normal) {
-        while (lamdba_not_close_to_1) {
-          continuous_BM_pheno <- phytools::fastBM(tree = tree_list[[i]])
-          # Check that lambda is close to 1 for BM phenotype
-          BM_lambda <- phytools::phylosig(tree = tree_list[[i]],
-                                          x = continuous_BM_pheno,
-                                          method = "lambda")
-          lamdba_not_close_to_1 <- BM_lambda$lambda < 0.95 & BM_lambda$lambda > 1.05
-        }
-        pheno_not_normal <- !(check_if_phenotype_normal(continuous_BM_pheno))
+      while (lamdba_not_close_to_1) {
+        continuous_BM_pheno <- phytools::fastBM(tree = tree_list[[i]])
+        # Check that lambda is close to 1 for BM phenotype
+        BM_lambda <- phytools::phylosig(tree = tree_list[[i]],
+                                        x = continuous_BM_pheno,
+                                        method = "lambda")
+        lamdba_not_close_to_1 <- BM_lambda$lambda < 0.95 & BM_lambda$lambda > 1.05
       }
 
       # When lambda is close to zero, the phylogenetic signal is low (White Noise)
@@ -58,27 +45,7 @@ make_continuous_phenotypes <- function(tree_list, num_pheno){
       
       pheno_mat_list_BM[[i]][, j] <- continuous_BM_pheno
       pheno_mat_list_WN[[i]][, j] <- cont_low_signal_pheno
-      
-      
-      
-      
     }
-    # write.table(continuous_BM_pheno, 
-    #             sep = "\t", 
-    #             file = paste0("../data/", 
-    #                           "continuous_pheno_BM_tree_", 
-    #                           i, 
-    #                           "_pheno_", 
-    #                           j, 
-    #                           ".tsv"))
-    # write.table(cont_low_signal_pheno, 
-    #             sep = "\t", 
-    #             file = paste0("../data/", 
-    #                           "continuous_pheno_WN_tree_", 
-    #                           i, 
-    #                           "_pheno_",
-    #                           j,
-    #                           ".tsv"))
   }
   results <- list("cont_pheno_BM_mat_list" = pheno_mat_list_BM, 
                   "cont_pheno_WN_mat_list" = pheno_mat_list_WN)

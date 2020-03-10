@@ -138,8 +138,13 @@ plot_geno_non_and_trans_hist <- function(ge_tr, ge_no_tr) {
 }
 
 # Calculations
-# A 
 a_out <- get_pheno_delta_geno_recon(treeA, phenoA, genoA)
+b_out <- get_pheno_delta_geno_recon(treeB, phenoB, genoB)
+c_out <- get_pheno_delta_geno_recon(treeC, phenoC, genoC)
+d_out <- get_pheno_delta_geno_recon(treeD, phenoD, genoD)
+
+# Plots
+# A 
 par(mfrow = c(2, 2))
 dotTree(treeA,  phenoA, length = 10, ftype = "i")
 edgelabels(round(a_out$delta_pheno_vec, 1))
@@ -168,7 +173,6 @@ epsilon_b_scaled_to_num_geno_trans_edges(a_out$geno_trans_vec$transition, a_out$
 epsilon_using_median_values(a_out$geno_trans_vec$transition, a_out$delta_pheno_vec) # 0.130
 
 # B 
-b_out <- get_pheno_delta_geno_recon(treeB, phenoB, genoB)
 par(mfrow = c(2, 2))
 dotTree(treeB,  phenoB, length = 10, ftype = "i")
 edgelabels(round(b_out$delta_pheno_vec, 1))
@@ -197,7 +201,7 @@ epsilon_b_scaled_to_num_geno_trans_edges(b_out$geno_trans_vec$transition, b_out$
 epsilon_using_median_values(b_out$geno_trans_vec$transition, b_out$delta_pheno_vec) # 0.167
 
 # C
-c_out <- get_pheno_delta_geno_recon(treeC, phenoC, genoC)
+
 par(mfrow = c(2, 2))
 dotTree(treeC,  phenoC, length = 10, ftype = "i")
 edgelabels(round(c_out$delta_pheno_vec, 1))
@@ -226,7 +230,7 @@ epsilon_b_scaled_to_num_geno_trans_edges(c_out$geno_trans_vec$transition, c_out$
 epsilon_using_median_values(c_out$geno_trans_vec$transition, c_out$delta_pheno_vec) # 0.23
 
 # D
-d_out <- get_pheno_delta_geno_recon(treeD, phenoD, genoD)
+
 par(mfrow = c(2, 2))
 dotTree(treeD,  phenoD, length = 10, ftype = "i")
 edgelabels(round(d_out$delta_pheno_vec, 1))
@@ -254,11 +258,10 @@ epsilon_b_scaled_to_one(d_out$geno_trans_vec$transition, d_out$delta_pheno_vec) 
 epsilon_b_scaled_to_num_geno_trans_edges(d_out$geno_trans_vec$transition, d_out$delta_pheno_vec) # 0.400
 epsilon_using_median_values(d_out$geno_trans_vec$transition, d_out$delta_pheno_vec) # 0
 
-# # let's dig into the continuous results ancestral reconstruction confidence issue
-# set.seed(1)
-# reconstruction <- ape::ace(pheno[, 1, drop = TRUE],
-#                            tree,
-#                            model = "BM",
-#                            type = "continuous",
-#                            method = "REML", # pic?
-#                            marginal = FALSE)
+
+# Plotted from what should be highest epsilon to lowest epsilon
+par(mfrow = c(2, 2))
+plot_geno_non_and_trans_hist(a_out$trans_pheno_delta_edge, a_out$non_trans_pheno_delta_edge)
+plot_geno_non_and_trans_hist(b_out$trans_pheno_delta_edge, b_out$non_trans_pheno_delta_edge)
+plot_geno_non_and_trans_hist(c_out$trans_pheno_delta_edge, c_out$non_trans_pheno_delta_edge)
+plot_geno_non_and_trans_hist(d_out$trans_pheno_delta_edge, d_out$non_trans_pheno_delta_edge)

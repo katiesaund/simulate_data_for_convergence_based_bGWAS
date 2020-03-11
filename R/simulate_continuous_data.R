@@ -1,6 +1,7 @@
 suppressWarnings(library(ape))
 suppressWarnings(library(caper))
 suppressWarnings(library(phytools))
+suppressWarnings(library(scales))
 
 source("../../simulate_data_for_convergence_based_bGWAS/R/tree.R")
 source("../../simulate_data_for_convergence_based_bGWAS/R/discrete_trait_lib.R")

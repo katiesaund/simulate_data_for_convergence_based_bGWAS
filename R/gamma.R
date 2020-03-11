@@ -266,26 +266,31 @@ calculate_continuous_gamma <- function(pheno_recon_mat,
                                          pheno_recon_mat)
   }
   
-  median_pheno_delta_geno_non_trans <- pheno_beta <-
+  pheno_beta <-
     epsilon <- geno_beta <- gamma_count <- gamma_percent <- rep(0, num_geno)
   
   for (i in 1:num_geno) {
-    median_pheno_delta_geno_non_trans[i] <-
-      stats::median(pheno_delta_geno_non_trans[[i]])
-  }
-  
-  for (i in 1:num_geno) {
-    pheno_beta[i] <- sum(pheno_delta[[i]] >
-                           median_pheno_delta_geno_non_trans[i] &
-                           high_conf_edge_list[[i]] == 1)
+    scaled_pheno <- rescale(pheno_delta[[i]], to = c(0, 1))
+    
+    pheno_beta[i] <- sum(scaled_pheno * (1 * (high_conf_edge_list[[i]] == 1)))
+    
+    # sum_A <- sum(geno_transition_vec)
+    # scaled_pheno <- rescale(delta_pheno_vec, to = c(0, 1))
+    # scaled_intersection <- sum(geno_transition_vec * scaled_pheno)
+    # sum_B <- sum(scaled_pheno)
+    # union <- sum_A + sum_B - scaled_intersection
+    # return(scaled_intersection / union)
+    
     geno_beta[i] <- sum(geno_trans_edge_list[[i]]$transition == 1 &
                           high_conf_edge_list[[i]] == 1)
-    gamma_count[i] <- sum(pheno_delta[[i]] >
-                            median_pheno_delta_geno_non_trans[i] &
-                            geno_trans_edge_list[[i]]$transition == 1 &
-                            high_conf_edge_list[[i]] == 1)
+    gamma_count[i] <- 
+      sum(
+        (scaled_pheno * (1 * (high_conf_edge_list[[i]] == 1))) *
+          (geno_trans_edge_list[[i]]$transition == 1 &
+             high_conf_edge_list[[i]] == 1))
     gamma_percent[i] <- gamma_count[i] / sum(high_conf_edge_list[[i]])
-    epsilon[i] <- (2 * gamma_count[i]) / (geno_beta[i] + pheno_beta[i])
+    epsilon[i] <- 
+      gamma_count[i] / (geno_beta[i] + pheno_beta[i] - gamma_count[i])
   }
   gamma_avg <- mean(gamma_percent)
   num_hi_conf_edges <- unlist(lapply(high_conf_edge_list, sum))

@@ -1,7 +1,6 @@
 library(ape)
 library(scales)
 library(phytools)
-library(tibble)
 source("R/ancestral_reconstruction.R")
 source("R/transition_edges.R")
 source("R/tree.R")
@@ -84,6 +83,16 @@ epsilon_b_scaled_to_one <- function(geno_transition_vec, delta_pheno_vec) {
   sum_B <- sum(scaled_pheno)
   union <- sum_A + sum_B - scaled_intersection
   return(scaled_intersection / union)
+}
+
+epsilon_twice_scaled_to_one <- function(geno_transition_vec, delta_pheno_vec) {
+  # intersection / union, pheno scaled to the number of genotype transition edges
+  sum_A <- sum(geno_transition_vec)
+  scaled_pheno <- rescale(delta_pheno_vec, to = c(0, 1))
+  scaled_intersection <- sum(geno_transition_vec * scaled_pheno)
+  sum_B <- sum(scaled_pheno)
+  denom <- sum_A + sum_B 
+  return(2 * (scaled_intersection / denom))
 }
 
 epsilon_using_median_values <- function(geno_transition_vec, delta_pheno_vec) {
@@ -239,6 +248,7 @@ ep_num_a <- epsilon_b_scaled_to_num_geno_trans_edges(a_out$geno_trans_vec$transi
 ep_nt_med_a <- epsilon_using_median_values(a_out$geno_trans_vec$transition, a_out$delta_pheno_vec) # 0.130
 ep_bin_a <- epsilon_bin_areas(a_out$geno_trans_vec$transition, a_out$delta_pheno_vec)
 ep_bin_med_a <- epsilon_bin_use_med(a_out$geno_trans_vec$transition, a_out$delta_pheno_vec)
+ep_twice_a <- epsilon_twice_scaled_to_one(a_out$geno_trans_vec$transition, a_out$delta_pheno_vec)
 # B 
 par(mfrow = c(2, 2))
 dotTree(treeB,  phenoB, length = 10, ftype = "i")
@@ -268,6 +278,7 @@ ep_num_b <- epsilon_b_scaled_to_num_geno_trans_edges(b_out$geno_trans_vec$transi
 ep_nt_med_b <- epsilon_using_median_values(b_out$geno_trans_vec$transition, b_out$delta_pheno_vec) # 0.167
 ep_bin_b <- epsilon_bin_areas(b_out$geno_trans_vec$transition, b_out$delta_pheno_vec)
 ep_bin_med_b <- epsilon_bin_use_med(b_out$geno_trans_vec$transition, b_out$delta_pheno_vec)
+ep_twice_b <- epsilon_twice_scaled_to_one(b_out$geno_trans_vec$transition, b_out$delta_pheno_vec)
 
 # C
 
@@ -299,6 +310,7 @@ ep_num_c <- epsilon_b_scaled_to_num_geno_trans_edges(c_out$geno_trans_vec$transi
 ep_nt_med_c <- epsilon_using_median_values(c_out$geno_trans_vec$transition, c_out$delta_pheno_vec) # 0.23
 ep_bin_c <- epsilon_bin_areas(c_out$geno_trans_vec$transition, c_out$delta_pheno_vec)
 ep_bin_med_c <- epsilon_bin_use_med(c_out$geno_trans_vec$transition, c_out$delta_pheno_vec)
+ep_twice_c <- epsilon_twice_scaled_to_one(c_out$geno_trans_vec$transition, c_out$delta_pheno_vec)
 
 # D
 par(mfrow = c(2, 2))
@@ -329,6 +341,7 @@ ep_num_d <- epsilon_b_scaled_to_num_geno_trans_edges(d_out$geno_trans_vec$transi
 ep_nt_med_d <- epsilon_using_median_values(d_out$geno_trans_vec$transition, d_out$delta_pheno_vec) # 0
 ep_bin_d <- epsilon_bin_areas(d_out$geno_trans_vec$transition, d_out$delta_pheno_vec)
 ep_bin_med_d <- epsilon_bin_use_med(d_out$geno_trans_vec$transition, d_out$delta_pheno_vec)
+ep_twice_d <- epsilon_twice_scaled_to_one(d_out$geno_trans_vec$transition, d_out$delta_pheno_vec)
 
 # Fake E
 e_geno_trans_vec <- c(rep(1, 10), rep(0, Nedge(treeA) - 10))
@@ -341,6 +354,7 @@ ep_num_e <- epsilon_b_scaled_to_num_geno_trans_edges(e_geno_trans_vec, e_delta_p
 ep_nt_med_e <- epsilon_using_median_values(e_geno_trans_vec, e_delta_pheno_vec) # 0
 ep_bin_e <- epsilon_bin_areas(e_geno_trans_vec, e_delta_pheno_vec) # 0.571
 ep_bin_med_e <- epsilon_bin_use_med(e_geno_trans_vec, e_delta_pheno_vec)
+ep_twice_e <- epsilon_twice_scaled_to_one(e_geno_trans_vec, e_delta_pheno_vec)
 
 
 # FAKE F
@@ -354,6 +368,7 @@ ep_num_f <- epsilon_b_scaled_to_num_geno_trans_edges(f_geno_trans_vec, f_delta_p
 ep_nt_med_f <- epsilon_using_median_values(f_geno_trans_vec, f_delta_pheno_vec) # 0
 ep_bin_f <- epsilon_bin_areas(f_geno_trans_vec, f_delta_pheno_vec) # 1
 ep_bin_med_f <- epsilon_bin_use_med(f_geno_trans_vec, f_delta_pheno_vec)
+ep_twice_f <- epsilon_twice_scaled_to_one(f_geno_trans_vec, f_delta_pheno_vec)
 
 
 # FAKE AA
@@ -367,6 +382,7 @@ ep_num_aa <- epsilon_b_scaled_to_num_geno_trans_edges(aa_geno_trans_vec, aa_delt
 ep_nt_med_aa <- epsilon_using_median_values(aa_geno_trans_vec, aa_delta_pheno_vec) # 0.281
 ep_bin_aa <- epsilon_bin_areas(aa_geno_trans_vec, aa_delta_pheno_vec) # 1.0
 ep_bin_med_aa <- epsilon_bin_use_med(aa_geno_trans_vec, aa_delta_pheno_vec) # 1.0
+ep_twice_aa <- epsilon_twice_scaled_to_one(aa_geno_trans_vec, aa_delta_pheno_vec)
 
 # Plotted from what should be highest epsilon to lowest epsilon
 par(mfrow = c(3, 3))
@@ -380,21 +396,21 @@ plot_geno_non_and_trans_hist(f_trans_delta, f_non_trans_delta, "F")
 
 # Make a table of epsilon score
 num_data_sets <- 7
-epsilon_mat <- matrix(0, nrow = num_data_sets, ncol = 5)
+epsilon_mat <- matrix(0, nrow = num_data_sets, ncol = 6)
 colnames(epsilon_mat) <- c("b_scaled_to_one", 
+                           "scaled_to_one_TWICE",
                            "b_scaled_to_num_trans_edge", 
                            "nontrans_med", 
                            "bin", 
                            "bin_med")
 row.names(epsilon_mat) <- c("aa", "a", "b", "c", "d", "e", "f")
-epsilon_mat[1, ] <- c(ep_one_aa, ep_num_aa, ep_nt_med_aa, ep_bin_aa, ep_bin_med_aa)
-epsilon_mat[2, ] <- c(ep_one_a, ep_num_a, ep_nt_med_a, ep_bin_a, ep_bin_med_a)
-epsilon_mat[3, ] <- c(ep_one_b, ep_num_b, ep_nt_med_b, ep_bin_b, ep_bin_med_b)
-epsilon_mat[4, ] <- c(ep_one_c, ep_num_c, ep_nt_med_c, ep_bin_c, ep_bin_med_c)
-epsilon_mat[5, ] <- c(ep_one_d, ep_num_d, ep_nt_med_d, ep_bin_d, ep_bin_med_d)
-epsilon_mat[6, ] <- c(ep_one_e, ep_num_e, ep_nt_med_e, ep_bin_e, ep_bin_med_e)
-epsilon_mat[7, ] <- c(ep_one_f, ep_num_f, ep_nt_med_f, ep_bin_f, ep_bin_med_f)
-
+epsilon_mat[1, ] <- c(ep_one_aa, ep_twice_aa, ep_num_aa, ep_nt_med_aa, ep_bin_aa, ep_bin_med_aa)
+epsilon_mat[2, ] <- c(ep_one_a, ep_twice_a, ep_num_a, ep_nt_med_a, ep_bin_a, ep_bin_med_a)
+epsilon_mat[3, ] <- c(ep_one_b, ep_twice_b, ep_num_b, ep_nt_med_b, ep_bin_b, ep_bin_med_b)
+epsilon_mat[4, ] <- c(ep_one_c, ep_twice_c, ep_num_c, ep_nt_med_c, ep_bin_c, ep_bin_med_c)
+epsilon_mat[5, ] <- c(ep_one_d, ep_twice_d, ep_num_d, ep_nt_med_d, ep_bin_d, ep_bin_med_d)
+epsilon_mat[6, ] <- c(ep_one_e, ep_twice_e, ep_num_e, ep_nt_med_e, ep_bin_e, ep_bin_med_e)
+epsilon_mat[7, ] <- c(ep_one_f, ep_twice_f, ep_num_f, ep_nt_med_f, ep_bin_f, ep_bin_med_f)
 
 # Function to generate a vector of colors
 whiteToRed = colorRampPalette(c("white", "firebrick"))

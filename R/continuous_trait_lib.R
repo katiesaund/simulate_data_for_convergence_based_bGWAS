@@ -136,27 +136,18 @@ add_geno_continuous <- function(binary_AR_mat_list, tree_list, num_pheno, cont_p
     for (k in 1:num_pheno) {
       # BM
       temp_BM_matrix <- cont_pheno_BM_mat_list[[i]][, k, drop = FALSE]
-      geno_like_BM_pheno <- matrix(rep(as.numeric(t(temp_BM_matrix)), each = num_to_add_per_pheno), nrow = nrow(temp_BM_matrix), byrow = TRUE)
-      temp_BM_median <- median(as.numeric(temp_BM_matrix[, 1, drop = TRUE]))
-      
+      geno_like_BM_pheno <- make_rank_based_geno_mat(temp_BM_matrix, tree_list[[i]])
+        
       # WN
       temp_WN_matrix <- cont_pheno_WN_mat_list[[i]][, k, drop = FALSE]
-      geno_like_WN_pheno <- matrix(rep(as.numeric(t(temp_WN_matrix)), each = num_to_add_per_pheno), nrow = nrow(temp_WN_matrix), byrow = TRUE)
-      temp_WN_median <- median(as.numeric(temp_WN_matrix[, 1, drop = TRUE]))
+      geno_like_WN_pheno <- make_rank_based_geno_mat(temp_WN_matrix, tree_list[[i]])
       
-      geno_like_BM_pheno <- 1 * (geno_like_BM_pheno > temp_BM_median) # 1 times matrix converts it from logical to numeric
-      geno_like_WN_pheno <- 1 * (geno_like_WN_pheno > temp_WN_median)
-      
-      flip_sequence <- seq(from = 0, to = 0.99999, by = 1 / num_to_add_per_pheno)
-      for (m in 2:num_to_add_per_pheno) {
-        geno_like_BM_pheno[, m] <- flip_some_tips(geno_like_BM_pheno[, m], flip_freq = flip_sequence[m])
-        geno_like_WN_pheno[, m] <- flip_some_tips(geno_like_WN_pheno[, m], flip_freq = flip_sequence[m])
-      }
       genos_to_add_bc_pheno <- cbind(geno_like_BM_pheno, geno_like_WN_pheno)
     }
 
     # Add fake ancestral reconstructions
-    genos_to_add_bc_pheno <- rbind(genos_to_add_bc_pheno, matrix(0, nrow = num_node, ncol = ncol(genos_to_add_bc_pheno)))
+    genos_to_add_bc_pheno <- rbind(genos_to_add_bc_pheno, 
+                                   matrix(0, nrow = num_node, ncol = ncol(genos_to_add_bc_pheno)))
     
     binary_AR_mat_list[[i]] <- cbind(binary_AR_mat_list[[i]],
                                      random_col_to_add,
@@ -252,9 +243,9 @@ construct_geno_from_pheno <- function(tree, delta_pheno_vec) {
 }
 
 # make a rank based genotype (sweep all possible values divisions based on rank) -- don't just pick median or mean
-make_rank_based_geno_mat <- function(pheno_mat, tree) {
+make_rank_based_geno_mat <- function(pheno_vec, tree) {
   num_tips <- ape::Ntip(tree)
-  geno_mat <- matrix(rank(pheno_mat), nrow = num_tips, ncol = 2 * num_tips)
+  geno_mat <- matrix(rank(pheno_vec), nrow = num_tips, ncol = 2 * num_tips)
   for (i in 1:num_tips) {
     geno_mat[, i] <- as.numeric(geno_mat[, i] < i)
   }

@@ -274,13 +274,6 @@ calculate_continuous_gamma <- function(pheno_recon_mat,
     
     pheno_beta[i] <- sum(scaled_pheno * (1 * (high_conf_edge_list[[i]] == 1)))
     
-    # sum_A <- sum(geno_transition_vec)
-    # scaled_pheno <- rescale(delta_pheno_vec, to = c(0, 1))
-    # scaled_intersection <- sum(geno_transition_vec * scaled_pheno)
-    # sum_B <- sum(scaled_pheno)
-    # union <- sum_A + sum_B - scaled_intersection
-    # return(scaled_intersection / union)
-    
     geno_beta[i] <- sum(geno_trans_edge_list[[i]]$transition == 1 &
                           high_conf_edge_list[[i]] == 1)
     gamma_count[i] <- 

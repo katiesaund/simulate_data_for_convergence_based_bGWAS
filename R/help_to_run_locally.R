@@ -16,5 +16,5 @@ source("R/high_confidence.R")
 # Initialize variables / read in user input
 num_trees <- 2
 num_phenos <- 2
-num_tips <- 30
+num_tips <- 50
 num_start_trait <- 50

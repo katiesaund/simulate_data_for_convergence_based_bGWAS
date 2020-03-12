@@ -6,22 +6,10 @@ source("R/transition_edges.R")
 source("R/tree.R")
 source("R/continuous_trait_lib.R")
 
-# Tree A
-set.seed(1865)
-treeA <- ape::rcoal(20)
-treeA <- midpoint.root(treeA)
-genoA <- matrix(NA, nrow = ape::Ntip(treeA), ncol = 1)
-genoA[, 1] <- c(1, 1, 0, 0, 1,
-                 1, 1, 1, 1, 1,
-                 0, 0, 1, 1, 0,
-                 1, 1, 1, 1, 0)
-row.names(genoA) <- treeA$tip.label 
-phenoA <- genoA
-set.seed(1)
-phenoA[, 1] <- ape::rTraitCont(treeA, model = "BM")
-WN <- FALSE
-if (WN) {
-  pheno_vec <- phenoA[, 1]
+
+# LIB
+make_WN_phenotype <- function(pheno_mat) {
+  pheno_vec <- pheno_mat[, 1]
   lambda_has_high_signal <- TRUE
   while (lambda_has_high_signal) {
     jumbled_pheno <- sample(unname(pheno_vec), size = length(pheno_vec), replace = FALSE)
@@ -30,15 +18,9 @@ if (WN) {
                                          method = "lambda")
     lambda_has_high_signal <- jumbled_lambda$lambda < -0.05 & jumbled_lambda$lambda > 0.05
   }
-  phenoA[, 1] <- jumbled_pheno
+  pheno_mat[, 1] <- jumbled_pheno
+  return(pheno_mat)
 }
-dotTree(treeA, phenoA, length = 10, ftype = "i")
-
-genoB <- genoC <- genoD <- genoG <- genoH <- genoA
-
-
-# LIB
-
 
 epsilon_b_scaled_to_num_geno_trans_edges <- function(geno_transition_vec, delta_pheno_vec) {
   # intersection / union, pheno scaled to the number of genotype transition edges
@@ -197,6 +179,7 @@ get_pheno_delta_only <- function(tr, ph) {
 } 
 
 construct_geno_from_pheno <- function(tree, pheno_obj) {
+  tips <- ape::Ntip(tree)
   delta_pheno_vec <- pheno_obj$delta_pheno_vec
   third_quartile_value <- summary(delta_pheno_vec)[5] # number
   hi_delta_edge_log <- delta_pheno_vec > third_quartile_value # vector of T/F length == nedge(Tree)
@@ -211,44 +194,73 @@ construct_geno_from_pheno <- function(tree, pheno_obj) {
     }
   }
   
+  # Now get tip values for the tree in tree tip order
   
-  return()
-  
-}
-
-set.seed(1)
-tree <- ape::rcoal(5)
-num_tips <- ape::Ntip(tree)
-delta_pheno_vec <- c(.1, .1, .1, .9, .1, .1, .1, 1.1)
-third_quartile_value <- summary(delta_pheno_vec)[5] # number
-hi_delta_edge_log <- delta_pheno_vec > third_quartile_value # vector of T/F length == nedge(Tree)
-fake_geno_edge_mat <- matrix(0, nrow = nrow(tree$edge), ncol = 2)
-
-for (i in 1:nrow(tree$edge)) {
-  if (hi_delta_edge_log[i]) {
-    child_node <- tree$edge[i, 2]
-    child_node_and_tips <- phytools::getDescendants(tree, child_node)
-    child_node_and_tips <- c(child_node, child_node_and_tips)
-    new_value <- as.numeric(!fake_geno_edge_mat[i, 1])
-    fake_geno_edge_mat[tree$edge %in% child_node_and_tips] <- new_value
+  geno_at_tips <- matrix(NA, nrow = tips, ncol = 1)
+  row.names(geno_at_tips) <- tree$tip.label
+  for (i in 1:tips) {
+    tip_id <-  strsplit(tree$tip.label, "")[[i]][2] # if tip label encoded as "t1" for example
+    tip_value <- fake_geno_edge_mat[, 2][tree$edge[, 2] == tip_id]
+    geno_at_tips[i, 1] <- tip_value
   }
+  
+  return(geno_at_tips)
 }
 
-tree_tips <- 1:num_tips
-# next step: 
-# return genotype in tree tip order
+
+# Set up
+set.seed(1865)
+treeA <- ape::rcoal(100)
+treeA <- midpoint.root(treeA)
+genoA <- matrix(NA, nrow = ape::Ntip(treeA), ncol = 1)
+genoA[, 1] <- c(1, 1, 0, 0, 1,
+                1, 1, 1, 1, 1,
+                0, 0, 1, 1, 0,
+                1, 1, 1, 1, 0)
+row.names(genoA) <- treeA$tip.label 
+phenoA <- phenoB <- phenoC <- phenoD <- phenoG <- phenoH <- genoA
+set.seed(1)
+phenoA[, 1] <- ape::rTraitCont(treeA, model = "BM")
+phenoB[, 1] <- ape::rTraitCont(treeA, model = "BM")
+phenoC[, 1] <- ape::rTraitCont(treeA, model = "BM")
+phenoD[, 1] <- ape::rTraitCont(treeA, model = "BM")
+phenoG[, 1] <- ape::rTraitCont(treeA, model = "BM")
+phenoH[, 1] <- ape::rTraitCont(treeA, model = "BM")
+
+WN <- FALSE
+if (WN) {
+  phenoA <- make_WN_phenotype(phenoA)
+  phenoB <- make_WN_phenotype(phenoB)
+  phenoC <- make_WN_phenotype(phenoC)
+  phenoD <- make_WN_phenotype(phenoD)
+  phenoG <- make_WN_phenotype(phenoG)
+  phenoH <- make_WN_phenotype(phenoH)
+}
+dotTree(treeA, phenoA, length = 10, ftype = "i")
+
 
 # Calculations
 a_pheno <- get_pheno_delta_only(treeA, phenoA)
+b_pheno <- get_pheno_delta_only(treeA, phenoB)
+c_pheno <- get_pheno_delta_only(treeA, phenoC)
+d_pheno <- get_pheno_delta_only(treeA, phenoD)
+g_pheno <- get_pheno_delta_only(treeA, phenoG)
+h_pheno <- get_pheno_delta_only(treeA, phenoH)
 
-genoB <- construct_geno_from_pheno(treeA, a_pheno)
 
-a_out <- get_pheno_delta_only(treeA, phenoA, genoA)
-b_out <- get_pheno_delta_only(treeA, phenoA, genoB)
-c_out <- get_pheno_delta_only(treeA, phenoA, genoC)
-d_out <- get_pheno_delta_only(treeA, phenoA, genoD)
-g_out <- get_pheno_delta_only(treeA, phenoA, genoE)
-h_out <- get_pheno_delta_only(treeA, phenoA, genoF)
+genoB <- construct_geno_from_pheno(treeA, b_pheno)
+genoC <- construct_geno_from_pheno(treeA, c_pheno)
+genoD <- construct_geno_from_pheno(treeA, d_pheno)
+genoG <- construct_geno_from_pheno(treeA, g_pheno)
+genoH <- construct_geno_from_pheno(treeA, h_pheno)
+
+a_out <- get_pheno_delta_geno_recon(treeA, phenoA, genoA)
+b_out <- get_pheno_delta_geno_recon(treeA, phenoB, genoB)
+c_out <- get_pheno_delta_geno_recon(treeA, phenoC, genoC)
+d_out <- get_pheno_delta_geno_recon(treeA, phenoD, genoD)
+g_out <- get_pheno_delta_geno_recon(treeA, phenoG, genoG)
+h_out <- get_pheno_delta_geno_recon(treeA, phenoH, genoH)
+
 
 # Plots
 # A 
@@ -315,7 +327,7 @@ ep_twice_b <- epsilon_twice_scaled_to_one(b_out$geno_trans_vec$transition, b_out
 # C
 
 par(mfrow = c(2, 2))
-dotTree(treeA,  phenoB, length = 10, ftype = "i")
+dotTree(treeA,  phenoC, length = 10, ftype = "i")
 edgelabels(round(c_out$delta_pheno_vec, 1))
 graphics::plot(treeA,
                edge.width = 5,
@@ -346,7 +358,7 @@ ep_twice_c <- epsilon_twice_scaled_to_one(c_out$geno_trans_vec$transition, c_out
 
 # D
 par(mfrow = c(2, 2))
-dotTree(treeA,  phenoB, length = 10, ftype = "i")
+dotTree(treeA,  phenoD, length = 10, ftype = "i")
 edgelabels(round(d_out$delta_pheno_vec, 1))
 graphics::plot(treeA,
                edge.width = 5,
@@ -418,7 +430,7 @@ ep_twice_aa <- epsilon_twice_scaled_to_one(aa_geno_trans_vec, aa_delta_pheno_vec
 
 # G
 par(mfrow = c(2, 2))
-dotTree(treeA,  phenoB, length = 10, ftype = "i")
+dotTree(treeA,  phenoG, length = 10, ftype = "i")
 edgelabels(round(g_out$delta_pheno_vec, 1))
 graphics::plot(treeA,
                edge.width = 5,
@@ -449,7 +461,7 @@ ep_twice_g <- epsilon_twice_scaled_to_one(g_out$geno_trans_vec$transition, g_out
 
 # H
 par(mfrow = c(2, 2))
-dotTree(treeA,  phenoB, length = 10, ftype = "i")
+dotTree(treeA,  phenoH, length = 10, ftype = "i")
 edgelabels(round(h_out$delta_pheno_vec, 1))
 graphics::plot(treeA,
                edge.width = 5,
@@ -533,3 +545,8 @@ pheatmap::pheatmap(epsilon_mat[,1:2],
 # Conclusion: this approach shows that I can't use really simple rules to 
 # generate high epsilon genotypes, even for small trees. I'm able to create
 # higher epsilon for WN than BM in this dataset, unclear why.
+
+
+# Constructing genotype from the phenotype delta edges can yield higher epsilon
+# values than random for some WN phenotypes. It does less well for BM.
+# Will implement in data simulation steps.

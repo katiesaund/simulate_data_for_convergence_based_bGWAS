@@ -1,3 +1,5 @@
+# TODO include: make_rank_based_geno_mat and construct_geno_from_pheno into data generation for continuous
+
 make_continuous_phenotypes <- function(tree_list, num_pheno){
   num_trees <- length(tree_list)
   pheno_mat_list_BM <- pheno_mat_list_WN <- rep(list(NULL), num_trees)
@@ -213,3 +215,54 @@ calculate_phenotype_change_on_edge <- function(edge_list, phenotype_by_edges){
   return(delta)
 }
                   
+
+# For constructing a genotype from root to tip, based on phenotype changes
+get_pheno_delta_only <- function(tr, pheno_mat) {
+  pheno_recon <- ancestral_reconstruction_by_ML(tr, pheno_mat, 1, "continuous")
+  pheon_recon_edge_mat <- convert_to_edge_mat(tr, pheno_recon$tip_and_node_recon)
+  all_pheno_delta_edge <- calculate_phenotype_change_on_edge(1:Nedge(tr), pheon_recon_edge_mat)
+  return(all_pheno_delta_edge)
+} 
+
+# For constructing a genotype from root to tip, based on phenotype changes
+construct_geno_from_pheno <- function(tree, delta_pheno_vec) {
+  tips <- ape::Ntip(tree)
+  third_quartile_value <- summary(delta_pheno_vec)[5] # number
+  hi_delta_edge_log <- delta_pheno_vec > third_quartile_value # vector of T/F length == nedge(Tree)
+  fake_geno_edge_mat <- matrix(0, nrow = nrow(tree$edge), ncol = 2)
+  for (i in 1:nrow(tree$edge)) {
+    if (hi_delta_edge_log[i]) {
+      child_node <- tree$edge[i, 2]
+      child_node_and_tips <- phytools::getDescendants(tree, child_node)
+      child_node_and_tips <- c(child_node, child_node_and_tips)
+      new_value <- as.numeric(!fake_geno_edge_mat[i, 1])
+      fake_geno_edge_mat[tree$edge %in% child_node_and_tips] <- new_value
+    }
+  }
+  
+  # Now get tip values for the tree in tree tip order
+  geno_at_tips <- matrix(NA, nrow = tips, ncol = 1)
+  row.names(geno_at_tips) <- tree$tip.label
+  for (i in 1:tips) {
+    tip_id <-  strsplit(tree$tip.label, "")[[i]][2] # if tip label encoded as "t1" for example
+    tip_value <- fake_geno_edge_mat[, 2][tree$edge[, 2] == tip_id]
+    geno_at_tips[i, 1] <- tip_value
+  }
+  return(geno_at_tips)
+}
+
+# make a rank based genotype (sweep all possible values divisions based on rank) -- don't just pick median or mean
+make_rank_based_geno_mat <- function(pheno_mat, tree) {
+  num_tips <- ape::Ntip(tree)
+  geno_mat <- matrix(rank(pheno_mat), nrow = num_tips, ncol = 2 * num_tips)
+  for (i in 1:num_tips) {
+    geno_mat[, i] <- as.numeric(geno_mat[, i] < i)
+  }
+  
+  for (i in (num_tips + 1):(2 * num_tips)) {
+    geno_mat[, i] <- as.numeric(geno_mat[, i] > (i - num_tips))
+  }
+  return(geno_mat)
+}
+
+

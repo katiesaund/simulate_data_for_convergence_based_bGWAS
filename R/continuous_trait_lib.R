@@ -1,4 +1,4 @@
-# TODO include: make_rank_based_geno_mat and construct_geno_from_pheno into data generation for continuous
+# TODO include: construct_geno_from_pheno into data generation for continuous
 
 make_continuous_phenotypes <- function(tree_list, num_pheno){
   num_trees <- length(tree_list)
@@ -98,12 +98,19 @@ calculate_phenotype_change_on_edge <- function(edge_list, phenotype_by_edges){
 }
 
 
-add_geno_continuous <- function(binary_AR_mat_list, tree_list, num_pheno, cont_pheno_BM_mat_list, cont_pheno_WN_mat_list) {
+add_geno_continuous <- function(binary_AR_mat_list,
+                                tree_list, 
+                                num_pheno, 
+                                cont_pheno_BM_mat_list, 
+                                cont_pheno_WN_mat_list, 
+                                BM_phenotype_recon_edge_mat_list, 
+                                WN_phenotype_recon_edge_mat_list) {
   num_trees <- length(tree_list)
   for (i in 1:num_trees) {
     num_trait <- ncol(binary_AR_mat_list[[i]])
     num_tip <- ape::Ntip(tree_list[[i]])
     num_node <- ape::Nnode(tree_list[[i]])
+    num_edge <- ape::Nedge(tree_list[[i]])
     num_to_add <- round(num_trait / 4, 0)
     if (num_to_add < 10) {
       num_to_add <- 10
@@ -116,6 +123,8 @@ add_geno_continuous <- function(binary_AR_mat_list, tree_list, num_pheno, cont_p
     random_col_to_add <- flipped_to_add_10p <- flipped_to_add_25p <- 
       flipped_to_add_40p <- 
       binary_AR_mat_list[[i]][, 1:num_to_add, drop = FALSE]
+    
+    # 1. Given a simulated genotype, jumble up the tips to various degrees
     for (j in 1:ncol(random_col_to_add)) {
       current_col <- random_col_to_add[1:num_tip, j]
       jumbled_tips <- sample(current_col,
@@ -132,7 +141,8 @@ add_geno_continuous <- function(binary_AR_mat_list, tree_list, num_pheno, cont_p
       flipped_to_add_40p[1:num_tip, j] <- flipped_tip_40p
     }
     
-    genos_to_add_bc_pheno <- matrix(NA, nrow = num_tip, ncol = 0)
+    # 2. Make genotypes based on phenotype ranking
+    rank_based_genos <- matrix(NA, nrow = num_tip, ncol = 0)
     for (k in 1:num_pheno) {
       # BM
       temp_BM_matrix <- cont_pheno_BM_mat_list[[i]][, k, drop = FALSE]
@@ -142,19 +152,47 @@ add_geno_continuous <- function(binary_AR_mat_list, tree_list, num_pheno, cont_p
       temp_WN_matrix <- cont_pheno_WN_mat_list[[i]][, k, drop = FALSE]
       geno_like_WN_pheno <- make_rank_based_geno_mat(temp_WN_matrix, tree_list[[i]])
       
-      genos_to_add_bc_pheno <- cbind(geno_like_BM_pheno, geno_like_WN_pheno)
+      rank_based_genos <- cbind(geno_like_BM_pheno, geno_like_WN_pheno)
     }
 
-    # Add fake ancestral reconstructions
-    genos_to_add_bc_pheno <- rbind(genos_to_add_bc_pheno, 
-                                   matrix(0, nrow = num_node, ncol = ncol(genos_to_add_bc_pheno)))
+    # Add fake ancestral reconstructions to genotypes based on phenotype ranking
+    rank_based_genos <- rbind(rank_based_genos, 
+                                   matrix(0, nrow = num_node, ncol = ncol(rank_based_genos)))
+    
+    # 3. Add genotypes loosely built based on which edges the phenotype changes lot
+    #    A) Given delta phenotype for each edge, identify the edges with high delta (3rd quartile)
+    #    B) Starting from a root value of 0 (artibrary) move down each clade and flip all child values when reaching a high delta edge
+    #    C) return genotype at just the tips once this procedure finishes
+    #    D) it won't be perfect b/c this isn't a reverse engineering of the ancesral reconstruction process
+    
+    pheno_delta_based_genos <- matrix(NA, nrow = num_tip, ncol = 0)
+    for (k in 1:num_pheno) {
+      # Calculate absolute value of child - parent node value
+      pheno_delta_BM <-
+        calculate_phenotype_change_on_edge(1:num_edge, 
+                                           BM_phenotype_recon_edge_mat_list[[i]][[k]])
+      
+      pheno_delta_WN <-
+        calculate_phenotype_change_on_edge(1:num_edge, 
+                                           WN_phenotype_recon_edge_mat_list[[i]][[k]])
+      
+      BM_based_geno <- construct_geno_from_pheno(tree_list[[i]], pheno_delta_BM)
+      WN_based_geno <- construct_geno_from_pheno(tree_list[[i]], pheno_delta_WN)
+      
+      pheno_delta_based_genos <- cbind(BM_based_geno, WN_based_geno)
+    }
+    
+    # Add fake ancestral reconstructions to genotypes based on phenotype deltas
+    pheno_delta_based_genos <- rbind(pheno_delta_based_genos, 
+                              matrix(0, nrow = num_node, ncol = ncol(pheno_delta_based_genos)))
     
     binary_AR_mat_list[[i]] <- cbind(binary_AR_mat_list[[i]],
                                      random_col_to_add,
                                      flipped_to_add_10p, 
                                      flipped_to_add_25p, 
                                      flipped_to_add_40p, 
-                                     genos_to_add_bc_pheno)
+                                     rank_based_genos, 
+                                     pheno_delta_based_genos)
     
     temp_only_tips <- binary_AR_mat_list[[i]][1:num_tip, , drop = FALSE]
     cols_to_keep <- colSums(temp_only_tips) > 1 & colSums(temp_only_tips) < (nrow(temp_only_tips) - 1)
@@ -206,18 +244,13 @@ calculate_phenotype_change_on_edge <- function(edge_list, phenotype_by_edges){
   return(delta)
 }
                   
-
-# For constructing a genotype from root to tip, based on phenotype changes
-get_pheno_delta_only <- function(tr, pheno_mat) {
-  pheno_recon <- ancestral_reconstruction_by_ML(tr, pheno_mat, 1, "continuous")
-  pheon_recon_edge_mat <- convert_to_edge_mat(tr, pheno_recon$tip_and_node_recon)
-  all_pheno_delta_edge <- calculate_phenotype_change_on_edge(1:Nedge(tr), pheon_recon_edge_mat)
-  return(all_pheno_delta_edge)
-} 
-
 # For constructing a genotype from root to tip, based on phenotype changes
 construct_geno_from_pheno <- function(tree, delta_pheno_vec) {
   tips <- ape::Ntip(tree)
+  num_edge <- ape::Nedge(tree)
+  
+  if (length(delta_pheno_vec) != num_edge) { stop("delta pheno vector needs entry for each edge")}
+  
   third_quartile_value <- summary(delta_pheno_vec)[5] # number
   hi_delta_edge_log <- delta_pheno_vec > third_quartile_value # vector of T/F length == nedge(Tree)
   fake_geno_edge_mat <- matrix(0, nrow = nrow(tree$edge), ncol = 2)

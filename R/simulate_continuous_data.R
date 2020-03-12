@@ -78,7 +78,9 @@ binary_AR_df_list <- add_geno_continuous(binary_AR_df_list,
                                          tree_list, 
                                          num_phenos,
                                          cont_pheno_BM_mat_list,
-                                         cont_pheno_WN_mat_list) 
+                                         cont_pheno_WN_mat_list, 
+                                         BM_phenotype_recon_edge_mat_list, 
+                                         WN_phenotype_recon_edge_mat_list) 
 # Due to new genotypes the ancestral reconstructions are now wrong and need to be recalculated in the next step.
 print("Finish adding additional genotypes")
 

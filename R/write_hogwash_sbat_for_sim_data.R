@@ -3,10 +3,11 @@
 # Write sbat scripts for hogwash on simulated data. 
 write_hoghwash_sbat_for_sim <- function(num_tree, num_pheno) {
   data_dir <- "../data/"
-  perm <- 50000
-  fdr <- 0.0005
+  perm <- 100000
+  binary_fdr <- 0.0005
+  continuous_fdr <- 0.05
   bootstrap <- 0.70
-  memory <- "10G"
+  memory <- "20G"
   time <- "200:00:00"
   
   for (i in 1:num_tree) {
@@ -15,7 +16,7 @@ write_hoghwash_sbat_for_sim <- function(num_tree, num_pheno) {
       temp_tree <- paste0(data_dir, "simulated_continuous_tree_", i, ".tree")
       temp_geno <- paste0(data_dir, "simulated_genotype_for_continuous_pheno_BM_tree_", i, "_pheno_", j, ".tsv")
       temp_pheno <- paste0(data_dir, "simulated_continuous_pheno_BM_tree_", i, "_pheno_", j, ".tsv")
-      temp_name <- paste0("pheno_BM_tree_", i, "_pheno_", j)
+      temp_name <- paste0("continuous_pheno_BM_tree_", i, "_pheno_", j)
       temp_key <- NULL
       temp_test <- "both"
       command <- paste("Rscript /nfs/esnitkin/Project_Cdiff/Analysis/hogwash_methods/simulate_data_for_convergence_based_bGWAS/R/run_hogwash_sbatch.R ",
@@ -25,12 +26,12 @@ write_hoghwash_sbat_for_sim <- function(num_tree, num_pheno) {
                        temp_name,
                        getwd(),
                        perm, 
-                       fdr,
+                       continuous_fdr,
                        bootstrap, 
                        temp_test, 
                        temp_key,
                        sep = " ")
-      fname <- paste0(getwd(), "/", "hogwash_continuous_", temp_name, ".sbat")
+      fname <- paste0(getwd(), "/", "hogwash_", temp_name, ".sbat")
       writeLines(c("#!/bin/sh",
                    paste0("#SBATCH --job-name=", temp_name),
                    paste0("#SBATCH --output=", temp_name, ".out"),
@@ -50,7 +51,7 @@ write_hoghwash_sbat_for_sim <- function(num_tree, num_pheno) {
       # Continuous WN
       temp_geno <- paste0(data_dir, "simulated_genotype_for_continuous_pheno_WN_tree_", i, "_pheno_", j, ".tsv")
       temp_pheno <- paste0(data_dir, "simulated_continuous_pheno_WN_tree_", i, "_pheno_", j, ".tsv")
-      temp_name <- paste0("pheno_WN_tree_", i, "_pheno_", j)
+      temp_name <- paste0("continuous_pheno_WN_tree_", i, "_pheno_", j)
       temp_key <- NULL
       temp_test <- "both"
       command <- paste("Rscript /nfs/esnitkin/Project_Cdiff/Analysis/hogwash_methods/simulate_data_for_convergence_based_bGWAS/R/run_hogwash_sbatch.R ",
@@ -60,12 +61,12 @@ write_hoghwash_sbat_for_sim <- function(num_tree, num_pheno) {
                        temp_name,
                        getwd(),
                        perm, 
-                       fdr,
+                       continuous_fdr,
                        bootstrap, 
                        temp_test, 
                        temp_key,
                        sep = " ")
-      fname <- paste0(getwd(), "/", "hogwash_continuous_", temp_name, ".sbat")
+      fname <- paste0(getwd(), "/", "hogwash_", temp_name, ".sbat")
       writeLines(c("#!/bin/sh",
                    paste0("#SBATCH --job-name=", temp_name),
                    paste0("#SBATCH --output=", temp_name, ".out"),
@@ -86,7 +87,7 @@ write_hoghwash_sbat_for_sim <- function(num_tree, num_pheno) {
       temp_tree <- paste0(data_dir, "simulated_discrete_tree_", i, ".tree")
       temp_geno <- paste0(data_dir, "simulated_genotype_for_discrete_pheno_BM_tree_", i, "_pheno_", j, ".tsv")
       temp_pheno <- paste0(data_dir, "simulated_discrete_pheno_BM_tree_", i, "_pheno_", j, ".tsv")
-      temp_name <- paste0("discrete_pheno_BM_tree_", i, "_pheno_", j)
+      temp_name <- paste0("phyc_discrete_pheno_BM_tree_", i, "_pheno_", j)
       temp_key <- NULL
       temp_test <- "phyc"
       command <- paste("Rscript /nfs/esnitkin/Project_Cdiff/Analysis/hogwash_methods/simulate_data_for_convergence_based_bGWAS/R/run_hogwash_sbatch.R ",
@@ -96,12 +97,12 @@ write_hoghwash_sbat_for_sim <- function(num_tree, num_pheno) {
                        temp_name,
                        getwd(),
                        perm, 
-                       fdr,
+                       binary_fdr,
                        bootstrap, 
                        temp_test, 
                        temp_key,
                        sep = " ")
-      fname <- paste0(getwd(), "/", "hogwash_phyc_", temp_name, ".sbat")
+      fname <- paste0(getwd(), "/", "hogwash_", temp_name, ".sbat")
       writeLines(c("#!/bin/sh",
                    paste0("#SBATCH --job-name=", temp_name),
                    paste0("#SBATCH --output=", temp_name, ".out"),
@@ -122,7 +123,7 @@ write_hoghwash_sbat_for_sim <- function(num_tree, num_pheno) {
       temp_tree <- paste0(data_dir, "simulated_discrete_tree_", i, ".tree")
       temp_geno <- paste0(data_dir, "simulated_genotype_for_discrete_pheno_BM_tree_", i, "_pheno_", j, ".tsv")
       temp_pheno <- paste0(data_dir, "simulated_discrete_pheno_BM_tree_", i, "_pheno_", j, ".tsv")
-      temp_name <- paste0("discrete_pheno_BM_tree_", i, "_pheno_", j)
+      temp_name <- paste0("synchronous_discrete_pheno_BM_tree_", i, "_pheno_", j)
       temp_key <- NULL
       temp_test <- "synchronous"
       command <- paste("Rscript /nfs/esnitkin/Project_Cdiff/Analysis/hogwash_methods/simulate_data_for_convergence_based_bGWAS/R/run_hogwash_sbatch.R ",
@@ -132,12 +133,12 @@ write_hoghwash_sbat_for_sim <- function(num_tree, num_pheno) {
                        temp_name,
                        getwd(),
                        perm, 
-                       fdr,
+                       binary_fdr,
                        bootstrap, 
                        temp_test, 
                        temp_key,
                        sep = " ")
-      fname <- paste0(getwd(), "/", "hogwash_synchronous_", temp_name, ".sbat")
+      fname <- paste0(getwd(), "/", "hogwash_", temp_name, ".sbat")
       writeLines(c("#!/bin/sh",
                    paste0("#SBATCH --job-name=", temp_name),
                    paste0("#SBATCH --output=", temp_name, ".out"),
@@ -157,7 +158,7 @@ write_hoghwash_sbat_for_sim <- function(num_tree, num_pheno) {
       # Discrete WN -- PHYC
       temp_geno <- paste0(data_dir, "simulated_genotype_for_discrete_pheno_WN_tree_", i, "_pheno_", j, ".tsv")
       temp_pheno <- paste0(data_dir, "simulated_discrete_pheno_WN_tree_", i, "_pheno_", j, ".tsv")
-      temp_name <- paste0("discrete_pheno_WN_tree_", i, "_pheno_", j)
+      temp_name <- paste0("phyc_discrete_pheno_WN_tree_", i, "_pheno_", j)
       temp_key <- NULL
       temp_test <- "phyc"
       command <- paste("Rscript /nfs/esnitkin/Project_Cdiff/Analysis/hogwash_methods/simulate_data_for_convergence_based_bGWAS/R/run_hogwash_sbatch.R ",
@@ -167,12 +168,12 @@ write_hoghwash_sbat_for_sim <- function(num_tree, num_pheno) {
                        temp_name,
                        getwd(),
                        perm, 
-                       fdr,
+                       binary_fdr,
                        bootstrap, 
                        temp_test, 
                        temp_key,
                        sep = " ")
-      fname <- paste0(getwd(), "/", "hogwash_phyc_", temp_name, ".sbat")
+      fname <- paste0(getwd(), "/", "hogwash_", temp_name, ".sbat")
       writeLines(c("#!/bin/sh",
                    paste0("#SBATCH --job-name=", temp_name),
                    paste0("#SBATCH --output=", temp_name, ".out"),
@@ -191,7 +192,7 @@ write_hoghwash_sbat_for_sim <- function(num_tree, num_pheno) {
       # Discrete WN -- SYNC
       temp_geno <- paste0(data_dir, "simulated_genotype_for_discrete_pheno_WN_tree_", i, "_pheno_", j, ".tsv")
       temp_pheno <- paste0(data_dir, "simulated_discrete_pheno_WN_tree_", i, "_pheno_", j, ".tsv")
-      temp_name <- paste0("discrete_pheno_WN_tree_", i, "_pheno_", j)
+      temp_name <- paste0("synchronous_discrete_pheno_WN_tree_", i, "_pheno_", j)
       temp_key <- NULL
       temp_test <- "synchronous"
       command <- paste("Rscript /nfs/esnitkin/Project_Cdiff/Analysis/hogwash_methods/simulate_data_for_convergence_based_bGWAS/R/run_hogwash_sbatch.R ",
@@ -201,12 +202,12 @@ write_hoghwash_sbat_for_sim <- function(num_tree, num_pheno) {
                        temp_name,
                        getwd(),
                        perm, 
-                       fdr,
+                       binary_fdr,
                        bootstrap, 
                        temp_test, 
                        temp_key,
                        sep = " ")
-      fname <- paste0(getwd(), "/", "hogwash_synchronous_", temp_name, ".sbat")
+      fname <- paste0(getwd(), "/", "hogwash_", temp_name, ".sbat")
       writeLines(c("#!/bin/sh",
                    paste0("#SBATCH --job-name=", temp_name),
                    paste0("#SBATCH --output=", temp_name, ".out"),

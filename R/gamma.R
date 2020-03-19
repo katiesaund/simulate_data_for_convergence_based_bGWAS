@@ -200,11 +200,10 @@ calc_cont_gamma_list <- function(tree_list,
 #' Calculate gamma within continuous test
 #'
 #' @description Given phenotype and genotype information, calculate a summary
-#'   statistic that describes the number of edges on the tree where the
-#'   phenotype change is large (delta phenotype > median(delta phenotype on
-#'   genotype non-transition edges)) and the genotype transitions (0 to 1 or 1 to
-#'   0). This summary stat will be used to evaluate the appropriateness /
-#'   effectiveness of hogwash on this dataset.
+#'   statistic that describes the elementwise intersection of genotype
+#'   transition edges and phenotype delta  divided by their union. Delta
+#'   phenotype is scaled from 0 to 1. This summary stat will be used to evaluate
+#'   the appropriateness / effectiveness of hogwash on this dataset.
 #' @param geno_trans_edge_list List of lists. Each entry has two named lists:
 #'   $transition and $transition_dir. Number of sub-lists = number of genotypes.
 #'   Length(each sublist) == Nedge(tree). Binary.

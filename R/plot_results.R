@@ -10,7 +10,7 @@ df$tree_id <- paste0("tree_", df$tree_id)
 df %>% 
   filter(epsilon_threshold < 0.04, 
          alpha_threshold == -log(0.05)) %>% 
-  filter(test != "continuous") %>% 
+  filter(test == "phyc") %>% 
   ggplot() +
   geom_point(aes(x = epsilon, y = fdr_corrected_pvals), size = 0.5, 
              alpha = 0.1) + 
@@ -20,9 +20,25 @@ df %>%
   facet_grid(tree_id + phenotype_id ~ phenotype_phylogenetic_signal + test) + 
   theme(axis.text.x = element_text(color = "black", size = 10, angle = 90, hjust = .5, vjust = .5),
         axis.text.y = element_text(color = "black", size = 10, angle = 0)) + 
-  ggsave("../figures/Fig_5A_pval_vs_epsilon_dot_plot_only_binary.pdf", height = 16, width = 7, units = "in")
+  ggsave("../figures/Fig_5A_pval_vs_epsilon_dot_plot_only_phyc.pdf", height = 16, width = 3.5, units = "in")
 
 # Figure 5B
+df %>% 
+  filter(epsilon_threshold < 0.04, 
+         alpha_threshold == -log(0.05)) %>% 
+  filter(test == "sync") %>% 
+  ggplot() +
+  geom_point(aes(x = epsilon, y = fdr_corrected_pvals), size = 0.5, 
+             alpha = 0.1) + 
+  xlab("") + 
+  theme_bw() + 
+  ylab("") + 
+  facet_grid(tree_id + phenotype_id ~ phenotype_phylogenetic_signal + test) + 
+  theme(axis.text.x = element_text(color = "black", size = 10, angle = 90, hjust = .5, vjust = .5),
+        axis.text.y = element_text(color = "black", size = 10, angle = 0)) + 
+  ggsave("../figures/Fig_5B_pval_vs_epsilon_dot_plot_only_sync.pdf", height = 16, width = 3.5, units = "in")
+
+# Figure 5C
 df %>% 
   filter(epsilon_threshold < 0.04, 
          alpha_threshold == -log(0.05)) %>% 
@@ -37,7 +53,7 @@ df %>%
   facet_grid(tree_id + phenotype_id ~ phenotype_phylogenetic_signal + test) + 
   theme(axis.text.x = element_text(color = "black", size = 10, angle = 90, hjust = .5, vjust = .5),
         axis.text.y = element_text(color = "black", size = 10, angle = 0)) +
-  ggsave("../figures/Fig_5B_pval_vs_epsilon_dot_plot_only_continuous.pdf", height = 16, width = 3.5, units = "in")
+  ggsave("../figures/Fig_5C_pval_vs_epsilon_dot_plot_only_continuous.pdf", height = 16, width = 3.5, units = "in")
 
 
 ### END FIGURE 5

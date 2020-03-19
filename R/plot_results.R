@@ -240,7 +240,7 @@ df %>%
   geom_hline(aes(yintercept = -log(0.05)), color = "red")
 ggsave("../figures/pval_vs_epsilon_dot_plot_only_continuous.pdf", height = 6, width = 12, units = "in")
 
-# signficance vs epsilon - Just continuous
+# signficance vs epsilon - Just binary
 df %>% 
   filter(epsilon_threshold < 0.04, 
          alpha_threshold == -log(0.05)) %>% 
@@ -252,6 +252,20 @@ df %>%
   ylab("-log(P-value)") + 
   ggtitle("P-value vs. Epsilon") +
   facet_grid(phenotype_type + phenotype_phylogenetic_signal + test ~ tree_id + phenotype_id) + 
-  geom_hline(aes(yintercept = -log(0.05)), color = "red")
+  geom_hline(aes(yintercept = -log(0.005)), color = "red")
 ggsave("../figures/pval_vs_epsilon_dot_plot_only_binary.pdf", height = 6, width = 12, units = "in")
 
+# signficance vs epsilon - Just continuous BM
+df %>% 
+  filter(epsilon_threshold < 0.04, 
+         alpha_threshold == -log(0.05)) %>% 
+  filter(test == "continuous", phenotype_phylogenetic_signal == "BM") %>% 
+  ggplot() +
+  geom_jitter(aes(x = epsilon, y = fdr_corrected_pvals)) + 
+  xlab("Epsilon") + 
+  theme_bw() + 
+  ylab("-log(P-value)") + 
+  ggtitle("P-value vs. Epsilon") +
+  facet_grid(phenotype_type + phenotype_phylogenetic_signal + test ~ tree_id + phenotype_id) + 
+  geom_hline(aes(yintercept = -log(0.05)), color = "red")
+ggsave("../figures/pval_vs_epsilon_dot_plot_only_continuous_BM.pdf", height = 6, width = 12, units = "in")

@@ -16,8 +16,8 @@ alpha_to_filter_to <- df$alpha_threshold[1]
 epsilon_to_filter_to <- df$epsilon_threshold[1]
 
 num_row = num_test * num_tree * num_signal * num_pheno
-rsq_df <- data.frame(matrix(NA, nrow = num_row, ncol = 7))
-colnames(rsq_df) <- c("test", "tree_id", "phenotype_id", "signal", "rsq", "nrow", "report_num_geno")
+spearman_df <- data.frame(matrix(NA, nrow = num_row, ncol = 7))
+colnames(spearman_df) <- c("test", "tree_id", "phenotype_id", "signal", "spearman_pvalue", "spearman_rho", "nrow", "report_num_geno")
 
 row_index <- 1
 for (i in 1:num_test) {
@@ -38,15 +38,16 @@ for (i in 1:num_test) {
                  alpha_threshold == alpha_to_filter_to, 
                  epsilon_threshold == epsilon_to_filter_to)
         
-        model <- lm(formula = fdr_corrected_pvals ~ epsilon,
-                    data = temp_data)
-        
-        r2 <- round(summary(model)$r.squared, 2)
-        rsq_df[row_index, ] <- c(current_test, 
+        spearman_output <- stats::cor.test(x = fdr_corrected_pvals, 
+                                           y = epsilon, 
+                                           method = "spearman", # Rank 
+                                           alternative = "greater") # Greater means it's testing for a positive correlation
+        spearman_df[row_index, ] <- c(current_test, 
                                  current_tree, 
                                  current_pheno, 
                                  current_signal, 
-                                 r2, 
+                                 spearman_output$p.value, 
+                                 spearman_output$estimate,
                                  nrow(temp_data), 
                                  temp_data$num_geno[1])
         row_index <- row_index + 1
@@ -55,10 +56,10 @@ for (i in 1:num_test) {
   }
 }
 
-rsq_df$rsq[which(is.nan(rsq_df$rsq))] <- NA
+spearman_df$spearman_pvalue[which(is.nan(spearman_df$spearman_pvalue))] <- NA
 
-rsq_df %>% 
-  ggplot(aes(x = test, y = rsq, fill = signal)) + 
+spearman_df %>% 
+  ggplot(aes(x = test, y = spearman_rho, fill = signal)) + 
   geom_boxplot(alpha = 0.5) + 
   #geom_point(alpha = 0.35, aes(color = signal, fill = signal)) + 
   geom_dotplot(binaxis = 'y', 
@@ -66,17 +67,17 @@ rsq_df %>%
                position = position_dodge(0.75), 
                dotsize = 0.4) + 
   theme_bw() + 
-  ylab("R Squared: -log(p) ~ epsilon") + 
+  ylab("Spearman Rho: -log(p) ~ epsilon") + 
   xlab("") + 
-  ggsave(filename = "../figures/pval_vs_epsilon_rsquared_boxplot.pdf")
+  ggsave(filename = "../figures/pval_vs_epsilon_spearman_rho_boxplot.pdf")
 
-write_tsv(rsq_df,
-          path = "../data/pval_vs_epsilon_rsquared.tsv", 
+write_tsv(spearman_df,
+          path = "../data/pval_vs_epsilon_spearman.tsv", 
           col_names = TRUE)
 
 # get summary data
-rsq_medians_df <- data.frame(matrix(NA, nrow = num_test * num_signal, ncol = 7))
-colnames(rsq_medians_df) <- c("test", "signal", "median_rsq", "mean_rq", "max_rsq", "min_rsq", "num_no_rsq")
+rho_medians_df <- data.frame(matrix(NA, nrow = num_test * num_signal, ncol = 7))
+colnames(rho_medians_df) <- c("test", "signal", "median_spearman_rho", "mean_spearman_rho", "max_spearman_rho", "min_spearman_rho", "num_no_spearman_rho")
 
 row_id <- 1
 for (i in 1:num_test) {
@@ -84,11 +85,11 @@ for (i in 1:num_test) {
     current_test <- unique(df$test)[i]
     current_signal <- unique(df$phenotype_phylogenetic_signal)[j]
     
-    temp_data <- rsq_df %>% 
+    temp_data <- spearman_df %>% 
       filter(test == current_test, 
              signal == current_signal)
     
-    temp_data$rsq[which(is.nan(temp_data$rsq))] <- NA
+    temp_data$spearman_rho[which(is.nan(temp_data$spearman_rho))] <- NA
     
     print(temp_data)
     if (nrow(temp_data) != (num_tree * num_pheno)) { 
@@ -97,21 +98,21 @@ for (i in 1:num_test) {
     if (sum(temp_data$nrow != temp_data$report_num_geno) > 0) { 
       stop("Wrong number of genotypes")
     }
-    print("Rsq")
-    print(as.numeric(temp_data$rsq))
+    print("spearman_rho")
+    print(as.numeric(temp_data$spearman_rho))
     
-    print("Median rsq plain then na.rm = TRUE")
-    print(median(as.numeric(temp_data$rsq)))
-    print(median(as.numeric(temp_data$rsq, na.rm = TRUE)))
+    print("Median spearman_rho plain then na.rm = TRUE")
+    print(median(as.numeric(temp_data$spearman_rho)))
+    print(median(as.numeric(temp_data$spearman_rho, na.rm = TRUE)))
     
-    print("sum(is.na(temp_data$rsq), na.rm = FALSE)")
-    print(sum(is.na(as.numeric(temp_data$rsq, na.rm = FALSE))))
+    print("sum(is.na(temp_data$spearman_rho), na.rm = FALSE)")
+    print(sum(is.na(as.numeric(temp_data$spearman_rho, na.rm = FALSE))))
     
-    current_median <- median(as.numeric(temp_data$rsq, na.rm = TRUE))
-    current_mean <- mean(as.numeric(temp_data$rsq, na.rm = TRUE))
-    current_max <- max(as.numeric(temp_data$rsq, na.rm = TRUE))
-    current_min <- min(as.numeric(temp_data$rsq, na.rm = TRUE))
-    current_NA <- sum(is.na(as.numeric(temp_data$rsq)))
+    current_median <- median(as.numeric(temp_data$spearman_rho, na.rm = TRUE))
+    current_mean <- mean(as.numeric(temp_data$spearman_rho, na.rm = TRUE))
+    current_max <- max(as.numeric(temp_data$spearman_rho, na.rm = TRUE))
+    current_min <- min(as.numeric(temp_data$spearman_rho, na.rm = TRUE))
+    current_NA <- sum(is.na(as.numeric(temp_data$spearman_rho)))
     
     print(c(current_test, 
             current_signal, 
@@ -121,18 +122,18 @@ for (i in 1:num_test) {
             current_min,
             current_NA))
     
-    rsq_medians_df[row_id, ] <- c(current_test, 
+    rho_medians_df[row_id, ] <- c(current_test, 
                                   current_signal, 
                                   current_median,
                                   current_mean,
                                   current_max,
                                   current_min,
                                   current_NA)
-    print( rsq_medians_df[row_id, ])
+    print(rho_medians_df[row_id, ])
     row_id <- row_id + 1
   }
 }
 
-write_tsv(rsq_medians_df,
-          path = "../data/pval_vs_epsilon_rsquared_summaries.tsv", 
+write_tsv(rho_medians_df,
+          path = "../data/pval_vs_epsilon_spearman_rho_summaries.tsv", 
           col_names = TRUE)

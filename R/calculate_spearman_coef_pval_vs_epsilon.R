@@ -16,7 +16,7 @@ alpha_to_filter_to <- df$alpha_threshold[1]
 epsilon_to_filter_to <- df$epsilon_threshold[1]
 
 num_row = num_test * num_tree * num_signal * num_pheno
-spearman_df <- data.frame(matrix(NA, nrow = num_row, ncol = 7))
+spearman_df <- data.frame(matrix(NA, nrow = num_row, ncol = 8))
 colnames(spearman_df) <- c("test", "tree_id", "phenotype_id", "signal", "spearman_pvalue", "spearman_rho", "nrow", "report_num_geno")
 
 row_index <- 1
@@ -38,10 +38,11 @@ for (i in 1:num_test) {
                  alpha_threshold == alpha_to_filter_to, 
                  epsilon_threshold == epsilon_to_filter_to)
         
-        spearman_output <- stats::cor.test(x = fdr_corrected_pvals, 
-                                           y = epsilon, 
+        spearman_output <- stats::cor.test(x = temp_data$fdr_corrected_pvals, 
+                                           y = temp_data$epsilon, 
                                            method = "spearman", # Rank 
                                            alternative = "greater") # Greater means it's testing for a positive correlation
+        # NA is returned fro p-value and rho if either x or y is flat (like, if all of the fdr corrected pvalues are)
         spearman_df[row_index, ] <- c(current_test, 
                                  current_tree, 
                                  current_pheno, 
@@ -51,17 +52,23 @@ for (i in 1:num_test) {
                                  nrow(temp_data), 
                                  temp_data$num_geno[1])
         row_index <- row_index + 1
+        
+
       }
     }
   }
 }
+
+storage.mode(spearman_df$spearman_pvalue) <- "numeric"
+storage.mode(spearman_df$spearman_rho) <- "numeric"
+storage.mode(spearman_df$nrow) <- "numeric"
+storage.mode(spearman_df$report_num_geno) <- "numeric"
 
 spearman_df$spearman_pvalue[which(is.nan(spearman_df$spearman_pvalue))] <- NA
 
 spearman_df %>% 
   ggplot(aes(x = test, y = spearman_rho, fill = signal)) + 
   geom_boxplot(alpha = 0.5) + 
-  #geom_point(alpha = 0.35, aes(color = signal, fill = signal)) + 
   geom_dotplot(binaxis = 'y', 
                stackdir = 'center',
                position = position_dodge(0.75), 
@@ -91,36 +98,18 @@ for (i in 1:num_test) {
     
     temp_data$spearman_rho[which(is.nan(temp_data$spearman_rho))] <- NA
     
-    print(temp_data)
     if (nrow(temp_data) != (num_tree * num_pheno)) { 
       stop("Dim mismatch") 
     }
     if (sum(temp_data$nrow != temp_data$report_num_geno) > 0) { 
       stop("Wrong number of genotypes")
     }
-    print("spearman_rho")
-    print(as.numeric(temp_data$spearman_rho))
-    
-    print("Median spearman_rho plain then na.rm = TRUE")
-    print(median(as.numeric(temp_data$spearman_rho)))
-    print(median(as.numeric(temp_data$spearman_rho, na.rm = TRUE)))
-    
-    print("sum(is.na(temp_data$spearman_rho), na.rm = FALSE)")
-    print(sum(is.na(as.numeric(temp_data$spearman_rho, na.rm = FALSE))))
-    
-    current_median <- median(as.numeric(temp_data$spearman_rho, na.rm = TRUE))
-    current_mean <- mean(as.numeric(temp_data$spearman_rho, na.rm = TRUE))
-    current_max <- max(as.numeric(temp_data$spearman_rho, na.rm = TRUE))
-    current_min <- min(as.numeric(temp_data$spearman_rho, na.rm = TRUE))
-    current_NA <- sum(is.na(as.numeric(temp_data$spearman_rho)))
-    
-    print(c(current_test, 
-            current_signal, 
-            current_median,
-            current_mean,
-            current_max,
-            current_min,
-            current_NA))
+
+    current_median <- median(temp_data$spearman_rho, na.rm = TRUE)
+    current_mean <- mean(temp_data$spearman_rho, na.rm = TRUE)
+    current_max <- max(temp_data$spearman_rho, na.rm = TRUE)
+    current_min <- min(temp_data$spearman_rho, na.rm = TRUE)
+    current_NA <- sum(is.na(temp_data$spearman_rho))
     
     rho_medians_df[row_id, ] <- c(current_test, 
                                   current_signal, 
@@ -129,10 +118,15 @@ for (i in 1:num_test) {
                                   current_max,
                                   current_min,
                                   current_NA)
-    print(rho_medians_df[row_id, ])
     row_id <- row_id + 1
   }
 }
+
+storage.mode(rho_medians_df$median_spearman_rho) <- "numeric"
+storage.mode(rho_medians_df$mean_spearman_rho ) <- "numeric"
+storage.mode(rho_medians_df$max_spearman_rho) <- "numeric"
+storage.mode(rho_medians_df$min_spearman_rho) <- "numeric"
+storage.mode(rho_medians_df$num_no_spearman_rho) <- "numeric"
 
 write_tsv(rho_medians_df,
           path = "../data/pval_vs_epsilon_spearman_rho_summaries.tsv", 

@@ -12,6 +12,6 @@ write_plot_sbat <- function() {
                "echo $SLURM_SUBMIT_DIR",
                "echo $SLURM_JOB_ID",
                "Rscript ../../simulate_data_for_convergence_based_bGWAS/R/plot_results.R"),
-             paste0(getwd(), "/", "plot_sim_data.sbat"),
+             paste0(getwd(), "/", "4_plot_sim_data.sbat"),
              sep = "\n")
 }

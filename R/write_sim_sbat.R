@@ -12,7 +12,7 @@ write_simulate_sbat <- function(num_tree, num_pheno, num_tip, num_geno) {
                "echo $SLURM_SUBMIT_DIR",
                "echo $SLURM_JOB_ID",
                paste("Rscript ../../simulate_data_for_convergence_based_bGWAS/R/simulate_discrete_data.R", num_tree, num_pheno, num_tip, num_geno, sep = " ")),
-             paste0(getwd(), "/", "simulate_discrete_data.sbat"),
+             paste0(getwd(), "/", "1A_simulate_discrete_data.sbat"),
              sep = "\n")
   
   writeLines(c("#!/bin/sh",
@@ -28,6 +28,6 @@ write_simulate_sbat <- function(num_tree, num_pheno, num_tip, num_geno) {
                "echo $SLURM_SUBMIT_DIR",
                "echo $SLURM_JOB_ID",
                paste("Rscript ../../simulate_data_for_convergence_based_bGWAS/R/simulate_continuous_data.R", num_tree, num_pheno, num_tip, num_geno, sep = " ")),
-             paste0(getwd(), "/", "simulate_continuous_data.sbat"),
+             paste0(getwd(), "/", "1B_simulate_continuous_data.sbat"),
              sep = "\n")
 }

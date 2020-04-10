@@ -1,5 +1,5 @@
 # To be run from data directory where hogwash results are saved
-source("../../hpc_for_data_sim/R/get_resource_usage.R")
+source("get_resource_usage.R")
 library(tidyverse)
 user_inputs <- read_tsv("simulation_input_values.tsv", col_names = FALSE)
 

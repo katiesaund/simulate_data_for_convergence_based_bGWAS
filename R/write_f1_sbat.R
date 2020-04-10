@@ -12,6 +12,6 @@ write_f1_sbat <- function(num_tree, num_pheno) {
                "echo $SLURM_SUBMIT_DIR",
                "echo $SLURM_JOB_ID",
                paste("Rscript ../../simulate_data_for_convergence_based_bGWAS/R/calc_f1_for_range_of_alpha_and_gamma.R", num_tree, num_pheno, sep = " ")),
-             paste0(getwd(), "/", "calc_f1.sbat"),
+             paste0(getwd(), "/", "3_calculate_F1.sbat"),
              sep = "\n")
 }

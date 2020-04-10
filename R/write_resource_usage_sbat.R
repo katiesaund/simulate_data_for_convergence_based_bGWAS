@@ -1,0 +1,17 @@
+write_resource_usage_sbat <- function() {
+  writeLines(c("#!/bin/sh",
+               paste0("#SBATCH --job-name=resource_usage"),
+               paste0("#SBATCH --output=resource_usage.out"),
+               "#SBATCH --mail-user=katiephd@umich.edu",  
+               "#SBATCH --mail-type=END",
+               "#SBATCH --export=ALL",
+               "#SBATCH --partition=standard",
+               "#SBATCH --account=esnitkin1",
+               "#SBATCH --nodes=1 --ntasks=1 --cpus-per-task=1 --mem=1G --time=1:00:00",
+               "cd $SLURM_SUBMIT_DIR",
+               "echo $SLURM_SUBMIT_DIR",
+               "echo $SLURM_JOB_ID",
+               paste("Rscript ../../simulate_data_for_convergence_based_bGWAS/R/capture_hogwash_resource_usage.R", num_tree, num_pheno, sep = " ")),
+             paste0(getwd(), "/", "5_record_resource_usage.sbat"),
+             sep = "\n")
+}

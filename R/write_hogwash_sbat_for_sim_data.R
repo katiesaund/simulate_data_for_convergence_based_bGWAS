@@ -31,7 +31,7 @@ write_hoghwash_sbat_for_sim <- function(num_tree, num_pheno) {
                        temp_test, 
                        temp_key,
                        sep = " ")
-      fname <- paste0(getwd(), "/", "hogwash_", temp_name, ".sbat")
+      fname <- paste0(getwd(), "/", "2A_hogwash_", temp_name, ".sbat")
       writeLines(c("#!/bin/sh",
                    paste0("#SBATCH --job-name=", temp_name),
                    paste0("#SBATCH --output=", temp_name, ".out"),
@@ -66,7 +66,7 @@ write_hoghwash_sbat_for_sim <- function(num_tree, num_pheno) {
                        temp_test, 
                        temp_key,
                        sep = " ")
-      fname <- paste0(getwd(), "/", "hogwash_", temp_name, ".sbat")
+      fname <- paste0(getwd(), "/", "2B_hogwash_", temp_name, ".sbat")
       writeLines(c("#!/bin/sh",
                    paste0("#SBATCH --job-name=", temp_name),
                    paste0("#SBATCH --output=", temp_name, ".out"),
@@ -102,7 +102,7 @@ write_hoghwash_sbat_for_sim <- function(num_tree, num_pheno) {
                        temp_test, 
                        temp_key,
                        sep = " ")
-      fname <- paste0(getwd(), "/", "hogwash_", temp_name, ".sbat")
+      fname <- paste0(getwd(), "/", "2C_hogwash_", temp_name, ".sbat")
       writeLines(c("#!/bin/sh",
                    paste0("#SBATCH --job-name=", temp_name),
                    paste0("#SBATCH --output=", temp_name, ".out"),
@@ -138,7 +138,7 @@ write_hoghwash_sbat_for_sim <- function(num_tree, num_pheno) {
                        temp_test, 
                        temp_key,
                        sep = " ")
-      fname <- paste0(getwd(), "/", "hogwash_", temp_name, ".sbat")
+      fname <- paste0(getwd(), "/", "2D_hogwash_", temp_name, ".sbat")
       writeLines(c("#!/bin/sh",
                    paste0("#SBATCH --job-name=", temp_name),
                    paste0("#SBATCH --output=", temp_name, ".out"),
@@ -173,7 +173,7 @@ write_hoghwash_sbat_for_sim <- function(num_tree, num_pheno) {
                        temp_test, 
                        temp_key,
                        sep = " ")
-      fname <- paste0(getwd(), "/", "hogwash_", temp_name, ".sbat")
+      fname <- paste0(getwd(), "/", "2E_hogwash_", temp_name, ".sbat")
       writeLines(c("#!/bin/sh",
                    paste0("#SBATCH --job-name=", temp_name),
                    paste0("#SBATCH --output=", temp_name, ".out"),
@@ -207,7 +207,7 @@ write_hoghwash_sbat_for_sim <- function(num_tree, num_pheno) {
                        temp_test, 
                        temp_key,
                        sep = " ")
-      fname <- paste0(getwd(), "/", "hogwash_", temp_name, ".sbat")
+      fname <- paste0(getwd(), "/", "2F_hogwash_", temp_name, ".sbat")
       writeLines(c("#!/bin/sh",
                    paste0("#SBATCH --job-name=", temp_name),
                    paste0("#SBATCH --output=", temp_name, ".out"),

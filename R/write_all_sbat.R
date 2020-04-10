@@ -6,6 +6,7 @@ source("../../simulate_data_for_convergence_based_bGWAS/R/write_hogwash_sbat_for
 source("../../simulate_data_for_convergence_based_bGWAS/R/write_sim_sbat.R")
 source("../../simulate_data_for_convergence_based_bGWAS/R/write_plot_sbat.R")
 source("../../simulate_data_for_convergence_based_bGWAS/R/write_f1_sbat.R")
+source("../../simulate_data_for_convergence_based_bGWAS/R/write_spearman_sbat.R")
 
 user_inputs <- read_tsv("simulation_input_values.tsv", col_names = FALSE)
 
@@ -18,4 +19,4 @@ write_simulate_sbat(num_tree, num_pheno, num_tip, num_geno)
 write_hoghwash_sbat_for_sim(num_tree, num_pheno)
 write_f1_sbat(num_tree, num_pheno)
 write_plot_sbat()
-write_rsq_sbat()
+write_spearman_sbat()

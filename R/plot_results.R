@@ -435,8 +435,7 @@ df %>%
 
 
 # Resource Usage
-usage_df <- read_csv("../data/hogwash_resource_usage.csv", 
-                     col_types = c("numeric", "numeric", "numeric", "numeric", "character", "character"))
+usage_df <- read_csv("../data/hogwash_resource_usage.csv")
 
 memory_plot <- usage_df %>% 
   ggplot(aes(x = test, y = `Memory (GB)`)) + 

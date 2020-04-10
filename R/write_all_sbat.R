@@ -21,6 +21,7 @@ source(paste0(relative_path, "/", "simulate_data_for_convergence_based_bGWAS/R/w
 source(paste0(relative_path, "/", "simulate_data_for_convergence_based_bGWAS/R/write_f1_sbat.R"))
 source(paste0(relative_path, "/", "simulate_data_for_convergence_based_bGWAS/R/write_plot_sbat.R"))
 source(paste0(relative_path, "/", "simulate_data_for_convergence_based_bGWAS/R/write_spearman_sbat.R"))
+source(paste0(relative_path, "/", "simulate_data_for_convergence_based_bGWAS/R/write_resource_usage_sbat.R"))
 
 user_inputs <- read_tsv("simulation_input_values.tsv", col_names = FALSE)
 

@@ -1,5 +1,5 @@
 # To be run from data directory where hogwash results are saved
-source("get_resource_usage.R")
+source("../../simulate_data_for_convergence_based_bGWAS/R/get_resource_usage.R")
 library(tidyverse)
 user_inputs <- read_tsv("simulation_input_values.tsv", col_names = FALSE)
 

@@ -82,6 +82,8 @@ for (h in 1:length(pheno_index)) {
         current_file_name <- paste0(data_dir, 
                                     "hogwash_",
                                     discrete_test_types[l],
+                                    "_",
+                                    discrete_test_types[l],  
                                     "_discrete_", 
                                     phenotype,
                                     "_", 
@@ -181,7 +183,7 @@ for (h in 1:length(pheno_index)) {
     for (k in 1:length(tree_index)) {
       for (l in 1:length(continuous_test_types)) {
         current_file_name <- paste0(data_dir, 
-                                    "hogwash_continuous_", 
+                                    "hogwash_continuous_continuous", 
                                     phenotype,
                                     "_", 
                                     data_types[j],

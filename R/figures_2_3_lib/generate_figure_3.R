@@ -1,4 +1,4 @@
-source("R/figures_2_3_lib/fig_2_3_plot_lib.R")
+source("fig_2_3_plot_lib.R")
 
 set.seed(10)
 tree <- ape::rcoal(n = 12)
@@ -49,10 +49,11 @@ names(snp_geno_1_ML_anc_rec) <- c( (ape::Ntip(tree) + 1):(ape::Ntip(tree) + ape:
 snp_geno_1_tip_and_node_recon <- c(snp_geno_1, snp_geno_1_ML_anc_rec)
 names(snp_geno_1_tip_and_node_recon) <- c(1:sum(ape::Ntip(tree), ape::Nnode(tree)))
 
-snp_geno_1_trans <- identify_transition_edges(tr = tree, 
-                                               vec = snp_geno_1,
-                                               node_recon = snp_geno_1_ML_anc_rec, 
-                                               disc_cont = "discrete")
+snp_geno_1_trans <- 
+  id_transition_edges_from_vec(tr = tree, 
+                               vec = snp_geno_1,
+                               node_recon = snp_geno_1_ML_anc_rec, 
+                               disc_cont = "discrete")
 snp_geno_1_recon_by_edges <- reorder_tip_and_node_to_edge(snp_geno_1_tip_and_node_recon, tree)
 
 
@@ -65,10 +66,11 @@ names(snp_geno_2_ML_anc_rec) <- c( (ape::Ntip(tree) + 1):(ape::Ntip(tree) + ape:
 snp_geno_2_tip_and_node_recon <- c(snp_geno_2, snp_geno_2_ML_anc_rec)
 names(snp_geno_2_tip_and_node_recon) <- c(1:sum(ape::Ntip(tree), ape::Nnode(tree)))
 
-snp_geno_2_trans <- identify_transition_edges(tr = tree, 
-                                               vec = snp_geno_2,
-                                               node_recon = snp_geno_2_ML_anc_rec, 
-                                               disc_cont = "discrete")
+snp_geno_2_trans <- 
+  id_transition_edges_from_vec(tr = tree, 
+                               vec = snp_geno_2,
+                               node_recon = snp_geno_2_ML_anc_rec, 
+                               disc_cont = "discrete")
 snp_geno_2_recon_by_edges <- reorder_tip_and_node_to_edge(snp_geno_2_tip_and_node_recon, tree)
 
 # SNP 3
@@ -80,30 +82,17 @@ names(snp_geno_3_ML_anc_rec) <- c( (ape::Ntip(tree) + 1):(ape::Ntip(tree) + ape:
 snp_geno_3_tip_and_node_recon <- c(snp_geno_3, snp_geno_3_ML_anc_rec)
 names(snp_geno_3_tip_and_node_recon) <- c(1:sum(ape::Ntip(tree), ape::Nnode(tree)))
 
-snp_geno_3_trans <- identify_transition_edges(tr = tree, 
-                                               vec = snp_geno_3,
-                                               node_recon = snp_geno_3_ML_anc_rec, 
-                                               disc_cont = "discrete")
+snp_geno_3_trans <-
+  id_transition_edges_from_vec(tr = tree, 
+                               vec = snp_geno_3,
+                               node_recon = snp_geno_3_ML_anc_rec, 
+                               disc_cont = "discrete")
 snp_geno_3_recon_by_edges <- reorder_tip_and_node_to_edge(snp_geno_3_tip_and_node_recon, tree)
 
 # Gene geno
 gene_geno_phyc_trans_index <- unique(c(which(snp_geno_1_trans$trans_dir == 1), 
                                        which(snp_geno_2_trans$trans_dir == 1),
                                        which(snp_geno_3_trans$trans_dir == 1)))
-
-# gene_geno_ML_anc_rec <-
-#   as.numeric(colnames(gene_geno_recon$lik.anc)[apply(gene_geno_recon$lik.anc,
-#                                                       1,
-#                                                       which.max)])
-# names(gene_geno_ML_anc_rec) <- c( (ape::Ntip(tree) + 1):(ape::Ntip(tree) + ape::Nnode(tree)))
-# gene_geno_tip_and_node_recon <- c(gene_geno, gene_geno_ML_anc_rec)
-# names(gene_geno_tip_and_node_recon) <- c(1:sum(ape::Ntip(tree), ape::Nnode(tree)))
-# 
-# gene_geno_trans <- identify_transition_edges(tr = tree, 
-#                                               vec = gene_geno,
-#                                               node_recon = gene_geno_ML_anc_rec, 
-#                                               disc_cont = "discrete")
-# gene_geno_recon_by_edges <- reorder_tip_and_node_to_edge(gene_geno_tip_and_node_recon, tree)
 
 # Prep colors for plots
 # Reconstruction
@@ -141,7 +130,7 @@ cex_value <- 1
 edge_width <- 2.5
 tip_label_log <- FALSE
 
-pdf(file = "img/Figure_3_grouping_examples.pdf", width = 7, height = 5)
+pdf(file = "../../img/Figure_3_grouping_examples.pdf", width = 7, height = 5)
 graphics::par(mfrow = c(3, 3), mar = c(1, 3, 1, 1))
 
 graphics::plot(tree,

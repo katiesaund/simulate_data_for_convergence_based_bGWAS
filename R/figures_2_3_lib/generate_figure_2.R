@@ -1,5 +1,7 @@
 # Create a 5x3 figure of trees to explain phyc, sync, and cont tests
-source("R/figures_2_3_lib/fig_2_3_plot_lib.R")set.seed(10)
+source("fig_2_3_plot_lib.R")
+library(ape)
+set.seed(10)
 tree <- ape::rcoal(n = 12)
 discrete_phenotype   <- c( 1,  0,  0, 1, 1, 1, 0, 1,  0,  0,  1,  1)
 genotype             <- c( 1,  1,  0, 1, 1, 1, 1, 0,  0,  0,  1,  1)
@@ -29,10 +31,11 @@ names(disc_pheno_ML_anc_rec) <- c( (ape::Ntip(tree) + 1):(ape::Ntip(tree) + ape:
 disc_pheno_tip_and_node_recon <- c(discrete_phenotype, disc_pheno_ML_anc_rec)
 names(disc_pheno_tip_and_node_recon) <- c(1:sum(ape::Ntip(tree), ape::Nnode(tree)))
 
-disc_pheno_trans <- identify_transition_edges(tr = tree, 
-                                              vec = discrete_phenotype,
-                                              node_recon = disc_pheno_ML_anc_rec, 
-                                              disc_cont = "discrete")
+disc_pheno_trans <-
+  id_transition_edges_from_vec(tr = tree, 
+                               vec = discrete_phenotype,
+                               node_recon = disc_pheno_ML_anc_rec, 
+                               disc_cont = "discrete")
 # Continuous phenotype
 cont_phenotype_recon <- ape::ace(continuous_phenotype,
                                  tree,
@@ -46,10 +49,11 @@ names(cont_pheno_tip_and_node_recon) <- c(1:sum(ape::Ntip(tree), ape::Nnode(tree
 
 named_cont_pheno <- continuous_phenotype
 names(named_cont_pheno) <- tree$tip.label
-cont_pheno_trans <- identify_transition_edges(tr = tree, 
-                                              vec = continuous_phenotype,
-                                              node_recon = cont_pheno_ML_anc_rec, 
-                                              disc_cont = "continuous")
+cont_pheno_trans <- 
+  id_transition_edges_from_vec(tr = tree, 
+                               vec = continuous_phenotype,
+                               node_recon = cont_pheno_ML_anc_rec, 
+                               disc_cont = "continuous")
 
 # Genotype
 discrete_genotype_recon_ER <- ape::ace(x = genotype, 
@@ -71,14 +75,15 @@ disc_geno_ML_anc_rec <-
   as.numeric(colnames(discrete_genotype_recon_ER$lik.anc)[apply(discrete_genotype_recon_ER$lik.anc,
                                                                  1,
                                                                  which.max)])
-names(disc_geno_ML_anc_rec) <- c( (ape::Ntip(tree) + 1):(ape::Ntip(tree) + ape::Nnode(tree)))
+names(disc_geno_ML_anc_rec) <- c((ape::Ntip(tree) + 1):(ape::Ntip(tree) + ape::Nnode(tree)))
 disc_geno_tip_and_node_recon <- c(genotype, disc_geno_ML_anc_rec)
 names(disc_geno_tip_and_node_recon) <- c(1:sum(ape::Ntip(tree), ape::Nnode(tree)))
 
-disc_geno_trans <- identify_transition_edges(tr = tree, 
-                                              vec = genotype,
-                                              node_recon = disc_geno_ML_anc_rec, 
-                                              disc_cont = "discrete")
+disc_geno_trans <- 
+  id_transition_edges_from_vec(tr = tree, 
+                               vec = genotype,
+                               node_recon = disc_geno_ML_anc_rec, 
+                               disc_cont = "discrete")
 disc_geno_trans_phyc <- disc_geno_trans$trans_dir 
 disc_geno_trans_phyc[disc_geno_trans_phyc == -1] <- 0
 disc_geno_trans_sync_and_cont <- disc_geno_trans$transition
@@ -149,7 +154,7 @@ cex_value <- 1
 edge_width <- 2.5
 tip_label_log <- FALSE
 
-pdf(file = "img/Figure_2_hogwash_test_schema.pdf", width = 9, height = 7.5)
+pdf(file = "../../img/Figure_2_hogwash_test_schema.pdf", width = 9, height = 7.5)
 graphics::par(mfrow = c(3, 5), mar = c(1, 1, 1, 1))
 
  # phyc

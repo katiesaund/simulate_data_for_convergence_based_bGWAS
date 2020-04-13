@@ -51,7 +51,7 @@ These simulated data are being created to specifically benchmark the performance
       - A .rda with the output data
 - Aggregate and summarize the output data from hogwash
   - Submit the various summarization jobs to the scheduler: 
-    - `$ sbatch 3_calculate_F1.sbat`
+    - `$ sbatch 3_aggregate_hogwash_output.sbat`
       - This will generate several summary files which are used in for `4_calculate_spearman.sbat` and `6_plot_sim_data.sbat`  
     - When `3_calculate_F1.sbat` finishes running, submit the next summary job: 
       - `$ sbatch 4_calculate_spearman.sbat`

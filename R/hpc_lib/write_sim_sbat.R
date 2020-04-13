@@ -15,7 +15,8 @@ write_simulate_sbat <- function(num_tree, num_pheno, num_tip, num_geno, path) {
                      num_tree, 
                      num_pheno,
                      num_tip,
-                     num_geno, 
+                     num_geno,
+                     path,
                      sep = " ")),
              paste0(getwd(), "/", "1A_simulate_discrete_data.sbat"),
              sep = "\n")
@@ -36,7 +37,8 @@ write_simulate_sbat <- function(num_tree, num_pheno, num_tip, num_geno, path) {
                      num_tree,
                      num_pheno, 
                      num_tip, 
-                     num_geno, 
+                     num_geno,
+                     path, 
                      sep = " ")),
              paste0(getwd(), "/", "1B_simulate_continuous_data.sbat"),
              sep = "\n")

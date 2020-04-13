@@ -149,7 +149,7 @@ cex_value <- 1
 edge_width <- 2.5
 tip_label_log <- FALSE
 
-pdf(file = "img/hogwash_test_schema.pdf", width = 9, height = 7.5)
+pdf(file = "img/Figure_2_hogwash_test_schema.pdf", width = 9, height = 7.5)
 graphics::par(mfrow = c(3, 5), mar = c(1, 1, 1, 1))
 
  # phyc

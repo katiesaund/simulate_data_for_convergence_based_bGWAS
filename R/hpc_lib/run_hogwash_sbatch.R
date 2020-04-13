@@ -1,6 +1,5 @@
-# devtools::install_github("katiesaund/hogwash", ref = "master", dependencies = FALSE)
 library(hogwash)
-args <- commandArgs(trailingOnly = TRUE) # Grab arguments from the PBS script
+args <- commandArgs(trailingOnly = TRUE) # Grab arguments from the .sbat file
 phenotype <- read.table(args[1],
                     sep = "\t",
                     row.names = 1,

@@ -270,29 +270,29 @@ discrete_f1_tb_and_geno$test[discrete_f1_tb_and_geno$test == "synchronous"] <- "
 discrete_f1_tb_and_geno <- discrete_f1_tb_and_geno %>% filter(!is.na(phenotype_type))
 
 write_tsv(discrete_f1_tb,
-          path = "../data/F1_scores_range_of_alpha_gamma_discrete.tsv",
+          path = "../data/aggregated_hogwash_data_range_of_alpha_gamma_discrete.tsv",
           col_names = TRUE)
 
 write_tsv(discrete_f1_tb_and_geno,
-          path = "../data/F1_scores_by_genotype_range_of_alpha_gamma_discrete.tsv",
+          path = "../data/aggregated_hogwash_data_by_genotype_range_of_alpha_gamma_discrete.tsv",
           col_names = TRUE)
 
 write_tsv(continuous_f1_tb,
-          path = "../data/F1_scores_range_of_alpha_gamma_continuous.tsv",
+          path = "../data/aggregated_hogwash_data_range_of_alpha_gamma_continuous.tsv",
           col_names = TRUE)
 
 write_tsv(continuous_f1_tb_and_geno,
-          path = "../data/F1_scores_by_genotype_range_of_alpha_gamma_continuous.tsv",
+          path = "../data/aggregated_hogwash_data_by_genotype_range_of_alpha_gamma_continuous.tsv",
           col_names = TRUE)
 
 combined_f1_tb_and_geno <- rbind(discrete_f1_tb_and_geno, continuous_f1_tb_and_geno)
 combined_f1_tb <- rbind(discrete_f1_tb, continuous_f1_tb)
 
 write_tsv(combined_f1_tb,
-          path = "../data/F1_scores_range_of_alpha_gamma_combined.tsv",
+          path = "../data/aggregated_hogwash_data_range_of_alpha_gamma_combined.tsv",
           col_names = TRUE)
 
 write_tsv(combined_f1_tb_and_geno,
-          path = "../data/F1_scores_by_genotype_range_of_alpha_gamma_combined.tsv",
+          path = "../data/aggregated_hogwash_data_by_genotype_range_of_alpha_gamma_combined.tsv",
           col_names = TRUE)
 

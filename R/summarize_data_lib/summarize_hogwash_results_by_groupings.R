@@ -1,7 +1,7 @@
 library(tidyverse)
 
 df <- 
-  read_tsv(file = "../data/F1_scores_by_genotype_range_of_alpha_gamma_combined.tsv",
+  read_tsv(file = "../data/aggregated_hogwash_data_by_genotype_range_of_alpha_gamma_combined.tsv",
            col_names = TRUE)
 
 df$phenotype_id <- paste0("pheno_", df$phenotype_id)

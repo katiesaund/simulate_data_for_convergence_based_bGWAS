@@ -1,7 +1,7 @@
 # Katie Saund
 # 
 # Write sbat scripts for hogwash on simulated data. 
-write_hoghwash_sbat_for_sim <- function(num_tree, num_pheno) {
+write_hogwash_sbat_for_sim <- function(num_tree, num_pheno, path) {
   data_dir <- "../data/"
   perm <- 100000
   binary_fdr <- 0.0005
@@ -19,7 +19,7 @@ write_hoghwash_sbat_for_sim <- function(num_tree, num_pheno) {
       temp_name <- paste0("continuous_pheno_BM_tree_", i, "_pheno_", j)
       temp_key <- NULL
       temp_test <- "both"
-      command <- paste("Rscript /nfs/esnitkin/Project_Cdiff/Analysis/hogwash_methods/simulate_data_for_convergence_based_bGWAS/R/run_hogwash_sbatch.R ",
+      command <- paste(paste0("Rscript ", path, "/simulate_data_for_convergence_based_bGWAS/R/hpc_lib/run_hogwash_sbatch.R "),
                        temp_pheno,
                        temp_geno, 
                        temp_tree,
@@ -54,7 +54,7 @@ write_hoghwash_sbat_for_sim <- function(num_tree, num_pheno) {
       temp_name <- paste0("continuous_pheno_WN_tree_", i, "_pheno_", j)
       temp_key <- NULL
       temp_test <- "both"
-      command <- paste("Rscript /nfs/esnitkin/Project_Cdiff/Analysis/hogwash_methods/simulate_data_for_convergence_based_bGWAS/R/run_hogwash_sbatch.R ",
+      command <- paste(paste0("Rscript ", path, "/simulate_data_for_convergence_based_bGWAS/R/hpc_lib/run_hogwash_sbatch.R "),
                        temp_pheno,
                        temp_geno, 
                        temp_tree,
@@ -90,7 +90,7 @@ write_hoghwash_sbat_for_sim <- function(num_tree, num_pheno) {
       temp_name <- paste0("phyc_discrete_pheno_BM_tree_", i, "_pheno_", j)
       temp_key <- NULL
       temp_test <- "phyc"
-      command <- paste("Rscript /nfs/esnitkin/Project_Cdiff/Analysis/hogwash_methods/simulate_data_for_convergence_based_bGWAS/R/run_hogwash_sbatch.R ",
+      command <- paste(paste0("Rscript ", path, "/simulate_data_for_convergence_based_bGWAS/R/hpc_lib/run_hogwash_sbatch.R "),
                        temp_pheno,
                        temp_geno, 
                        temp_tree,
@@ -126,7 +126,7 @@ write_hoghwash_sbat_for_sim <- function(num_tree, num_pheno) {
       temp_name <- paste0("synchronous_discrete_pheno_BM_tree_", i, "_pheno_", j)
       temp_key <- NULL
       temp_test <- "synchronous"
-      command <- paste("Rscript /nfs/esnitkin/Project_Cdiff/Analysis/hogwash_methods/simulate_data_for_convergence_based_bGWAS/R/run_hogwash_sbatch.R ",
+      command <- paste(paste0("Rscript ", path, "/simulate_data_for_convergence_based_bGWAS/R/hpc_lib/run_hogwash_sbatch.R "),
                        temp_pheno,
                        temp_geno, 
                        temp_tree,
@@ -161,7 +161,7 @@ write_hoghwash_sbat_for_sim <- function(num_tree, num_pheno) {
       temp_name <- paste0("phyc_discrete_pheno_WN_tree_", i, "_pheno_", j)
       temp_key <- NULL
       temp_test <- "phyc"
-      command <- paste("Rscript /nfs/esnitkin/Project_Cdiff/Analysis/hogwash_methods/simulate_data_for_convergence_based_bGWAS/R/run_hogwash_sbatch.R ",
+      command <- paste(paste0("Rscript ", path, "/simulate_data_for_convergence_based_bGWAS/R/hpc_lib/run_hogwash_sbatch.R "),
                        temp_pheno,
                        temp_geno, 
                        temp_tree,
@@ -195,7 +195,7 @@ write_hoghwash_sbat_for_sim <- function(num_tree, num_pheno) {
       temp_name <- paste0("synchronous_discrete_pheno_WN_tree_", i, "_pheno_", j)
       temp_key <- NULL
       temp_test <- "synchronous"
-      command <- paste("Rscript /nfs/esnitkin/Project_Cdiff/Analysis/hogwash_methods/simulate_data_for_convergence_based_bGWAS/R/run_hogwash_sbatch.R ",
+      command <- paste(paste0("Rscript ", path, "/simulate_data_for_convergence_based_bGWAS/R/hpc_lib/run_hogwash_sbatch.R "),
                        temp_pheno,
                        temp_geno, 
                        temp_tree,

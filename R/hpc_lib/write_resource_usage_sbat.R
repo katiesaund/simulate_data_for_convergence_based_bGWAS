@@ -1,4 +1,4 @@
-write_resource_usage_sbat <- function() {
+write_resource_usage_sbat <- function(path) {
   writeLines(c("#!/bin/sh",
                paste0("#SBATCH --job-name=resource_usage"),
                paste0("#SBATCH --output=resource_usage.out"),
@@ -11,7 +11,7 @@ write_resource_usage_sbat <- function() {
                "cd $SLURM_SUBMIT_DIR",
                "echo $SLURM_SUBMIT_DIR",
                "echo $SLURM_JOB_ID",
-               paste("Rscript ../../simulate_data_for_convergence_based_bGWAS/R/capture_hogwash_resource_usage.R", num_tree, num_pheno, sep = " ")),
+               paste(paste0("Rscript ", path, "/simulate_data_for_convergence_based_bGWAS/R/summarize_data_lib/capture_hogwash_resource_usage.R"), num_tree, num_pheno, sep = " ")),
              paste0(getwd(), "/", "5_record_resource_usage.sbat"),
              sep = "\n")
 }

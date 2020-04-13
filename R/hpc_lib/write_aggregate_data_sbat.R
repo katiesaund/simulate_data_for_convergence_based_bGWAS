@@ -1,7 +1,7 @@
 # Write .sbat file to collect all of the hogwash output data from all of the 
 # various runs together into one file to be used by other scripts to calculate
 # summary statistics and for plotting.
-write_aggregate_data_sbat <- function(num_tree, num_pheno) {
+write_aggregate_data_sbat <- function(num_tree, num_pheno, path) {
   writeLines(c("#!/bin/sh",
                paste0("#SBATCH --job-name=aggregate_hogwash_output"),
                paste0("#SBATCH --output=aggregate_hogwash_output.out"),
@@ -14,7 +14,7 @@ write_aggregate_data_sbat <- function(num_tree, num_pheno) {
                "cd $SLURM_SUBMIT_DIR",
                "echo $SLURM_SUBMIT_DIR",
                "echo $SLURM_JOB_ID",
-               paste("Rscript ../../simulate_data_for_convergence_based_bGWAS/R/summarize_data_lib/calc_f1_for_range_of_alpha_and_gamma.R", 
+               paste(paste0("Rscript ", path, "/simulate_data_for_convergence_based_bGWAS/R/summarize_data_lib/calc_f1_for_range_of_alpha_and_gamma.R"), 
                      num_tree,
                      num_pheno,
                      sep = " ")),

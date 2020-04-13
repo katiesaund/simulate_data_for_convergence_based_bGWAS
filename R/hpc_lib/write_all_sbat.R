@@ -34,17 +34,17 @@ num_tip <- user_inputs$X1[3]
 num_geno <- user_inputs$X1[4]
 
 # 1 Write .sbat files to simulate both continuous and discrete data
-write_simulate_sbat(num_tree, num_pheno, num_tip, num_geno)
+write_simulate_sbat(num_tree, num_pheno, num_tip, num_geno, relative_path)
 # 2 Write .sbat files to run hogwash for all three tests
-write_hoghwash_sbat_for_sim(num_tree, num_pheno)
+write_hogwash_sbat_for_sim(num_tree, num_pheno, relative_path)
 # 3 Summarize hogwash output data
-write_aggregate_data_sbat(num_tree, num_pheno)
+write_aggregate_data_sbat(num_tree, num_pheno, relative_path)
 # 4 Calculate Spearman's rank correlation coefficient for -log(P) vs epsilon
-write_spearman_sbat()
+write_spearman_sbat(relative_path)
 # 5 Record the amount of memory and time required to run hogwash on these data
-write_resource_usage_sbat()
+write_resource_usage_sbat(relative_path)
 # 6 Make summary plots of hogwash output data
-write_plot_sbat()
+write_plot_sbat(relative_path)
 
 # Users should run the jobs in order, not submitting one until the previous have
 # completed.

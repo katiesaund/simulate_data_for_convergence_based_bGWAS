@@ -1,4 +1,4 @@
-write_plot_sbat <- function() {
+write_plot_sbat <- function(path) {
   writeLines(c("#!/bin/sh",
                paste0("#SBATCH --job-name=plot_sim_data"),
                paste0("#SBATCH --output=plot_sim_data.out"),
@@ -11,7 +11,7 @@ write_plot_sbat <- function() {
                "cd $SLURM_SUBMIT_DIR",
                "echo $SLURM_SUBMIT_DIR",
                "echo $SLURM_JOB_ID",
-               "Rscript ../../simulate_data_for_convergence_based_bGWAS/R/plot_results.R"),
-             paste0(getwd(), "/", "4_plot_sim_data.sbat"),
+               paste0("Rscript ", path, "/simulate_data_for_convergence_based_bGWAS/R/summarize_data_lib/plot_results.R")),
+             paste0(getwd(), "/", "6_plot_sim_data.sbat"),
              sep = "\n")
 }

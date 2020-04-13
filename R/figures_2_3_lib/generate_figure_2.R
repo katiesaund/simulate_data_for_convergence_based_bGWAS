@@ -1,6 +1,5 @@
 # Create a 5x3 figure of trees to explain phyc, sync, and cont tests
-source("R/schema_plot_lib.R")
-set.seed(10)
+source("R/figures_2_3_lib/fig_2_3_plot_lib.R")set.seed(10)
 tree <- ape::rcoal(n = 12)
 discrete_phenotype   <- c( 1,  0,  0, 1, 1, 1, 0, 1,  0,  0,  1,  1)
 genotype             <- c( 1,  1,  0, 1, 1, 1, 1, 0,  0,  0,  1,  1)

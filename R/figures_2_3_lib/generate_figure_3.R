@@ -1,4 +1,4 @@
-source("R/figures_2_3_lib/schema_plot_lib.R")
+source("R/figures_2_3_lib/fig_2_3_plot_lib.R")
 
 set.seed(10)
 tree <- ape::rcoal(n = 12)

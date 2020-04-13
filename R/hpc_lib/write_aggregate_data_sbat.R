@@ -20,7 +20,7 @@ write_aggregate_data_sbat <- function(num_tree, num_pheno, path) {
                paste(paste0("Rscript ", path, "/simulate_data_for_convergence_based_bGWAS/R/summarize_data_lib/aggregate_data_for_range_of_alpha_and_gamma.R"), 
                      num_tree,
                      num_pheno,
-                     sep = " "),),
+                     sep = " ")),
              paste0(getwd(), "/", "3_aggregate_hogwash_output.sbat"),
              sep = "\n")
 }

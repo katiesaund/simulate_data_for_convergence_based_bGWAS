@@ -1,10 +1,10 @@
 library(ape)
 library(scales)
 library(phytools)
-source("R/ancestral_reconstruction.R")
-source("R/transition_edges.R")
-source("R/tree.R")
-source("R/continuous_trait_lib.R")
+source("R/simulation_lib/ancestral_reconstruction.R")
+source("R/simulation_lib/transition_edges.R")
+source("R/simulation_lib/tree.R")
+source("R/simulation_lib/continuous_trait_lib.R")
 
 # Tree A
 set.seed(1865)

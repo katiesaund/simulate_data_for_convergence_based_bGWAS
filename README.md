@@ -1,5 +1,11 @@
 # Simulate data for convergence based bacterial GWAS method benchmarking paper
 
+### Manuscript Title
+hogwash: Three Methods for Genome-Wide Association Studies in Bacteria 
+
+### Mansucript Authors
+[Katie Saund](https://orcid.org/0000-0002-6214-6713) and Evan Snitkin
+
 # Repo contents
 This repository contains the R code necessary to generate simulated tree, genotype, and phenotype data for use in bGWAS. In addition to simulating data, this code also reports the amount of genotype convergence, phenotype convergence, and their intersection on a phylogenetic tree. 
 
@@ -63,5 +69,5 @@ These simulated data are being created to specifically benchmark the performance
     - `Fig_5B_pval_vs_epsilon_dot_plot_only_sync.pdf`   
     - `Fig_5C_pval_vs_epsilon_dot_plot_only_continuous.pdf`   
   
-
-
+## Questions or bugs? 
+Please see the hogwash methods preprint (to be released soon) for more details on the data simulation process. Feel free to contact me at katiephd@umich.edu or open an issue here on github. 

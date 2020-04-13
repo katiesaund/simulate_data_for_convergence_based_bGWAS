@@ -19,20 +19,20 @@ These simulated data are being created to specifically benchmark the performance
     - Note: all of the .sbat files are written with the order of submission as the file prefix. 
   - When the two simulation jobs are finished running you'll create several kinds of data files. For each tree-phenotype pair you have you'll generate:
     - 2 Trees: 
-      - simulated_continuous_tree_NUMBER.tree
-      - simulated_discrete_tree_NUMBER.tree
+      - `simulated_continuous_tree_NUMBER.tree`
+      - `simulated_discrete_tree_NUMBER.tree`
     - 4 Genotype matrices:
-      - simulated_genotype_for_continuous_pheno_BM_tree_NUMBER_pheno_NUMBER.tsv
-      - simulated_genotype_for_continuous_pheno_WN_tree_NUMBER_pheno_NUMBER.tsv
-      - simulated_genotype_for_discrete_pheno_BM_tree_NUMBER_pheno_NUMBER.tsv
-      - simulated_genotype_for_discrete_pheno_WN_tree_NUMBER_pheno_NUMBER.tsv
+      - `simulated_genotype_for_continuous_pheno_BM_tree_NUMBER_pheno_NUMBER.tsv`
+      - `simulated_genotype_for_continuous_pheno_WN_tree_NUMBER_pheno_NUMBER.tsv`
+      - `simulated_genotype_for_discrete_pheno_BM_tree_NUMBER_pheno_NUMBER.tsv`
+      - `simulated_genotype_for_discrete_pheno_WN_tree_NUMBER_pheno_NUMBER.tsv`
     - 4 Phenotype matrices: 
-      - simulated_continuous_pheno_BM_tree_NUMBER_pheno_NUMBER.tsv
-      - simulated_continuous_pheno_BM_tree_NUMBER_pheno_NUMBER.tsv
-      - simulated_discrete_pheno_WN_tree_NUMBER_pheno_NUMBER.tsv
-      - simulated_discrete_pheno_WN_tree_NUMBER_pheno_NUMBER.tsv
+      - `simulated_continuous_pheno_BM_tree_NUMBER_pheno_NUMBER.tsv`
+      - `simulated_continuous_pheno_BM_tree_NUMBER_pheno_NUMBER.tsv`
+      - `simulated_discrete_pheno_WN_tree_NUMBER_pheno_NUMBER.tsv`
+      - `simulated_discrete_pheno_WN_tree_NUMBER_pheno_NUMBER.tsv`
 - Run hogwash on the simulated data
-  - Download/install the hogwash package to your computer. 
+  - Install the hogwash package to your computer. 
     ```
          $ R
          > devtools::install_github("katiesaund/hogwash", ref = "1.0.0")

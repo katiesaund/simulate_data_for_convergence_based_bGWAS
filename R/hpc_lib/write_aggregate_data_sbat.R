@@ -10,7 +10,7 @@ write_aggregate_data_sbat <- function(num_tree, num_pheno, path) {
                "#SBATCH --export=ALL",
                "#SBATCH --partition=standard",
                "#SBATCH --account=esnitkin1",
-               "#SBATCH --nodes=1 --ntasks=1 --cpus-per-task=1 --mem=20G --time=24:00:00",
+               "#SBATCH --nodes=1 --ntasks=1 --cpus-per-task=1 --mem=10G --time=7:00:00",
                "cd $SLURM_SUBMIT_DIR",
                "echo $SLURM_SUBMIT_DIR",
                "echo $SLURM_JOB_ID",

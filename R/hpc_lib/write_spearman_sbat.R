@@ -7,7 +7,7 @@ write_spearman_sbat <- function(path) {
                "#SBATCH --export=ALL",
                "#SBATCH --partition=standard",
                "#SBATCH --account=esnitkin1",
-               "#SBATCH --nodes=1 --ntasks=1 --cpus-per-task=1 --mem=10G --time=1:00:00",
+               "#SBATCH --nodes=1 --ntasks=1 --cpus-per-task=1 --mem=8G --time=00:30:00",
                "cd $SLURM_SUBMIT_DIR",
                "echo $SLURM_SUBMIT_DIR",
                "echo $SLURM_JOB_ID",

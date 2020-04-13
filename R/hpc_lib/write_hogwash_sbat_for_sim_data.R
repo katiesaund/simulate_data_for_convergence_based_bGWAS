@@ -7,8 +7,8 @@ write_hogwash_sbat_for_sim <- function(num_tree, num_pheno, path) {
   binary_fdr <- 0.0005
   continuous_fdr <- 0.05
   bootstrap <- 0.70
-  memory <- "20G"
-  time <- "200:00:00"
+  memory <- "3G"
+  time <- "6:00:00"
   
   for (i in 1:num_tree) {
     for (j in 1:num_pheno) {

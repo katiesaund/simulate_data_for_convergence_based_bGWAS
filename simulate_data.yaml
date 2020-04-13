@@ -8,3 +8,5 @@ dependencies:
   - r-ape=5.3  
   - r-caper=1.0.1
   - r-phytools=0.6-99
+  - r-scales=1.1.0
+  - r-tidyverse=1.3.0

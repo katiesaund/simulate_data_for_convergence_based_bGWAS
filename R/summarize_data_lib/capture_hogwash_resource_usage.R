@@ -1,10 +1,11 @@
 # To be run from data directory where hogwash results are saved
-source("../../simulate_data_for_convergence_based_bGWAS/R/get_resource_usage.R")
 library(tidyverse)
-user_inputs <- read_tsv("simulation_input_values.tsv", col_names = FALSE)
+args <- commandArgs(trailingOnly = TRUE)
+num_tree <- args[1]
+num_pheno <- args[2]
+relative_path <-  args[3]
+source(paste0(relative_path, "/simulate_data_for_convergence_based_bGWAS/R/get_resource_usage.R"))
 
-num_tree <- user_inputs$X1[1]
-num_pheno <- user_inputs$X1[2]
 num_test <- 3 # phyc, sync, and continuous
 num_signal <- 2 # BM and WN
 num_row <- num_tree * num_pheno * num_test * num_signal

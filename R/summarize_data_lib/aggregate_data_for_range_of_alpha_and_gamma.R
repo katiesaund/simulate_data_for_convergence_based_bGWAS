@@ -1,5 +1,3 @@
-# TODO Change this script into a function
-# run from /lib/
 library(tidyverse)
 args <- commandArgs(trailingOnly = TRUE)
 data_dir <- "../data/"

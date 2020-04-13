@@ -31,7 +31,9 @@ if (!file.exists("simulation_input_values.tsv")) {
 }
 user_inputs <- read_tsv("simulation_input_values.tsv", col_names = FALSE)
 
-print(length(user_inputs$X1))
+if (length(user_inputs$X1) != 4) {
+  stop("simulation_input_values.tsv must contain 4 values indicating the desired number of: trees, phenotypes, tips, and genotypes")
+}
 
 num_tree <- user_inputs$X1[1]
 num_pheno <- user_inputs$X1[2]

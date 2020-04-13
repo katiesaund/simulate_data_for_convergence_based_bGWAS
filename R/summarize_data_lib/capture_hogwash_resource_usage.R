@@ -4,7 +4,7 @@ args <- commandArgs(trailingOnly = TRUE)
 num_tree <- args[1]
 num_pheno <- args[2]
 relative_path <-  args[3]
-source(paste0(relative_path, "/simulate_data_for_convergence_based_bGWAS/R/get_resource_usage.R"))
+source(paste0(relative_path, "/simulate_data_for_convergence_based_bGWAS/R/greatlakes_resource_usage.R"))
 
 num_test <- 3 # phyc, sync, and continuous
 num_signal <- 2 # BM and WN

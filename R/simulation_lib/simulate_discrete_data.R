@@ -2,21 +2,22 @@ suppressWarnings(library(ape))
 suppressWarnings(library(caper))
 suppressWarnings(library(phytools))
 
-source("../../simulate_data_for_convergence_based_bGWAS/R/simulation_lib/tree.R")
-source("../../simulate_data_for_convergence_based_bGWAS/R/simulation_lib/discrete_trait_lib.R")
-source("../../simulate_data_for_convergence_based_bGWAS/R/simulation_lib/transition_edges.R")
-source("../../simulate_data_for_convergence_based_bGWAS/R/simulation_lib/gamma.R")
-source("../../simulate_data_for_convergence_based_bGWAS/R/simulation_lib/save_data.R")
-source("../../simulate_data_for_convergence_based_bGWAS/R/simulation_lib/keep_interesting_genotypes.R")
-source("../../simulate_data_for_convergence_based_bGWAS/R/simulation_lib/ancestral_reconstruction.R")
-source("../../simulate_data_for_convergence_based_bGWAS/R/simulation_lib/high_confidence.R")
-
 # Initialize variables / read in user input
 args <- commandArgs(trailingOnly = TRUE)
 num_trees <- as.numeric(args[1]) 
 num_phenos <- as.numeric(args[2]) 
 num_tips <- as.numeric(args[3]) 
 num_start_trait <- as.numeric(args[4])
+rel_path <- args[5]
+
+source(paste0(rel_path, "/simulate_data_for_convergence_based_bGWAS/R/simulation_lib/tree.R"))
+source(paste0(rel_path, "/simulate_data_for_convergence_based_bGWAS/R/simulation_lib/discrete_trait_lib.R"))
+source(paste0(rel_path, "/simulate_data_for_convergence_based_bGWAS/R/simulation_lib/transition_edges.R"))
+source(paste0(rel_path, "/simulate_data_for_convergence_based_bGWAS/R/simulation_lib/gamma.R"))
+source(paste0(rel_path, "/simulate_data_for_convergence_based_bGWAS/R/simulation_lib/save_data.R"))
+source(paste0(rel_path, "/simulate_data_for_convergence_based_bGWAS/R/simulation_lib/keep_interesting_genotypes.R"))
+source(paste0(rel_path, "/simulate_data_for_convergence_based_bGWAS/R/simulation_lib/ancestral_reconstruction.R"))
+source(paste0(rel_path, "/simulate_data_for_convergence_based_bGWAS/R/simulation_lib/high_confidence.R"))
 
 # Defaults that shouldn't need user input
 tree_edge_multiplier <- 100

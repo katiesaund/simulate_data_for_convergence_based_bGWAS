@@ -1,5 +1,3 @@
-# TODO include: construct_geno_from_pheno into data generation for continuous
-
 make_continuous_phenotypes <- function(tree_list, num_pheno){
   num_trees <- length(tree_list)
   pheno_mat_list_BM <- pheno_mat_list_WN <- rep(list(NULL), num_trees)
@@ -275,7 +273,7 @@ construct_geno_from_pheno <- function(tree, delta_pheno_vec) {
   return(geno_at_tips)
 }
 
-# make a rank based genotype (sweep all possible values divisions based on rank) -- don't just pick median or mean
+# make a rank based genotype (sweep all possible values divisions based on rank)
 make_rank_based_geno_mat <- function(pheno_vec, tree) {
   num_tips <- ape::Ntip(tree)
   geno_mat <- matrix(rank(pheno_vec), nrow = num_tips, ncol = 2 * num_tips)
@@ -288,5 +286,3 @@ make_rank_based_geno_mat <- function(pheno_vec, tree) {
   }
   return(geno_mat)
 }
-
-

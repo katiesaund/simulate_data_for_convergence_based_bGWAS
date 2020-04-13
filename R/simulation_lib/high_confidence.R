@@ -17,15 +17,6 @@
 assign_high_confidence_to_transition_edges <- function(all_confidence_by_edge,
                                                        geno_trans_by_edge,
                                                        geno){
-  # Check input ----------------------------------------------------------------
-  # check_tree_is_valid(tr)
-  # check_for_root_and_bootstrap(tr)
-  # check_if_binary_matrix(geno)
-  # check_equal(length(geno_trans_by_edge[[1]]$transition),
-  #             ape::Nedge(tr))
-  # check_for_root_and_bootstrap(tr)
-  # check_equal(length(all_confidence_by_edge[[1]]), ape::Nedge(tr))
-
   # Function -------------------------------------------------------------------
   edge_confident_and_trans_edge <- rep(list(NULL), ncol(geno))
   for (k in 1:ncol(geno)) {
@@ -78,10 +69,8 @@ prepare_high_confidence_objects_lists <- function(genotype_trans_by_edge_mat_lis
     }
     overall_results[[i]] <- mini_results
   }
-  # do something to drop low confidence genotypes / phenotypes? use the dropped genotype list?
   return(overall_results)
 }
-
 
 #' prepare_high_confidence_objects
 #'
@@ -132,29 +121,10 @@ prepare_high_confidence_objects <- function(genotype_transition,
                                             geno_recon_edge,
                                             snps_in_each_gene){
   # Check input ----------------------------------------------------------------
-  # check_equal(length(genotype_transition), ncol(geno))
-  # check_equal(length(genotype_transition[[1]]$transition), ape::Nedge(tr))
-  # check_for_root_and_bootstrap(tr)
-  # check_equal(length(pheno_tip_node_recon_conf),
-  #             c(ape::Ntip(tr) + ape::Nnode(tr)))
-  # check_num_between_0_and_1(boot_threshold)
-  # check_dimensions(geno,
-  #                  exact_rows = ape::Ntip(tr),
-  #                  min_rows = ape::Ntip(tr),
-  #                  exact_cols = NULL,
-  #                  min_cols = 1)
-  # check_equal(length(geno_conf_edge), ncol(geno))
-  # check_equal(length(geno_conf_edge[[1]]), ape::Nedge(tr))
-  # check_equal(length(geno_recon_edge), ncol(geno))
-  # check_equal(length(geno_recon_edge[[1]]), ape::Nedge(tr))
-  # check_if_binary_vector(geno_conf_edge[[1]])
-  # check_if_binary_vector(geno_recon_edge[[1]])
   if (!is.null(snps_in_each_gene)) {
     if (length(snps_in_each_gene) < 1) {
       stop("There should be more grouped genotypes")
     }
-    # check_is_number(snps_in_each_gene[1])
-    # check_is_string(names(snps_in_each_gene)[1])
   }
 
   # Function -------------------------------------------------------------------
@@ -254,9 +224,6 @@ reorder_tip_and_node_to_edge_lists <- function(geno_conf_mat_list, tree_list) {
 #'
 get_dropped_genotypes <- function(geno, keepers){
   # Check input ----------------------------------------------------------------
-  # check_if_binary_matrix(geno)
-  # check_class(keepers, "logical")
-  # check_if_vector(keepers)
   if (ncol(geno) != length(keepers)) {
     stop("Keepers must have an entry for each genotype.")
   }

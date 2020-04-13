@@ -29,12 +29,6 @@ generate_trees <- function(num_trees, num_tips, edge_multiplier){
 #' @return ordered_by_edges. Numeric vector. Length = Nedge(tr).
 #' @noRd
 reorder_tip_and_node_to_edge <- function(tips_and_node_vector, tr){
-  # Check input ----------------------------------------------------------------
-  # check_tree_is_valid(tr)
-  # check_for_root_and_bootstrap(tr)
-  # check_equal(length(tips_and_node_vector), sum(ape::Ntip(tr), ape::Nnode(tr)))
-  # check_is_number(tips_and_node_vector[1])
-
   # Function -------------------------------------------------------------------
   ordered_by_edges <- rep(NA, ape::Nedge(tr))
   for (i in 1:ape::Nedge(tr)) {
@@ -43,7 +37,7 @@ reorder_tip_and_node_to_edge <- function(tips_and_node_vector, tr){
 
   # Return output --------------------------------------------------------------
   return(ordered_by_edges)
-}# end reorder_tip_and_node_to_edge()
+}
 
 prep_pheno_recon_edges <- function(phenotype_AR_mat_list, tree_list) {
   num_trees <- length(tree_list)
@@ -101,13 +95,9 @@ get_bootstrap_confidence <- function(tr, confidence_threshold){
     discretize_conf_with_cutoff(node_confidence, confidence_threshold)
   tree_tip_and_node_confidence <- c(rep(1, ape::Ntip(tr)), node_confidence)
 
-  # Check and return output ----------------------------------------------------
-  # check_if_binary_vector(tree_tip_and_node_confidence)
-  # check_equal(length(tree_tip_and_node_confidence),
-  #             sum(ape::Ntip(tr) + ape::Nnode(tr)))
+  # Return output --------------------------------------------------------------
   return(tree_tip_and_node_confidence)
-} # end get_bootstrap_confidence()
-
+} 
 
 #' identify_short_edges
 #'
@@ -136,7 +126,5 @@ identify_short_edges <- function(tr){
   }
 
   # Return output --------------------------------------------------------------
-  # check_if_binary_vector(short_edges)
-  # check_equal(length(short_edges), ape::Nedge(tr))
   return(short_edges)
-} # end identify_short_edges()
+} 

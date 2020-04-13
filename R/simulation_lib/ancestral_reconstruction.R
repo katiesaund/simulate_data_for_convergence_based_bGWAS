@@ -70,14 +70,6 @@ ancestral_reconstruction <- function(AR_mat_list, tree_list, disc_or_cont){
 #' @noRd
 #'
 ancestral_reconstruction_by_ML <- function(tr, mat, num, disc_cont){
-  # # Check input ----------------------------------------------------------------
-  # check_is_string(disc_cont)
-  # check_for_root_and_bootstrap(tr)
-  # check_tree_is_valid(tr)
-  # check_is_number(num)
-  # check_class(mat, "matrix")
-  # check_str_is_discrete_or_continuous(disc_cont)
-
   # Function -------------------------------------------------------------------
   # Compute ancestral reconstruction
   ML_significance_threshold <- .875 # ML literature suggests that a ratio of 7:1
@@ -127,7 +119,7 @@ ancestral_reconstruction_by_ML <- function(tr, mat, num, disc_cont){
                   "recon_edge_mat" = reconstruction_as_edge_mat,
                   "tip_and_node_recon" = tip_and_node_recon)
   return(results)
-} # end ancestral_reconstruction_by_ML()
+}
 
 #' continuous_ancestral_reconstruction
 #'
@@ -152,19 +144,6 @@ continuous_ancestral_reconstruction <- function(tr,
                                                 num,
                                                 disc_cont,
                                                 recon_method){
-  # Check inputs ---------------------------------------------------------------
-  # check_anc_rec_compatible(recon_method)
-  # check_is_string(disc_cont)
-  # check_str_is_discrete_or_continuous(disc_cont)
-  # check_for_root_and_bootstrap(tr)
-  # check_tree_is_valid(tr)
-  # check_is_number(num)
-  # check_dimensions(mat,
-  #                  exact_rows = ape::Ntip(tr),
-  #                  min_rows = ape::Ntip(tr),
-  #                  exact_cols = 1,
-  #                  min_cols = 1)
-
   # Function -------------------------------------------------------------------
   set.seed(1)
   reconstruction <- ape::ace(mat[, num, drop = TRUE],
@@ -183,7 +162,7 @@ continuous_ancestral_reconstruction <- function(tr,
   # Return output --------------------------------------------------------------
   return(list("ML_anc_rec" = ML_anc_rec,
               "tip_and_node_recon" = tip_and_node_recon))
-} # end continuous_ancestral_reconstruction()
+}
 
 #' continuous_get_recon_confidence
 #'
@@ -202,18 +181,12 @@ continuous_ancestral_reconstruction <- function(tr,
 #' @noRd
 #'
 continuous_get_recon_confidence <- function(recon_vector){
-  # # Check input ----------------------------------------------------------------
-  # if (!is.vector(recon_vector)) {
-  #   stop("input must be a vector")
-  # }
-  # check_is_number(recon_vector[1])
-
   # Function -------------------------------------------------------------------
   tip_and_node_anc_rec_conf <- rep(1, length(recon_vector))
 
   # Return output --------------------------------------------------------------
   return(tip_and_node_anc_rec_conf)
-} # end continuous_get_recon_confidence()
+}
 
 #' convert_to_edge_mat
 #'
@@ -232,12 +205,6 @@ continuous_get_recon_confidence <- function(recon_vector){
 #'
 #' @noRd
 convert_to_edge_mat <- function(tr, tip_and_node_reconstruction){
-  # # Check inputs ---------------------------------------------------------------
-  # check_tree_is_valid(tr)
-  # check_for_root_and_bootstrap(tr)
-  # check_equal(length(tip_and_node_reconstruction),
-  #             ape::Nnode(tr) + ape::Ntip(tr))
-
   # Function -------------------------------------------------------------------
   reconstruction_as_edge_mat <- tr$edge
   for (k in 1:nrow(reconstruction_as_edge_mat)) {
@@ -249,7 +216,7 @@ convert_to_edge_mat <- function(tr, tip_and_node_reconstruction){
 
   # Return output --------------------------------------------------------------
   return(reconstruction_as_edge_mat)
-} # end convert_to_edge_mat()
+}
 
 #' Perform ancestral reconstruction of discrete data
 #'
@@ -287,13 +254,6 @@ discrete_ancestral_reconstruction <- function(tr,
                                               disc_cont,
                                               recon_method){
   # Check inputs ---------------------------------------------------------------
-  # check_anc_rec_compatible(recon_method)
-  # check_is_string(disc_cont)
-  # check_str_is_discrete_or_continuous(disc_cont)
-  # check_for_root_and_bootstrap(tr)
-  # check_tree_is_valid(tr)
-  # check_is_number(num)
-  # check_class(mat, "matrix")
   if (disc_cont != "discrete") {
     stop("Discrete ancestral reconstruction only")
   }
@@ -316,7 +276,7 @@ discrete_ancestral_reconstruction <- function(tr,
   return(list("tip_and_node_recon" = tip_and_node_recon,
               "ML_anc_rec" = ML_anc_rec,
               "reconstruction" = reconstruction))
-} # end discrete_ancestral_reconstruction()
+}
 
 #' discrete_get_recon_confidence
 #'
@@ -342,12 +302,7 @@ discrete_ancestral_reconstruction <- function(tr,
 #' @noRd
 #'
 discrete_get_recon_confidence <- function(recon, tr, ML_cutoff){
-  # # Check input ----------------------------------------------------------------
-  # check_for_root_and_bootstrap(tr)
-  # check_tree_is_valid(tr)
-  # check_num_between_0_and_1(ML_cutoff)
   # Function -------------------------------------------------------------------
-
   # Get the highest confidence value at each node
   anc_rec_confidence <- apply(recon$lik.anc, 1, max)
 
@@ -360,7 +315,7 @@ discrete_get_recon_confidence <- function(recon, tr, ML_cutoff){
 
   # Return output --------------------------------------------------------------
   return(tip_and_node_anc_rec_conf)
-} # end discrete_get_recon_confidence()
+}
 
 #' Reconstruct discrete data and return reconstruction built with the better
 #' model
@@ -385,23 +340,12 @@ discrete_get_recon_confidence <- function(recon, tr, ML_cutoff){
 #'
 build_better_reconstruction <- function(mat, tr, disc_cont, num, recon_method){
   # Check input ----------------------------------------------------------------
-  # check_tree_is_valid(tr)
-  # check_if_binary_matrix(mat)
-  # check_is_string(disc_cont)
-  # check_is_number(num)
-  # check_is_string(recon_method)
-  # check_anc_rec_compatible(recon_method)
   if (disc_cont != "discrete") {
     stop("Only pick recon model for discrete. Continuous must use BM.")
   }
   if (num > ncol(mat)) {
     stop("Index must be 1 <= index <= ncol(matrix)")
   }
-  # check_dimensions(mat = mat,
-  #                  exact_rows = ape::Ntip(tr),
-  #                  min_rows = ape::Ntip(tr),
-  #                  exact_cols = NULL,
-  #                  min_cols = 1)
 
   # Function -------------------------------------------------------------------
   # Note, SYMreconstruction removed because SYM == ER for binary inputs.
@@ -463,92 +407,6 @@ build_better_reconstruction <- function(mat, tr, disc_cont, num, recon_method){
   # Return output --------------------------------------------------------------
   return(best_reconstruction)
 } # end build_better_reconstruction()
-
-#' #' prepare_ancestral_reconstructions
-#' #'
-#' #' @description Run ancestral reconstructions for phenotype and genotypes.
-#' #'   Return ancestral reconstruction values at each tip, edge, and node in the
-#' #'   tree for both the genotype(s) and phenotype. Additionally, for genotype(s)
-#' #'   and binary phenotypes identify each edge in the tree as either a transition
-#' #'   (values at edge-defining nodes unequal) or not a transition (values at
-#' #'   edge-defining nodes equal).
-#' #'
-#' #' @param tr Phylo.
-#' #' @param pheno Matrix. Dim: nrow = Ntip(tr) x ncol = 1.
-#' #' @param geno Matrix. Binary. Dim: nrow = Ntip(tr) x ncol = number of genotypes.
-#' #' @param disc_cont Character string. Either "discrete" or "continuous."
-#' #'
-#' #' @return List of lists:
-#' #'  * pheno_recon_and_conf: List of multiple objects.
-#' #'  * pheno_recon_and_conf$node_anc_rec: The values of the ancestral
-#' #'      reconstruction of the phenotype at each internal node. Length =
-#' #'      Nnode(tr).
-#' #'  * pheno_recon_and_conf$tip_and_node_rec_conf: A binary numeric vector. Each
-#' #'      entry corresponds to a tip or node in the tree. 1 indicates high
-#' #'      confidence in the ancestral reconstruction of the phenotype, while 0
-#' #'      incidates low confidence. Length = Ntip(tr) + Nnode(tr). Ordered by tips
-#' #'      then by nodes.
-#' #'  * pheno_recon_and_conf$recon_edge_mat: Matrix. Dim: nrow = Nedge(tr) x
-#' #'      ncol = 2. Parent (older) node is 1st column. Child (younger) node is the
-#' #'      2nd column. Ancestral reconstruction value of each node.
-#' #'  * pheno_recon_and_conf$tip_and_node_recon: Numeric vector. Observed value at
-#' #'      each tip followed ancestral reconstruction value at each tree node.
-#' #'      Length = Ntip(tr) + Nnode(tr).
-#' #'  * geno_recon_and_conf: List of lists. 1 list per genotype in the genotype
-#' #'      matrix. Each sublist has the same four objects as pheno_recon_and_conf
-#' #'      above: $node_anc_rec, $tip_and_node_rec_conf, $recon_edge_mat, and
-#' #'      $tip_and_node_recon.
-#' #'  * geno_trans: List of vectors. One list entry for each genotype. Each list
-#' #'      entry has two vectors.
-#' #'  * geno_trans$transition: Length = Nedge(tr). Binary, numeric vector. 0
-#' #'      indicates no transition (parent and child node equal). 1 indicates a
-#' #'      transition across the edge (parent node != child node).
-#' #'  * geno_trans$trans_dir: Length = Nedge(tr). Numeric vector. Values should be
-#' #'       -1, 0, or 1. -1 0 indicate no transition and therefore no direction of
-#' #'       the transition. 1 indicates the parent is less than the child (discrete
-#' #'       case: parent == 0 & child == 1). 0 indicates the parent is greater than
-#' #'       the child (discrete case: parent == 1 & child == 0).
-#' #'
-#' #' @noRd
-#' #'
-#' prepare_ancestral_reconstructions <- function(tr, pheno, geno, disc_cont){
-#'   # # Check input ----------------------------------------------------------------
-#'   # check_for_root_and_bootstrap(tr)
-#'   # check_str_is_discrete_or_continuous(disc_cont)
-#'   # check_dimensions(pheno,
-#'   #                  exact_rows = ape::Ntip(tr),
-#'   #                  min_rows = ape::Ntip(tr),
-#'   #                  min_cols = 1,
-#'   #                  exact_cols = 1)
-#'   # check_dimensions(geno,
-#'   #                  exact_rows = ape::Ntip(tr),
-#'   #                  min_rows = ape::Ntip(tr),
-#'   #                  min_cols = 1)
-#'   # check_if_binary_matrix(geno)
-#'
-#'   # Function -------------------------------------------------------------------
-#'   pheno_recon_and_conf <-
-#'     ancestral_reconstruction_by_ML(tr, pheno, 1, disc_cont)
-#'   geno_recon_and_conf <- geno_trans <- rep(list(0), ncol(geno))
-#'   for (k in 1:ncol(geno)) {
-#'     geno_recon_and_conf[[k]] <-
-#'       ancestral_reconstruction_by_ML(tr, geno, k, "discrete")
-#'   }
-#'   for (k in 1:ncol(geno)) {
-#'     geno_trans[[k]] <-
-#'       identify_transition_edges(tr,
-#'                                 geno,
-#'                                 k,
-#'                                 geno_recon_and_conf[[k]]$node_anc_rec,
-#'                                 "discrete")
-#'   }
-#'
-#'   # Return output --------------------------------------------------------------
-#'   results <- list("pheno_recon_and_conf" = pheno_recon_and_conf,
-#'                   "geno_recon_and_conf" = geno_recon_and_conf,
-#'                   "geno_trans" = geno_trans)
-#'   return(results)
-#' } # end prepare_ancestral_reconstructions
 
 #' discretize_conf_with_cutoff
 #'

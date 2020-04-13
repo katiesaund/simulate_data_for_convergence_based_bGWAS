@@ -15,11 +15,6 @@
 #'
 #' @return genotype_transition. List with $transition and $trans_dir.
 prep_geno_trans_for_phyc <- function(geno, genotype_transition){
-  # Check inputs ---------------------------------------------------------------
-  # check_if_binary_matrix(geno)
-  # check_equal(length(genotype_transition), ncol(geno))
-  # check_if_binary_vector(genotype_transition[[1]]$transition)
-
   # Function -------------------------------------------------------------------
   for (k in 1:ncol(geno)) {
     parent_WT_child_mutant <- 1 # 1 implies parent < child
@@ -136,7 +131,7 @@ identify_transition_edges <- function(tr, mat, num, node_recon, disc_cont){
   # Check and return output ----------------------------------------------------
   results <- list("transition" = transition, "trans_dir" = transition_direction)
   return(results)
-} # end identify_transition_edges()
+} 
 
 find_transition_edges <- function(tree_list,
                                   mat_list,
@@ -163,7 +158,7 @@ convert_to_phyc_trans <- function(genotype_AR_mat_list,
                                   genotype_sync_trans_list){
   num_mat <- length(genotype_AR_mat_list)
   phyc_trans_list <- rep(list(), num_mat)
-  for (i in 1:num_mat){
+  for (i in 1:num_mat) {
     current_trans_list <- genotype_sync_trans_list[[i]]
     num_tip <- ape::Ntip(tree_list[[i]])
     just_tips_mat <- genotype_AR_mat_list[[i]][1:num_tip, , drop = FALSE]
@@ -189,11 +184,9 @@ convert_to_phyc_trans <- function(genotype_AR_mat_list,
 keep_two_plus_hi_conf_tran_ed <- function(genotype_transition,
                                           genotype_confidence){
   # Check inputs ---------------------------------------------------------------
-  # check_equal(length(genotype_transition), length(genotype_confidence))
   if (!is.vector(genotype_transition[[1]]$transition)) {
     stop("Input must be a numeric vector")
   }
-  # check_if_binary_vector(genotype_confidence[[1]])
 
   # Function -------------------------------------------------------------------
   at_least_two_hi_conf_trans_ed <-
@@ -207,5 +200,4 @@ keep_two_plus_hi_conf_tran_ed <- function(genotype_transition,
 
   # Check and return output ----------------------------------------------------
   return(at_least_two_hi_conf_trans_ed)
-} # end keep_two_plus_hi_conf_tran_ed()
-
+}

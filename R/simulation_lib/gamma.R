@@ -49,9 +49,6 @@ calculate_phyc_gamma <- function(geno_names,
                                  geno_trans_edge_list,
                                  pheno_recon_vec,
                                  high_conf_edge_list){
-  # check_equal(length(geno_trans_edge_list), length(high_conf_edge_list))
-  # check_equal(length(geno_trans_edge_list[[1]]), length(high_conf_edge_list[[1]]))
-  # check_equal(length(geno_trans_edge_list[[1]]), length(pheno_recon_vec))
   epsilon <- geno_beta <- pheno_beta <- gamma_count <- gamma_percent <-
     rep(0, length(geno_trans_edge_list))
 
@@ -142,9 +139,6 @@ calculate_synchronous_gamma <- function(geno_names,
                                         geno_trans_edge_list,
                                         pheno_trans_vec,
                                         high_conf_edge_list){
-  # check_equal(length(geno_trans_edge_list), length(high_conf_edge_list))
-  # check_equal(length(geno_trans_edge_list[[1]]), length(high_conf_edge_list[[1]]))
-  # check_equal(length(geno_trans_edge_list[[1]]), length(pheno_trans_vec$transition))
   epsilon <- geno_beta <- gamma_count <- gamma_percent <- pheno_beta <-
     rep(0, length(geno_trans_edge_list))
 
@@ -230,15 +224,6 @@ calculate_continuous_gamma <- function(pheno_recon_mat,
   high_conf_edge_list <- high_conf$high_conf_ordered_by_edges
   geno_trans_edge_list <- high_conf$genotype_transition
   geno_names <- colnames(high_conf$genotype)
-  # check_equal(length(geno_trans_edge_list), length(high_conf_edge_list))
-  # check_equal(length(geno_trans_edge_list[[1]]$transition),
-  #             length(high_conf_edge_list[[1]]))
-  # check_equal(nrow(pheno_recon_mat), length(high_conf_edge_list[[1]]))
-  # check_dimensions(pheno_recon_mat,
-  #                  exact_rows = length(high_conf_edge_list[[1]]),
-  #                  min_rows = 1,
-  #                  exact_cols = 2,
-  #                  min_cols = 2)
   
   # Get indices for all high confidence genotype transition edges
   num_geno <- length(geno_trans_edge_list)

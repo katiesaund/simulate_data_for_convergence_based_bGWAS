@@ -1,8 +1,9 @@
 # summarize_num_genotype_per simulation
-setwd("~/Desktop/greatlakes_mount/Project_Cdiff/Analysis/hogwash_methods/2020-04-09_hogwash_and_viz/data/")
 data_type <- c("discrete", "continuous")
 signal <- c("BM", "WN")
-trees <- c(1:4)
+args <- commandArgs(trailingOnly = TRUE)
+num_tree <- args[1]
+trees <- c(1:num_tree)
 
 geno_count_mat <- matrix(0, nrow = 16, ncol = 3)
 colnames(geno_count_mat) <- c("data_type", "signal", "number_of_genotypes")
@@ -17,7 +18,6 @@ for (i in 1:length(data_type)) {
                         "_tree_", 
                         trees[k], 
                         "_pheno_1.tsv")
-        print(fname)
         geno_mat <- read.table(fname,
                                header = TRUE, 
                                sep = "\t",
@@ -34,6 +34,6 @@ summary(as.numeric(geno_count_mat[geno_count_mat[, 1] == "discrete", 3]))
 summary(as.numeric(geno_count_mat[geno_count_mat[, 1] == "continuous", 3]))
 
 summary_mat <- rbind(summary(as.numeric(geno_count_mat[geno_count_mat[, 1] == "discrete", 3])),
-                     +       summary(as.numeric(geno_count_mat[geno_count_mat[, 1] == "continuous", 3])))
+                     summary(as.numeric(geno_count_mat[geno_count_mat[, 1] == "continuous", 3])))
 row.names(summary_mat) <- c("discrete", "continuous")
 write.csv(summary_mat, "number_of_genotypes_simulated.csv")

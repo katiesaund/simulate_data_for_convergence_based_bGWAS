@@ -14,7 +14,7 @@ write_aggregate_data_sbat <- function(num_tree, num_pheno, path) {
                "cd $SLURM_SUBMIT_DIR",
                "echo $SLURM_SUBMIT_DIR",
                "echo $SLURM_JOB_ID",
-               paste(paste0("Rscript ", path, "/simulate_data_for_convergence_based_bGWAS/R/summarize_data_lib/calc_f1_for_range_of_alpha_and_gamma.R"), 
+               paste(paste0("Rscript ", path, "/simulate_data_for_convergence_based_bGWAS/R/summarize_data_lib/aggregate_data_for_range_of_alpha_and_gamma.R"), 
                      num_tree,
                      num_pheno,
                      sep = " ")),

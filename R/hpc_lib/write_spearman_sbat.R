@@ -11,7 +11,7 @@ write_spearman_sbat <- function(path) {
                "cd $SLURM_SUBMIT_DIR",
                "echo $SLURM_SUBMIT_DIR",
                "echo $SLURM_JOB_ID",
-               paste0("Rscript ", path, "/simulate_data_for_convergence_based_bGWAS/R/calculate_spearman_coef_pval_vs_epsilon.R")),
+               paste0("Rscript ", path, "/simulate_data_for_convergence_based_bGWAS/R/summarize_data_lib/calculate_spearman_coef_pval_vs_epsilon.R")),
              paste0(getwd(), "/", "4_calculate_spearman.sbat"),
              sep = "\n")
 }

@@ -55,13 +55,13 @@ These simulated data are being created to specifically benchmark the performance
     - `sbatch 5_record_resource_usage.sbat`
       - This creates a file `data/hogwash_resource_usage.csv` that grabs the amount of time and memory it took for each hogwash run. This particular `.sbat` file is highly specific to our HPC set up and is unlikely to translate to your machine.
 - Plot the figures that summarize hogwash output for all of the simulated data. Generate Figure 5 from the hogwash paper. 
-  - Create a `figures/` directory at the same level as `data\`
+  - Create a `figures/` directory at the same level as `data/`
   - Submit the plotting job to the scheduler: 
     - `$ sbatch 6_plot_sim_data.sbat`
   - The plots generated in `figures` summarize the hogwash output from the simulated data in many forms. Of particular interest are the three subfigures that make up Figure 5 from the hogwash methods paper. 
-    - Fig_5A_pval_vs_epsilon_dot_plot_only_phyc.pdf   
-    - Fig_5B_pval_vs_epsilon_dot_plot_only_sync.pdf   
-    - Fig_5C_pval_vs_epsilon_dot_plot_only_continuous.pdf   
+    - `Fig_5A_pval_vs_epsilon_dot_plot_only_phyc.pdf` 
+    - `Fig_5B_pval_vs_epsilon_dot_plot_only_sync.pdf`   
+    - `Fig_5C_pval_vs_epsilon_dot_plot_only_continuous.pdf`   
   
 
 

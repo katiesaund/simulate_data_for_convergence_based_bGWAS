@@ -1,0 +1,18 @@
+This directory contains all of the code necessary to simulate the data necessary for bGWAS, run bGWAS, summarize the run ouputs, and generate most of the plots for the hogwash methods paper. 
+
+
+Subdirectories: 
+1. data_exploration
+This directory contains some probably unnecessary files I generated to help evaluate various methods in the process of creating these methods. 
+
+2. simulation_lib
+Contains all of the code necessary to simulate the data for bGWAS. Some of this code is redundant with internal functions in hogwash, but they were moved here to increase the transparency of this process and to allow for some specific tweaks.
+
+3. figures_2_3_lib
+Contains the code for generating figures 2 and 3 of the hogwash methods paper. 
+
+4. hpc_lib
+Contains the code for generating the batch job files needed to simulate data, run hogwash, summarize the hogwash output, and generate the figure 5 using UofM's slurm batch scheduler. 
+
+5. summarize_data_lib
+Contains the code for aggregating, summarizing, and plotting the hogwash output. 

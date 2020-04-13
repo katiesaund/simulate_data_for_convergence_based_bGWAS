@@ -1,6 +1,12 @@
 The three files in this directory will generate figures 2 and 3 in the hogwash methods paper. 
-These files are meant to be run from this directory directly (no need to generate a separate folder). 
+These files are meant to be run from this directory directly. 
+To generate the figures: 
+$ cd ~/simulate_data_for_convergence_based_bGWAS/R/figures_2_3_lib/
+$ Rscript generate_figure_2.R
+$ Rscript generate_figure_3.R
 
-1. To generate figure 2: 
+Files will be saved in ~/simulate_data_for_convergence_based_bGWAS/img/ as
+Figure_2_hogwash_test_schema.pdf and
+Figure_3_grouping_examples.pdf
 
-2. To generate figure 3: 
+To finalize the plots for the paper I added titles within Adobe Illustrator.

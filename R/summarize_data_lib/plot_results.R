@@ -105,28 +105,41 @@ df %>%
 
 ### END FIGURE 5
 
+# Figure S3: Resource Usage
+usage_df <- read_csv("../data/hogwash_resource_usage.csv")
 
-## overlay by group
-# df %>% 
-#   filter(epsilon_threshold < 0.04, 
-#          alpha_threshold == -log(0.05)) %>% 
-#   ggplot() +
-#   geom_point(aes(x = epsilon, 
-#                  y = fdr_corrected_pvals, 
-#                  color = tree_id:phenotype_id), 
-#              size = 0.5, 
-#              alpha = 0.1) + 
-#   xlab("") + 
-#   theme_bw() + 
-#   ylab("") + 
-#   facet_grid(phenotype_phylogenetic_signal ~ test) + 
-#   theme(axis.text.x = element_text(color = "black", size = 10, angle = 90, hjust = .5, vjust = .5),
-#         axis.text.y = element_text(color = "black", size = 10, angle = 0)) +
-#   ggsave("../figures/pval_vs_epsilon_dot_plot_overlay.pdf", height = 8, width = 4, units = "in")
+memory_plot <- usage_df %>% 
+  ggplot(aes(x = test, y = `Memory (GB)`)) + 
+  geom_boxplot(aes(fill = test)) + 
+  geom_jitter() + 
+  theme_bw() + 
+  xlab("") + 
+  theme(legend.position = "none") + 
+  ylim(0, max(usage_df$`Memory (GB)`)) + 
+  theme(text = element_text(size = 15), 
+        axis.text.x = element_text(color = "black"),
+        axis.text.y = element_text(color = "black")) + 
+  scale_fill_manual(values = c("dodgerblue", "orchid", "orange"))
 
+time_plot <- usage_df %>% 
+  ggplot(aes(x = test, y = `Time (Hours)`)) + 
+  geom_boxplot(aes(fill = test)) + 
+  geom_jitter() + 
+  theme_bw() + 
+  xlab("") + 
+  ylim(0, max(usage_df$`Time (Hours)`)) + 
+  theme(legend.position = "none") + 
+  theme(text = element_text(size = 15), 
+        axis.text.x = element_text(color = "black"),
+        axis.text.y = element_text(color = "black")) + 
+  scale_fill_manual(values = c("dodgerblue", "orchid", "orange"))
 
-##
+pdf("../figures/Figure_S3_hogwash_resource_usage.pdf", width = 8, height = 4)
+grid.arrange(memory_plot, time_plot, ncol = 2)
+dev.off()
+# End Figure S3
 
+# The rest of the figures may be of interest to users, but were not used in the hogwash methods paper
 df %>% 
   ggplot() + 
   geom_histogram(mapping = aes(x = epsilon, fill = epsilon > 0.50)) +
@@ -433,37 +446,4 @@ df %>%
   facet_grid(tree_id + phenotype_id ~ phenotype_type + test + phenotype_phylogenetic_signal) + 
   ggsave("../figures/pval_histogram_just_binary.pdf", height = 6, width = 12, units = "in")
 
-
-# Resource Usage
-usage_df <- read_csv("../data/hogwash_resource_usage.csv")
-
-memory_plot <- usage_df %>% 
-  ggplot(aes(x = test, y = `Memory (GB)`)) + 
-  geom_boxplot(aes(fill = test)) + 
-  geom_jitter() + 
-  theme_bw() + 
-  xlab("") + 
-  theme(legend.position = "none") + 
-  ylim(0, max(usage_df$`Memory (GB)`)) + 
-  theme(text = element_text(size = 15), 
-        axis.text.x = element_text(color = "black"),
-        axis.text.y = element_text(color = "black")) + 
-  scale_fill_manual(values = c("dodgerblue", "orchid", "orange"))
-
-time_plot <- usage_df %>% 
-  ggplot(aes(x = test, y = `Time (Hours)`)) + 
-  geom_boxplot(aes(fill = test)) + 
-  geom_jitter() + 
-  theme_bw() + 
-  xlab("") + 
-  ylim(0, max(usage_df$`Time (Hours)`)) + 
-  theme(legend.position = "none") + 
-  theme(text = element_text(size = 15), 
-        axis.text.x = element_text(color = "black"),
-        axis.text.y = element_text(color = "black")) + 
-  scale_fill_manual(values = c("dodgerblue", "orchid", "orange"))
-
-pdf("../figures/hogwash_resource_usage.pdf", width = 8, height = 4)
-grid.arrange(memory_plot, time_plot, ncol = 2)
-dev.off()
 

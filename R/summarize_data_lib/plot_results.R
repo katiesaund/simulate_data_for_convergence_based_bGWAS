@@ -140,6 +140,61 @@ dev.off()
 # End Figure S3
 
 # The rest of the figures may be of interest to users, but were not used in the hogwash methods paper
+
+df %>% 
+  filter(epsilon_threshold < 0.04, 
+         alpha_threshold == -log(0.05)) %>% 
+  filter(test == "phyc") %>% 
+  mutate(gamma = as.factor(gamma)) %>% 
+  ggplot() +
+  geom_point(aes(x = epsilon, y = fdr_corrected_pvals, color = gamma),
+             size = 0.5, 
+             alpha = 0.25) + 
+  xlab("") + 
+  theme_bw() + 
+  ylab("") + 
+  facet_grid(tree_id + phenotype_id ~ phenotype_phylogenetic_signal + test) + 
+  theme(axis.text.x = element_text(color = "black", size = 10, angle = 90, hjust = .5, vjust = .5),
+        axis.text.y = element_text(color = "black", size = 10, angle = 0)) + 
+  ggsave("../figures/pval_vs_epsilon_dot_plot_only_phyc_with_gamma.pdf", height = 16, width = 3.5, units = "in")
+
+
+df %>% 
+  filter(epsilon_threshold < 0.04, 
+         alpha_threshold == -log(0.05)) %>% 
+  filter(test == "sync") %>% 
+  mutate(gamma = as.factor(gamma)) %>% 
+  ggplot() +
+  geom_point(aes(x = epsilon, y = fdr_corrected_pvals, color = gamma), 
+             size = 0.5, 
+             alpha = 0.25) + 
+  xlab("") + 
+  theme_bw() + 
+  ylab("") + 
+  facet_grid(tree_id + phenotype_id ~ phenotype_phylogenetic_signal + test) + 
+  theme(axis.text.x = element_text(color = "black", size = 10, angle = 90, hjust = .5, vjust = .5),
+        axis.text.y = element_text(color = "black", size = 10, angle = 0)) + 
+  ggsave("../figures/pval_vs_epsilon_dot_plot_only_sync_with_gamma.pdf", height = 16, width = 3.5, units = "in")
+
+
+df %>% 
+  filter(epsilon_threshold < 0.04, 
+         alpha_threshold == -log(0.05)) %>% 
+  filter(test == "continuous") %>% 
+  mutate(gamma = as.factor(gamma)) %>% 
+  ggplot() +
+  geom_point(aes(x = epsilon, y = fdr_corrected_pvals, color = gamma), 
+             size = 0.5, 
+             alpha = 0.25) + 
+  xlab("") + 
+  theme_bw() + 
+  ylab("") + 
+  facet_grid(tree_id + phenotype_id ~ phenotype_phylogenetic_signal + test) + 
+  theme(axis.text.x = element_text(color = "black", size = 10, angle = 90, hjust = .5, vjust = .5),
+        axis.text.y = element_text(color = "black", size = 10, angle = 0)) +
+  ggsave("../figures/pval_vs_epsilon_dot_plot_only_continuous_with_gamma.pdf", height = 16, width = 3.5, units = "in")
+
+
 df %>% 
   ggplot() + 
   geom_histogram(mapping = aes(x = epsilon, fill = epsilon > 0.50)) +
@@ -262,8 +317,6 @@ df %>%
   ylab("False Positive Rate")
 ggsave("../figures/FPR_vs_epsilon_line_plot.pdf", height = 6, width = 8.5, units = "in")
 
-
-
 # false_negative_rate
 # Save as line plots
 df %>% 
@@ -297,7 +350,6 @@ df %>%
   ylab("Median Gamma")
 ggsave("../figures/Median_gamma_vs_median_epsilon_dot_plot.pdf", height = 6, width = 8.5, units = "in")
 
-
 # Save as line plots
 df %>% 
   filter(alpha_threshold < 3) %>% 
@@ -317,7 +369,6 @@ df %>%
   ylab("TP/TN/FP/FN (%)") + 
   facet_grid(test ~ phenotype_phylogenetic_signal)
 ggsave("../figures/tp_tn_fp_fn_vs_epsilon_line_plot.pdf", height = 6, width = 8.5, units = "in")
-
 
 # Make faceted bar plot, which catalogs what percent of each epsilon category get called significant
 df <- df %>% mutate(epsilon_category = epsilon)
@@ -445,5 +496,3 @@ df %>%
   ggtitle("P-value") +
   facet_grid(tree_id + phenotype_id ~ phenotype_type + test + phenotype_phylogenetic_signal) + 
   ggsave("../figures/pval_histogram_just_binary.pdf", height = 6, width = 12, units = "in")
-
-

@@ -1,4 +1,7 @@
-# summarize_num_genotype_per simulation
+# Count the number of genotypes input into each hogwash run, or: how many
+# genotypes did we actually simulate? We do this by reading in each simulated
+# genotype matrix and counting the number of entries. 
+# Record summary statistics in the output file. 
 data_type <- c("discrete", "continuous")
 signal <- c("BM", "WN")
 args <- commandArgs(trailingOnly = TRUE)

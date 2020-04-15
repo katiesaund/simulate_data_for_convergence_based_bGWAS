@@ -1,3 +1,8 @@
+# This script calculates Spearman's rank correlation coefficient for the
+# -log(P-value) vs epsilon for each run of hogwash. It saves the individual 
+# rho values as well as summary values. 
+
+# Inputs ----
 library(tidyverse)
 
 df <-
@@ -16,8 +21,17 @@ alpha_to_filter_to <- df$alpha_threshold[1]
 epsilon_to_filter_to <- df$epsilon_threshold[1]
 
 num_row = num_test * num_tree * num_signal * num_pheno
+
+# Initialize storage data.frame ----
 spearman_df <- data.frame(matrix(NA, nrow = num_row, ncol = 8))
-colnames(spearman_df) <- c("test", "tree_id", "phenotype_id", "signal", "spearman_pvalue", "spearman_rho", "nrow", "report_num_geno")
+colnames(spearman_df) <- c("test",
+                           "tree_id", 
+                           "phenotype_id",
+                           "signal", 
+                           "spearman_pvalue", 
+                           "spearman_rho", 
+                           "nrow",
+                           "report_num_geno")
 
 row_index <- 1
 for (i in 1:num_test) {
@@ -31,6 +45,7 @@ for (i in 1:num_test) {
         current_signal <- unique(df$phenotype_phylogenetic_signal)[l]
         
         temp_data <- df %>% 
+          # Subset dataframe to one specific test-tree-pheno-signal hogwash run
           filter(test == current_test, 
                  tree_id == current_tree, 
                  phenotype_id == current_pheno, 
@@ -38,11 +53,14 @@ for (i in 1:num_test) {
                  alpha_threshold == alpha_to_filter_to, 
                  epsilon_threshold == epsilon_to_filter_to)
         
+        # Run spearman's rank correlation coefficient
         spearman_output <- stats::cor.test(x = temp_data$fdr_corrected_pvals, 
                                            y = temp_data$epsilon, 
                                            method = "spearman", # Rank 
-                                           alternative = "greater") # Greater means it's testing for a positive correlation
-        # NA is returned fro p-value and rho if either x or y is flat (like, if all of the fdr corrected pvalues are)
+                                           alternative = "greater") 
+        # Greater means it's testing for a positive correlation
+        # NA is returned for p-value and rho if either x or y is flat (like,
+        #   if all of the fdr corrected pvalues are 1)
         spearman_df[row_index, ] <- c(current_test, 
                                  current_tree, 
                                  current_pheno, 
@@ -52,8 +70,6 @@ for (i in 1:num_test) {
                                  nrow(temp_data), 
                                  temp_data$num_geno[1])
         row_index <- row_index + 1
-        
-
       }
     }
   }
@@ -66,6 +82,7 @@ storage.mode(spearman_df$report_num_geno) <- "numeric"
 
 spearman_df$spearman_pvalue[which(is.nan(spearman_df$spearman_pvalue))] <- NA
 
+# Plot rho values ----
 spearman_df %>% 
   ggplot(aes(x = test, y = spearman_rho, fill = signal)) + 
   geom_boxplot(alpha = 0.5) + 
@@ -78,13 +95,20 @@ spearman_df %>%
   xlab("") + 
   ggsave(filename = "../figures/pval_vs_epsilon_spearman_rho_boxplot.pdf")
 
+# Save output -----
 write_tsv(spearman_df,
           path = "../data/pval_vs_epsilon_spearman.tsv", 
           col_names = TRUE)
 
-# get summary data
+# Initialize summary data.frame ----
 rho_medians_df <- data.frame(matrix(NA, nrow = num_test * num_signal, ncol = 7))
-colnames(rho_medians_df) <- c("test", "signal", "median_spearman_rho", "mean_spearman_rho", "max_spearman_rho", "min_spearman_rho", "num_no_spearman_rho")
+colnames(rho_medians_df) <- c("test", 
+                              "signal", 
+                              "median_spearman_rho",
+                              "mean_spearman_rho", 
+                              "max_spearman_rho",
+                              "min_spearman_rho", 
+                              "num_no_spearman_rho")
 
 row_id <- 1
 for (i in 1:num_test) {
@@ -128,6 +152,7 @@ storage.mode(rho_medians_df$max_spearman_rho) <- "numeric"
 storage.mode(rho_medians_df$min_spearman_rho) <- "numeric"
 storage.mode(rho_medians_df$num_no_spearman_rho) <- "numeric"
 
+# Save summary output ----
 write_tsv(rho_medians_df,
           path = "../data/pval_vs_epsilon_spearman_rho_summaries.tsv", 
           col_names = TRUE)

@@ -1,3 +1,19 @@
+# This script collects data from each hogwash run, saved in the .rda data files
+# and aggregates them into a handful of files. These files are used downstream
+# for calculating statistics and generating plots. 
+
+# This script takes a long to run because it also calculates things like F1
+# score and PPV that require definitions of "truly" associated
+# phenotype-genotype pairs. This is hard to define for this set of data because
+# the data were simulated and therefore we don't have a ground truth to use to
+# define true vs false associations. To side step this issue I created a
+# parameter sweep (see the list of alphas and epsilons below), and then for each
+# combination of alpha (p-value) and genotype-phenotype convergence (epsilon) I
+# calculated all of the contingency table statistics. These values are not
+# currently reported in the paper, but they are plotted in the figures/
+# directory when running the analysis.
+
+# Inputs ----
 library(tidyverse)
 args <- commandArgs(trailingOnly = TRUE)
 data_dir <- "../data/"
@@ -14,6 +30,8 @@ continuous_test_types <- "continuous"
 alphas <- c(-log(0.05), -log(0.01), -log(0.005), -log(0.001), -log(0.0005), -log(0.0001), -log(0.00005), -log(0.00001))
 epsilons <- c(0.01, 0.05, 0.10, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90, 0.95, 0.99)
 
+
+# Initialize storage dataframes ----
 discrete_num_rows <- 
   length(pheno_index) * 
   length(discrete_test_types) * 
@@ -72,7 +90,8 @@ colnames(continuous_f1_tb_and_geno) <- col_names_2
 continuous_f1_tb_and_geno <- as.data.frame(continuous_f1_tb_and_geno)
 
 current_cont_row <- current_disc_row <- 0 
-# DISCRETE
+
+# Collect data for discrete tests (synchronous and phyc tests) ----
 for (h in 1:length(pheno_index)) {
   for (j in 1:length(data_types)) {
     for (k in 1:length(tree_index)) {
@@ -115,10 +134,22 @@ for (h in 1:length(pheno_index)) {
           
           for (p in 1:length(alphas)) {
             for (q in 1:length(epsilons)) {
-              true_positive <- pvals_epsilon_tb %>% filter(epsilon >= epsilons[q] & fdr_corrected_pvals >= alphas[p]) %>% nrow()
-              true_negative <- pvals_epsilon_tb %>% filter(epsilon < epsilons[q] & fdr_corrected_pvals < alphas[p]) %>% nrow()
-              false_positive <- pvals_epsilon_tb %>% filter(epsilon < epsilons[q] & fdr_corrected_pvals >= alphas[p]) %>% nrow()
-              false_negative <- pvals_epsilon_tb %>% filter(epsilon >= epsilons[q] & fdr_corrected_pvals < alphas[p]) %>% nrow()
+              true_positive <- 
+                pvals_epsilon_tb %>%
+                filter(epsilon >= epsilons[q] & fdr_corrected_pvals >= alphas[p]) %>% 
+                nrow()
+              true_negative <-
+                pvals_epsilon_tb %>% 
+                filter(epsilon < epsilons[q] & fdr_corrected_pvals < alphas[p]) %>% 
+                nrow()
+              false_positive <-
+                pvals_epsilon_tb %>% 
+                filter(epsilon < epsilons[q] & fdr_corrected_pvals >= alphas[p]) %>% 
+                nrow()
+              false_negative <- 
+                pvals_epsilon_tb %>% 
+                filter(epsilon >= epsilons[q] & fdr_corrected_pvals < alphas[p]) %>% 
+                nrow()
               
               precision <- positive_predictive_value <- true_positive / sum(true_positive, false_positive)
               recall <- true_positive / sum(false_negative, true_positive)
@@ -127,16 +158,17 @@ for (h in 1:length(pheno_index)) {
               f1_score <- (2 * precision * recall) / (precision + recall)
               
               # calculate delta epsilon: 
-              null_epsilon_dist <- pvals_epsilon_tb$epsilon[pvals_epsilon_tb$epsilon < epsilons[q]]
-              assoc_epsilon_dist <- pvals_epsilon_tb$epsilon[pvals_epsilon_tb$epsilon >= epsilons[q]]
+              null_epsilon_dist <- 
+                pvals_epsilon_tb$epsilon[pvals_epsilon_tb$epsilon < epsilons[q]]
+              assoc_epsilon_dist <- 
+                pvals_epsilon_tb$epsilon[pvals_epsilon_tb$epsilon >= epsilons[q]]
               delta_epsilon <- mean(assoc_epsilon_dist) - mean(null_epsilon_dist)
               
               # TODO: add genotype data
               temp_tb <- as_tibble(matrix(NA, nrow = 1, ncol = num_col))
               colnames(temp_tb) <- column_names
               big_tb <- cbind(pvals_epsilon_tb, temp_tb)
-              
-              
+            
               current_disc_row <- current_disc_row + 1
               discrete_f1_tb$phenotype_type[current_disc_row] <- big_tb$phenotype_type <- "discrete"
               discrete_f1_tb$phenotype_phylogenetic_signal[current_disc_row] <- big_tb$phenotype_phylogenetic_signal <- as.character(data_types[j])
@@ -162,7 +194,6 @@ for (h in 1:length(pheno_index)) {
               discrete_f1_tb$epsilon_threshold[current_disc_row] <- big_tb$epsilon_threshold <- epsilons[q]
               
               discrete_f1_tb_and_geno <- rbind(discrete_f1_tb_and_geno, big_tb)
-              
             }
           }
         } else {
@@ -175,7 +206,7 @@ for (h in 1:length(pheno_index)) {
 }
 
 
-# CONTINUOUS
+# Collect data for continuous ----
 for (h in 1:length(pheno_index)) {
   for (j in 1:length(data_types)) {
     for (k in 1:length(tree_index)) {
@@ -205,10 +236,22 @@ for (h in 1:length(pheno_index)) {
           hogwash_results <- NULL
           for (p in 1:length(alphas)) {
             for (q in 1:length(epsilons)) {
-              true_positive <- pvals_epsilon_tb %>% filter(epsilon >= epsilons[q] & fdr_corrected_pvals >= alphas[p]) %>% nrow()
-              true_negative <- pvals_epsilon_tb %>% filter(epsilon < epsilons[q] & fdr_corrected_pvals < alphas[p]) %>% nrow()
-              false_positive <- pvals_epsilon_tb %>% filter(epsilon < epsilons[q] & fdr_corrected_pvals >= alphas[p]) %>% nrow()
-              false_negative <- pvals_epsilon_tb %>% filter(epsilon >= epsilons[q] & fdr_corrected_pvals < alphas[p]) %>% nrow()
+              true_positive <- 
+                pvals_epsilon_tb %>%
+                filter(epsilon >= epsilons[q] & fdr_corrected_pvals >= alphas[p]) %>% 
+                nrow()
+              true_negative <- 
+                pvals_epsilon_tb %>% 
+                filter(epsilon < epsilons[q] & fdr_corrected_pvals < alphas[p]) %>%
+                nrow()
+              false_positive <-
+                pvals_epsilon_tb %>% 
+                filter(epsilon < epsilons[q] & fdr_corrected_pvals >= alphas[p]) %>%
+                nrow()
+              false_negative <- 
+                pvals_epsilon_tb %>%
+                filter(epsilon >= epsilons[q] & fdr_corrected_pvals < alphas[p]) %>% 
+                nrow()
               
               precision <- positive_predictive_value <- true_positive / sum(true_positive, false_positive)
               recall <- true_positive / sum(false_negative, true_positive)
@@ -251,7 +294,6 @@ for (h in 1:length(pheno_index)) {
               continuous_f1_tb$epsilon_threshold[current_cont_row] <- big_tb$epsilon_threshold <- epsilons[q]
               
               continuous_f1_tb_and_geno <- rbind(continuous_f1_tb_and_geno, big_tb)
-              
             }
           }
         } else {
@@ -269,6 +311,7 @@ discrete_f1_tb$test[discrete_f1_tb$test == "synchronous"] <- "sync"
 discrete_f1_tb_and_geno$test[discrete_f1_tb_and_geno$test == "synchronous"] <- "sync"
 discrete_f1_tb_and_geno <- discrete_f1_tb_and_geno %>% filter(!is.na(phenotype_type))
 
+# Save output ----
 write_tsv(discrete_f1_tb,
           path = "../data/aggregated_hogwash_data_range_of_alpha_gamma_discrete.tsv",
           col_names = TRUE)

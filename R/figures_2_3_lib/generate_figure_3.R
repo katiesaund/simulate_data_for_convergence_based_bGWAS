@@ -1,18 +1,21 @@
+# This script generates Figure 3 from the paper which demonstrates hogwash's 
+# grouping feature. This figure is made from simulated data.  
+
+# Import functions ----
 source("fig_2_3_plot_lib.R")
 
+# Set up tree and genotypes ----
 set.seed(10)
 tree <- ape::rcoal(n = 12)
-ungrouped_genotype   <- c("a",  "a",  "a", "b", "b", "b", "c", "c",  "b",  "b",  "d",  "d")
-grouped_genotype   <- c( 1,  1,  1, 0, 0, 0, 1, 1,  0,  0,  1,  1)
-
-# genotype             <- c( 1,  1,  0, 1, 1, 1, 1, 0,  0,  0,  1,  1)
-
+ungrouped_genotype <- c("a",  "a",  "a", "b", "b", "b", 
+                        "c", "c",  "b",  "b",  "d",  "d")
+grouped_genotype <- c( 1,  1,  1, 0, 0, 0, 1, 1,  0,  0,  1,  1)
 snp_geno_1 <- c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1)
 snp_geno_2 <- c(0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0)
 snp_geno_3 <- c(0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 gene_geno <- snp_geno_1 + snp_geno_2 + snp_geno_3
 
-# Ancestral reconstruction
+# Ancestral reconstruction ----
 snp_geno_1_recon <- ape::ace(x = snp_geno_1, 
                               phy = tree, 
                               type = "discrete",
@@ -38,23 +41,25 @@ gene_geno_recon <- ape::ace(x = gene_geno,
                              marginal = FALSE, 
                              model = "ER")
 
-
-# Find transition edges for each of the three genotypes
+# Find transition edges for each of the three genotypes ----
 # SNP 1
 snp_geno_1_ML_anc_rec <-
   as.numeric(colnames(snp_geno_1_recon$lik.anc)[apply(snp_geno_1_recon$lik.anc,
                                                                  1,
                                                                  which.max)])
-names(snp_geno_1_ML_anc_rec) <- c( (ape::Ntip(tree) + 1):(ape::Ntip(tree) + ape::Nnode(tree)))
+names(snp_geno_1_ML_anc_rec) <-
+  c( (ape::Ntip(tree) + 1):(ape::Ntip(tree) + ape::Nnode(tree)))
 snp_geno_1_tip_and_node_recon <- c(snp_geno_1, snp_geno_1_ML_anc_rec)
-names(snp_geno_1_tip_and_node_recon) <- c(1:sum(ape::Ntip(tree), ape::Nnode(tree)))
+names(snp_geno_1_tip_and_node_recon) <- 
+  c(1:sum(ape::Ntip(tree), ape::Nnode(tree)))
 
 snp_geno_1_trans <- 
   id_transition_edges_from_vec(tr = tree, 
                                vec = snp_geno_1,
                                node_recon = snp_geno_1_ML_anc_rec, 
                                disc_cont = "discrete")
-snp_geno_1_recon_by_edges <- reorder_tip_and_node_to_edge(snp_geno_1_tip_and_node_recon, tree)
+snp_geno_1_recon_by_edges <- 
+  reorder_tip_and_node_to_edge(snp_geno_1_tip_and_node_recon, tree)
 
 
 # SNP 2
@@ -62,39 +67,45 @@ snp_geno_2_ML_anc_rec <-
   as.numeric(colnames(snp_geno_2_recon$lik.anc)[apply(snp_geno_2_recon$lik.anc,
                                                        1,
                                                        which.max)])
-names(snp_geno_2_ML_anc_rec) <- c( (ape::Ntip(tree) + 1):(ape::Ntip(tree) + ape::Nnode(tree)))
+names(snp_geno_2_ML_anc_rec) <- 
+  c((ape::Ntip(tree) + 1):(ape::Ntip(tree) + ape::Nnode(tree)))
 snp_geno_2_tip_and_node_recon <- c(snp_geno_2, snp_geno_2_ML_anc_rec)
-names(snp_geno_2_tip_and_node_recon) <- c(1:sum(ape::Ntip(tree), ape::Nnode(tree)))
+names(snp_geno_2_tip_and_node_recon) <- 
+  c(1:sum(ape::Ntip(tree), ape::Nnode(tree)))
 
 snp_geno_2_trans <- 
   id_transition_edges_from_vec(tr = tree, 
                                vec = snp_geno_2,
                                node_recon = snp_geno_2_ML_anc_rec, 
                                disc_cont = "discrete")
-snp_geno_2_recon_by_edges <- reorder_tip_and_node_to_edge(snp_geno_2_tip_and_node_recon, tree)
+snp_geno_2_recon_by_edges <- 
+  reorder_tip_and_node_to_edge(snp_geno_2_tip_and_node_recon, tree)
 
 # SNP 3
 snp_geno_3_ML_anc_rec <-
   as.numeric(colnames(snp_geno_3_recon$lik.anc)[apply(snp_geno_3_recon$lik.anc,
                                                        1,
                                                        which.max)])
-names(snp_geno_3_ML_anc_rec) <- c( (ape::Ntip(tree) + 1):(ape::Ntip(tree) + ape::Nnode(tree)))
+names(snp_geno_3_ML_anc_rec) <- 
+  c((ape::Ntip(tree) + 1):(ape::Ntip(tree) + ape::Nnode(tree)))
 snp_geno_3_tip_and_node_recon <- c(snp_geno_3, snp_geno_3_ML_anc_rec)
-names(snp_geno_3_tip_and_node_recon) <- c(1:sum(ape::Ntip(tree), ape::Nnode(tree)))
+names(snp_geno_3_tip_and_node_recon) <- 
+  c(1:sum(ape::Ntip(tree), ape::Nnode(tree)))
 
 snp_geno_3_trans <-
   id_transition_edges_from_vec(tr = tree, 
                                vec = snp_geno_3,
                                node_recon = snp_geno_3_ML_anc_rec, 
                                disc_cont = "discrete")
-snp_geno_3_recon_by_edges <- reorder_tip_and_node_to_edge(snp_geno_3_tip_and_node_recon, tree)
+snp_geno_3_recon_by_edges <-
+  reorder_tip_and_node_to_edge(snp_geno_3_tip_and_node_recon, tree)
 
 # Gene geno
 gene_geno_phyc_trans_index <- unique(c(which(snp_geno_1_trans$trans_dir == 1), 
                                        which(snp_geno_2_trans$trans_dir == 1),
                                        which(snp_geno_3_trans$trans_dir == 1)))
 
-# Prep colors for plots
+# Prep colors for plots -----
 # Reconstruction
 snp_geno_1_recon_edge_color <- snp_geno_1_recon_by_edges
 snp_geno_1_recon_edge_color[snp_geno_1_recon_edge_color == 1] <- "lightpink"
@@ -122,7 +133,7 @@ snp_geno_3_trans_edge_color[snp_geno_3_trans_edge_color == 1] <- "springgreen4"
 snp_geno_3_trans_edge_color[snp_geno_3_trans_edge_color %in% c(0, -1)] <- "black"
 
 
-# Gene
+# Gene 
 gene_geno_trans_phyc_edge_color <- rep("black", ape::Nedge(tree))
 gene_geno_trans_phyc_edge_color[gene_geno_phyc_trans_index] <- "mediumpurple"
 
@@ -130,6 +141,7 @@ cex_value <- 1
 edge_width <- 2.5
 tip_label_log <- FALSE
 
+# Plot outputs ----
 pdf(file = "../../img/Figure_3_grouping_examples.pdf", width = 7, height = 5)
 graphics::par(mfrow = c(3, 3), mar = c(1, 3, 1, 1))
 

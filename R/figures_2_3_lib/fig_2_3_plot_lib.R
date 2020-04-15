@@ -1,3 +1,7 @@
+# Most of these functions are identical to or adapted from functions in the 
+# hogwash repo on github ("katiesaund/hogwash"). They were copied here to reduce
+# dependencies. 
+
 library(ape)
 library(phytools)
 #' Check that the given node if in the tree
@@ -121,8 +125,6 @@ id_transition_edges_from_vec <- function(tr, vec, node_recon, disc_cont){
   return(results)
 }
 
-
-
 #' Calculate phenotype change per tree edge
 #'
 #' @description Quantify absoluate value of phenotype change on each tree edge.
@@ -159,7 +161,6 @@ calculate_phenotype_change_on_edge <- function(edge_list, phenotype_by_edges){
   
   return(delta)
 }
-
 
 #' Convert a vector to an edge matrix
 #'

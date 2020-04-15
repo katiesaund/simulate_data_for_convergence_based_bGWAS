@@ -1,7 +1,9 @@
 library(tidyverse)
 library(gridExtra)
 
-df <- read_tsv(file = "../data/aggregated_hogwash_data_by_genotype_range_of_alpha_gamma_combined.tsv", col_names = TRUE)
+df <- 
+  read_tsv(file = "../data/aggregated_hogwash_data_by_genotype_range_of_alpha_gamma_combined.tsv",
+           col_names = TRUE)
 
 df$phenotype_id <- paste0("pheno_", df$phenotype_id)
 df$tree_id <- paste0("tree_", df$tree_id)
@@ -140,7 +142,7 @@ dev.off()
 # End Figure S3
 
 # The rest of the figures may be of interest to users, but were not used in the hogwash methods paper
-
+print("A")
 df %>% 
   filter(epsilon_threshold < 0.04, 
          alpha_threshold == -log(0.05)) %>% 
@@ -158,6 +160,7 @@ df %>%
         axis.text.y = element_text(color = "black", size = 10, angle = 0)) + 
   ggsave("../figures/pval_vs_epsilon_dot_plot_only_phyc_with_gamma.pdf", height = 16, width = 3.5, units = "in")
 
+print("B")
 
 df %>% 
   filter(epsilon_threshold < 0.04, 
@@ -176,6 +179,7 @@ df %>%
         axis.text.y = element_text(color = "black", size = 10, angle = 0)) + 
   ggsave("../figures/pval_vs_epsilon_dot_plot_only_sync_with_gamma.pdf", height = 16, width = 3.5, units = "in")
 
+print("C")
 
 df %>% 
   filter(epsilon_threshold < 0.04, 

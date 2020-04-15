@@ -142,62 +142,6 @@ dev.off()
 # End Figure S3
 
 # The rest of the figures may be of interest to users, but were not used in the hogwash methods paper
-print("A")
-df %>% 
-  filter(epsilon_threshold < 0.04, 
-         alpha_threshold == -log(0.05)) %>% 
-  filter(test == "phyc") %>% 
-  ggplot() +
-  geom_point(aes(x = epsilon, y = fdr_corrected_pvals, color = observed_gamma_value),
-             size = 0.5, 
-             alpha = 0.25) + 
-  xlab("") + 
-  theme_bw() + 
-  ylab("") + 
-  facet_grid(tree_id + phenotype_id ~ phenotype_phylogenetic_signal + test) + 
-  theme(axis.text.x = element_text(color = "black", size = 10, angle = 90, hjust = .5, vjust = .5),
-        axis.text.y = element_text(color = "black", size = 10, angle = 0)) + 
-  ggsave("../figures/pval_vs_epsilon_dot_plot_only_phyc_with_gamma.pdf", height = 16, width = 7, units = "in")
-
-print("B")
-
-df %>% 
-  filter(epsilon_threshold < 0.04, 
-         alpha_threshold == -log(0.05)) %>% 
-  filter(test == "sync") %>% 
-  #mutate(gamma = as.factor(gamma)) %>% 
-  ggplot() +
-  geom_point(aes(x = epsilon, y = fdr_corrected_pvals, color = observed_gamma_value), 
-             size = 0.5, 
-             alpha = 0.25) + 
-  xlab("") + 
-  theme_bw() + 
-  ylab("") + 
-  facet_grid(tree_id + phenotype_id ~ phenotype_phylogenetic_signal + test) + 
-  theme(axis.text.x = element_text(color = "black", size = 10, angle = 90, hjust = .5, vjust = .5),
-        axis.text.y = element_text(color = "black", size = 10, angle = 0)) + 
-  ggsave("../figures/pval_vs_epsilon_dot_plot_only_sync_with_gamma.pdf", height = 16, width = 7, units = "in")
-
-print("C")
-
-df %>% 
-  filter(epsilon_threshold < 0.04, 
-         alpha_threshold == -log(0.05)) %>% 
-  filter(test == "continuous") %>% 
-  #mutate(gamma = as.factor(gamma)) %>% 
-  ggplot() +
-  geom_point(aes(x = epsilon, y = fdr_corrected_pvals, color = observed_gamma_value), 
-             size = 0.5, 
-             alpha = 0.25) + 
-  xlab("") + 
-  theme_bw() + 
-  ylab("") + 
-  facet_grid(tree_id + phenotype_id ~ phenotype_phylogenetic_signal + test) + 
-  theme(axis.text.x = element_text(color = "black", size = 10, angle = 90, hjust = .5, vjust = .5),
-        axis.text.y = element_text(color = "black", size = 10, angle = 0)) +
-  ggsave("../figures/pval_vs_epsilon_dot_plot_only_continuous_with_gamma.pdf", height = 16, width = 7, units = "in")
-
-print("D")
 df %>% 
   ggplot() + 
   geom_histogram(mapping = aes(x = epsilon, fill = epsilon > 0.50)) +

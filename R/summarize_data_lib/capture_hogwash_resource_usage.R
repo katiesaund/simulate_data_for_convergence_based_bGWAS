@@ -1,8 +1,8 @@
 # To be run from data directory where hogwash results are saved
 library(tidyverse)
 args <- commandArgs(trailingOnly = TRUE)
-num_tree <- args[1]
-num_pheno <- args[2]
+num_tree <- as.numeric(args[1])
+num_pheno <- as.numeric(args[2])
 relative_path <-  args[3]
 source(paste0(relative_path, "/simulate_data_for_convergence_based_bGWAS/R/summarize_data_lib/greatlakes_resource_usage.R"))
 

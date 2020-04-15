@@ -71,21 +71,15 @@ is_tip <- function(node_num, tr){
 #' @param disc_cont Character string. Either "discrete" or "continuous".
 #'
 #' @return List.
-#'  * $transition: Continuous: NA, because this is meaningless for continuous data
-#'    as all edges will be transitions. Discrete: Numeric vector of 0 or 1. 0
-#'    indicates parent and child node are identical. 1 indicates parent and
+#'  * $transition: Continuous: NA, because this is meaningless for continuous 
+#'    data as all edges will be transitions. Discrete: Numeric vector of 0 or 1.
+#'     0 indicates parent and child node are identical. 1 indicates parent and
 #'    child node differ.
 #'  * $trans_dir: Numeric Vector. Continuous and discrete: gives the direction
 #'    of the transition. When parent < child or parent_0_child_1 value is +1.
 #'    When parent > child or parent_1_child_0 value is -1.
 #' @noRd
 identify_transition_edges <- function(tr, mat, num, node_recon, disc_cont){
-  # Check input ----------------------------------------------------------------
-  # check_for_root_and_bootstrap(tr)
-  # check_tree_is_valid(tr)
-  # check_is_number(num)
-  # check_str_is_discrete_or_continuous(disc_cont)
-
   # FUNCTION -------------------------------------------------------------------
   transition <- transition_direction <-
     parent_node <- child_node <- integer(ape::Nedge(tr))
@@ -95,7 +89,6 @@ identify_transition_edges <- function(tr, mat, num, node_recon, disc_cont){
   parent_1_child_0 <- -1
   parent_equals_child <- 0
   both_parent_and_child_are_one <- 2
-
 
   for (i in 1:ape::Nedge(tr)) {
     if (is_tip(tr$edge[i, older], tr)) {
@@ -133,6 +126,14 @@ identify_transition_edges <- function(tr, mat, num, node_recon, disc_cont){
   return(results)
 } 
 
+#' Wrapper function for identify_transition_edges that works on lists of data
+#'
+#' @param tree_list List of trees
+#' @param mat_list List of matrices
+#' @param cont_disc_str "discrete" or "continuous"
+#'
+#' @return List of lists
+#' @noRd
 find_transition_edges <- function(tree_list,
                                   mat_list,
                                   cont_disc_str){
@@ -147,13 +148,26 @@ find_transition_edges <- function(tree_list,
     temp_trans_list <- rep(list(), num_col)
     for (j in 1:num_col) {
       temp_node_recon <- node_recon[, j, drop = TRUE]
-      temp_trans_list[[j]] <- identify_transition_edges(tree_list[[i]], just_tips_mat, j, temp_node_recon, cont_disc_str)
+      temp_trans_list[[j]] <- 
+        identify_transition_edges(tree_list[[i]], 
+                                  just_tips_mat, 
+                                  j, 
+                                  temp_node_recon,
+                                  cont_disc_str)
     }
     nested_trans_list[[i]] <- temp_trans_list
   }
   return(nested_trans_list)
 }
 
+
+#' Wrapper function for prep_geno_trans_for_phyc to work on lists
+#'
+#' @param genotype_AR_mat_list 
+#' @param genotype_sync_trans_list 
+#'
+#' @return List
+#' @noRd
 convert_to_phyc_trans <- function(genotype_AR_mat_list,
                                   genotype_sync_trans_list){
   num_mat <- length(genotype_AR_mat_list)
@@ -162,7 +176,8 @@ convert_to_phyc_trans <- function(genotype_AR_mat_list,
     current_trans_list <- genotype_sync_trans_list[[i]]
     num_tip <- ape::Ntip(tree_list[[i]])
     just_tips_mat <- genotype_AR_mat_list[[i]][1:num_tip, , drop = FALSE]
-    phyc_trans_list[[i]] <- prep_geno_trans_for_phyc(just_tips_mat, current_trans_list)
+    phyc_trans_list[[i]] <- prep_geno_trans_for_phyc(just_tips_mat, 
+                                                     current_trans_list)
   }
   return(phyc_trans_list)
 }

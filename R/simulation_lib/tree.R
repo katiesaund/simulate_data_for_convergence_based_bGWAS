@@ -1,3 +1,12 @@
+#' Generate a specific number of trees and modify tree lengths to comply with 
+#' data simulation process
+#'
+#' @param num_trees Integer
+#' @param num_tips Integer
+#' @param edge_multiplier Numeric. Changes tree edge lengths. 
+#'
+#' @return List of trees 
+#' @noRd
 generate_trees <- function(num_trees, num_tips, edge_multiplier){
   # Generate a series of trees with a set number of tips
   simulated_trees <- rep(list(0), num_trees)
@@ -39,6 +48,14 @@ reorder_tip_and_node_to_edge <- function(tips_and_node_vector, tr){
   return(ordered_by_edges)
 }
 
+#' For a list of phenotype ancestral reconstruction reorder each list by tree 
+#'   edges
+#'
+#' @param phenotype_AR_mat_list List of phenotype ancestral reconstructions
+#' @param tree_list List of trees
+#'
+#' @return List of phenotypes
+#' @noRd
 prep_pheno_recon_edges <- function(phenotype_AR_mat_list, tree_list) {
   num_trees <- length(tree_list)
   pheno_recon_by_edges_list <- list()
@@ -46,7 +63,9 @@ prep_pheno_recon_edges <- function(phenotype_AR_mat_list, tree_list) {
     num_pheno <- ncol(phenotype_AR_mat_list[[i]])
     temp_recon_by_edges <- list()
     for (j in 1:num_pheno) {
-      temp_recon_by_edges[[j]] <- reorder_tip_and_node_to_edge(phenotype_AR_mat_list[[i]][, j, drop = TRUE], tree_list[[i]])
+      temp_recon_by_edges[[j]] <- 
+        reorder_tip_and_node_to_edge(phenotype_AR_mat_list[[i]][, j, drop = TRUE],
+                                     tree_list[[i]])
     }
     pheno_recon_by_edges_list[[i]] <- temp_recon_by_edges
   }

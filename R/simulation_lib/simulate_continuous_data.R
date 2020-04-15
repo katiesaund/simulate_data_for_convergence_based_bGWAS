@@ -3,7 +3,7 @@ suppressWarnings(library(caper))
 suppressWarnings(library(phytools))
 suppressWarnings(library(scales))
 
-# Initialize variables / read in user input
+# Initialize variables / read in user input ----
 args <- commandArgs(trailingOnly = TRUE)
 num_trees <- as.numeric(args[1]) 
 num_phenos <- as.numeric(args[2]) 
@@ -22,12 +22,12 @@ source(paste0(rel_path, "/simulate_data_for_convergence_based_bGWAS/R/simulation
 source(paste0(rel_path, "/simulate_data_for_convergence_based_bGWAS/R/simulation_lib/high_confidence.R"))
 
 
-# Defaults that shouldn't need user input
+# Defaults that shouldn't need user input ----
 tree_edge_multiplier <- 100
 bootstrap_threshold <- 70
 bin_size <- 20
 
-# Generate huge matrix of binary traits specific to trees
+# Generate huge matrix of binary traits specific to trees ----
 tree_list <- generate_trees(num_trees, num_tips, tree_edge_multiplier)
 print("Finish making trees")
 
@@ -53,23 +53,28 @@ cont_pheno_WN_AR_and_conf_mat_list <-
 
 BM_phenotype_AR_mat_list <- cont_pheno_BM_AR_and_conf_mat_list$AR_mat
 BM_phenotype_conf_mat_list <- cont_pheno_BM_AR_and_conf_mat_list$conf_mat
-BM_phenotype_recon_edge_mat_list <- cont_pheno_BM_AR_and_conf_mat_list$recon_edge_mat
+BM_phenotype_recon_edge_mat_list <- 
+  cont_pheno_BM_AR_and_conf_mat_list$recon_edge_mat
 
 WN_phenotype_AR_mat_list <- cont_pheno_WN_AR_and_conf_mat_list$AR_mat
 WN_phenotype_conf_mat_list <- cont_pheno_WN_AR_and_conf_mat_list$conf_mat
-WN_phenotype_recon_edge_mat_list <- cont_pheno_WN_AR_and_conf_mat_list$recon_edge_mat
+WN_phenotype_recon_edge_mat_list <- 
+  cont_pheno_WN_AR_and_conf_mat_list$recon_edge_mat
 print("Finish pheno reconstructions")
 
 # Order everything by edges instead of by tips then nodes ----
 # BM pheno
 BM_pheno_recon_by_edge_list <- prep_pheno_recon_edges(BM_phenotype_AR_mat_list,
                                                       tree_list)
-BM_pheno_recon_conf_by_edge_list <- reorder_tip_and_node_to_edge_lists(BM_phenotype_conf_mat_list, tree_list)
+BM_pheno_recon_conf_by_edge_list <- 
+  reorder_tip_and_node_to_edge_lists(BM_phenotype_conf_mat_list, tree_list)
 print("Finish BM edge ordering")
 
 # WN pheno
-WN_pheno_recon_by_edge_list <- prep_pheno_recon_edges(WN_phenotype_AR_mat_list, tree_list)
-WN_pheno_recon_conf_by_edge_list <- reorder_tip_and_node_to_edge_lists(WN_phenotype_conf_mat_list, tree_list)
+WN_pheno_recon_by_edge_list <- 
+  prep_pheno_recon_edges(WN_phenotype_AR_mat_list, tree_list)
+WN_pheno_recon_conf_by_edge_list <-
+  reorder_tip_and_node_to_edge_lists(WN_phenotype_conf_mat_list, tree_list)
 print("Finish WN edges ordering")
 
 print("Start making genotypes")
@@ -86,7 +91,8 @@ binary_AR_df_list <- add_geno_continuous(binary_AR_df_list,
 # Due to new genotypes the ancestral reconstructions are now wrong and need to be recalculated in the next step.
 print("Finish adding additional genotypes")
 
-binary_AR_and_conf_mat <- ancestral_reconstruction(binary_AR_df_list, tree_list, "discrete") # So fix the ancestral reconstructions here
+binary_AR_and_conf_mat <- 
+  ancestral_reconstruction(binary_AR_df_list, tree_list, "discrete") # So fix the ancestral reconstructions here
 binary_conf_mat_list <- binary_AR_and_conf_mat$conf_mat
 binary_AR_df_list <- binary_AR_and_conf_mat$AR_mat
 print("Finished genotype ancestral reconstruction")
@@ -106,9 +112,12 @@ genotype_conf_mat_list <- genotype_AR_and_conf_mat_list$conf_mat
 print("Finish subsetting genotypes to those with -1.5 < D < 1.5")
 
 # Geno
-genotype_cont_trans_by_edge_list <- find_transition_edges(tree_list, genotype_AR_mat_list, "discrete")
-genotype_recon_by_edge_list <- reorder_tip_and_node_to_edge_lists(genotype_AR_mat_list, tree_list)
-genotype_recon_conf_by_edge_list <- reorder_tip_and_node_to_edge_lists(genotype_conf_mat_list, tree_list)
+genotype_cont_trans_by_edge_list <- 
+  find_transition_edges(tree_list, genotype_AR_mat_list, "discrete")
+genotype_recon_by_edge_list <- 
+  reorder_tip_and_node_to_edge_lists(genotype_AR_mat_list, tree_list)
+genotype_recon_conf_by_edge_list <- 
+  reorder_tip_and_node_to_edge_lists(genotype_conf_mat_list, tree_list)
 print("Finish identifying genotype transition edges")
 
 # Identify high confidence edges ----
@@ -137,13 +146,21 @@ print("Finish high confidence objects")
 
 # Calculate gamma
 
-BM_cont_gamma_list <- calc_cont_gamma_list(tree_list, BM_phenotype_recon_edge_mat_list, cont_geno_trans_BM_trans_hi_conf_obj_list)
-WN_cont_gamma_list <- calc_cont_gamma_list(tree_list, WN_phenotype_recon_edge_mat_list, cont_geno_trans_WM_trans_hi_conf_obj_list)
+BM_cont_gamma_list <-
+  calc_cont_gamma_list(tree_list, 
+                       BM_phenotype_recon_edge_mat_list,
+                       cont_geno_trans_BM_trans_hi_conf_obj_list)
+WN_cont_gamma_list <- 
+  calc_cont_gamma_list(tree_list, 
+                       WN_phenotype_recon_edge_mat_list, 
+                       cont_geno_trans_WM_trans_hi_conf_obj_list)
 print("Finish calculating gamma")
 
 # Subset genotype matrix for each tree - phenotype combo
-BM_cont_genotype_keeper_list <- keep_good_genotypes(BM_cont_gamma_list, bin_size)
-WN_cont_genotype_keeper_list <- keep_good_genotypes(WN_cont_gamma_list, bin_size)
+BM_cont_genotype_keeper_list <- keep_good_genotypes(BM_cont_gamma_list, 
+                                                    bin_size)
+WN_cont_genotype_keeper_list <- keep_good_genotypes(WN_cont_gamma_list, 
+                                                    bin_size)
 
 # Save data
 print("Begin to save data")

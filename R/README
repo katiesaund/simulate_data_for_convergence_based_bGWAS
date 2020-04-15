@@ -6,7 +6,7 @@ Subdirectories:
 This directory contains some unnecessary files I generated to help evaluate various methods in the process of creating these methods. They're included here in case you want to explore other ways of calculating the continuous epsilon or generating genotypes for continuous phenotypes.
 
 2. simulation_lib
-Contains all of the code necessary to simulate the data for bGWAS. Some of this code is redundant with internal functions in hogwash, but they were moved here to increase the transparency of this process and to allow for some specific tweaks.
+Contains all of the code necessary to simulate the data for bGWAS. Some of this code is redundant with internal functions in hogwash (github: katiesaund/hogwash), but they were moved here to increase the transparency of this data simulation process and to allow for some specific tweaks.
 
 3. figures_2_3_lib
 Contains the code for generating figures 2 and 3 of the hogwash methods paper. 

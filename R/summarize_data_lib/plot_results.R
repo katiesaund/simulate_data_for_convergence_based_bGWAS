@@ -147,7 +147,7 @@ df %>%
   filter(epsilon_threshold < 0.04, 
          alpha_threshold == -log(0.05)) %>% 
   filter(test == "phyc") %>% 
-  mutate(gamma = as.factor(gamma)) %>% 
+  # mutate(gamma = as.factor(gamma)) %>% 
   ggplot() +
   geom_point(aes(x = epsilon, y = fdr_corrected_pvals, color = gamma),
              size = 0.5, 

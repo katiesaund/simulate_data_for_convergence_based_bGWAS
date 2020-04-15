@@ -1,3 +1,4 @@
+# Save all of the data necessary for running hogwash on simulated data
 save_data <- function(tree_list,
                       genotype_AR_mat_list,
                       genotype_phyc_trans_list,
@@ -50,8 +51,10 @@ save_data <- function(tree_list,
       WN_keepers <- sort(unique(c(WN_phyc_genotype_keeper_list[[i]][[j]],
                                   WN_sync_genotype_keeper_list[[i]][[j]])))
 
-      BM_geno_mat <- genotype_AR_mat_list[[i]][1:num_tips, BM_keepers, drop = FALSE]
-      WN_geno_mat <- genotype_AR_mat_list[[i]][1:num_tips, WN_keepers, drop = FALSE]
+      BM_geno_mat <- 
+        genotype_AR_mat_list[[i]][1:num_tips, BM_keepers, drop = FALSE]
+      WN_geno_mat <- 
+        genotype_AR_mat_list[[i]][1:num_tips, WN_keepers, drop = FALSE]
 
       write.table(BM_geno_mat,
                   sep = "\t",
@@ -127,23 +130,39 @@ save_data <- function(tree_list,
                                         j,
                                         "_sync_gamma.RData"))
 
-      BM_phyc_gamma_df <- as.data.frame(matrix(NA, nrow = length(BM_phyc_gamma$gamma_percent), ncol = num_cols))
-      BM_sync_gamma_df <- as.data.frame(matrix(NA, nrow = length(BM_sync_gamma$gamma_percent), ncol = num_cols))
-      WN_phyc_gamma_df <- as.data.frame(matrix(NA, nrow = length(WN_phyc_gamma$gamma_percent), ncol = num_cols))
-      WN_sync_gamma_df <- as.data.frame(matrix(NA, nrow = length(WN_sync_gamma$gamma_percent), ncol = num_cols))
+      BM_phyc_gamma_df <- 
+        as.data.frame(matrix(NA, 
+                             nrow = length(BM_phyc_gamma$gamma_percent),
+                             ncol = num_cols))
+      BM_sync_gamma_df <- 
+        as.data.frame(matrix(NA, 
+                             nrow = length(BM_sync_gamma$gamma_percent), 
+                             ncol = num_cols))
+      WN_phyc_gamma_df <- 
+        as.data.frame(matrix(NA, 
+                             nrow = length(WN_phyc_gamma$gamma_percent), 
+                             ncol = num_cols))
+      WN_sync_gamma_df <-
+        as.data.frame(matrix(NA, 
+                             nrow = length(WN_sync_gamma$gamma_percent), 
+                             ncol = num_cols))
 
       colnames(BM_phyc_gamma_df) <- colnames(BM_sync_gamma_df) <-
-        colnames(WN_phyc_gamma_df) <- colnames(WN_sync_gamma_df) <- summary_col_names
+        colnames(WN_phyc_gamma_df) <- colnames(WN_sync_gamma_df) <-
+        summary_col_names
 
-      BM_phyc_gamma_df$phenotype_phylogenetic_signal <- BM_sync_gamma_df$phenotype_phylogenetic_signal <- "BM"
-      WN_phyc_gamma_df$phenotype_phylogenetic_signal <- WN_sync_gamma_df$phenotype_phylogenetic_signal <- "WN"
+      BM_phyc_gamma_df$phenotype_phylogenetic_signal <- 
+        BM_sync_gamma_df$phenotype_phylogenetic_signal <- "BM"
+      WN_phyc_gamma_df$phenotype_phylogenetic_signal <-
+        WN_sync_gamma_df$phenotype_phylogenetic_signal <- "WN"
 
       BM_phyc_gamma_df$test <- WN_phyc_gamma_df$test <- "phyc"
       BM_sync_gamma_df$test <- WN_sync_gamma_df$test <- "sync"
 
       BM_phyc_gamma_df$tree_id <- i
       BM_phyc_gamma_df$phenotype_id <- j
-      BM_phyc_gamma_df$gamma_avg <- rep(BM_phyc_gamma$gamma_avg, nrow(BM_phyc_gamma_df))
+      BM_phyc_gamma_df$gamma_avg <- 
+        rep(BM_phyc_gamma$gamma_avg, nrow(BM_phyc_gamma_df))
       BM_phyc_gamma_df$gamma_percent <- BM_phyc_gamma$gamma_percent
       BM_phyc_gamma_df$gamma_count <- BM_phyc_gamma$gamma_count
       BM_phyc_gamma_df$num_hi_conf_edges <- BM_phyc_gamma$num_hi_conf_edges
@@ -154,7 +173,8 @@ save_data <- function(tree_list,
       
       BM_sync_gamma_df$tree_id <- i
       BM_sync_gamma_df$phenotype_id <- j
-      BM_sync_gamma_df$gamma_avg <- rep(BM_sync_gamma$gamma_avg, nrow(BM_sync_gamma_df))
+      BM_sync_gamma_df$gamma_avg <- 
+        rep(BM_sync_gamma$gamma_avg, nrow(BM_sync_gamma_df))
       BM_sync_gamma_df$gamma_percent <- BM_sync_gamma$gamma_percent
       BM_sync_gamma_df$gamma_count <- BM_sync_gamma$gamma_count
       BM_sync_gamma_df$num_hi_conf_edges <- BM_sync_gamma$num_hi_conf_edges
@@ -165,7 +185,8 @@ save_data <- function(tree_list,
       
       WN_phyc_gamma_df$tree_id <- i
       WN_phyc_gamma_df$phenotype_id <- j
-      WN_phyc_gamma_df$gamma_avg <- rep(WN_phyc_gamma$gamma_avg, nrow(WN_phyc_gamma_df))
+      WN_phyc_gamma_df$gamma_avg <- 
+        rep(WN_phyc_gamma$gamma_avg, nrow(WN_phyc_gamma_df))
       WN_phyc_gamma_df$gamma_percent <- WN_phyc_gamma$gamma_percent
       WN_phyc_gamma_df$gamma_count <- WN_phyc_gamma$gamma_count
       WN_phyc_gamma_df$num_hi_conf_edges <- WN_phyc_gamma$num_hi_conf_edges
@@ -176,7 +197,8 @@ save_data <- function(tree_list,
       
       WN_sync_gamma_df$tree_id <- i
       WN_sync_gamma_df$phenotype_id <- j
-      WN_sync_gamma_df$gamma_avg <- rep(WN_sync_gamma$gamma_avg, nrow(WN_sync_gamma_df))
+      WN_sync_gamma_df$gamma_avg <- 
+        rep(WN_sync_gamma$gamma_avg, nrow(WN_sync_gamma_df))
       WN_sync_gamma_df$gamma_percent <- WN_sync_gamma$gamma_percent
       WN_sync_gamma_df$gamma_count <- WN_sync_gamma$gamma_count
       WN_sync_gamma_df$num_hi_conf_edges <- WN_sync_gamma$num_hi_conf_edges
@@ -185,7 +207,11 @@ save_data <- function(tree_list,
       WN_sync_gamma_df$epsilon <- WN_sync_gamma$epsilon
       WN_sync_gamma_df$genotype <- WN_sync_gamma$genotype
       
-      summary_df <- rbind(summary_df, BM_phyc_gamma_df, BM_sync_gamma_df, WN_phyc_gamma_df, WN_sync_gamma_df)
+      summary_df <- rbind(summary_df,
+                          BM_phyc_gamma_df, 
+                          BM_sync_gamma_df, 
+                          WN_phyc_gamma_df,
+                          WN_sync_gamma_df)
     }
   }
 
@@ -240,8 +266,12 @@ save_continuous_data <- function(tree_list,
       BM_keepers <- BM_cont_genotype_keeper_list[[i]][[j]]
       WN_keepers <- WN_cont_genotype_keeper_list[[i]][[j]]
       
-      BM_geno_mat <- genotype_AR_mat_list[[i]][1:num_tips, BM_keepers, drop = FALSE]
-      WN_geno_mat <- genotype_AR_mat_list[[i]][1:num_tips, WN_keepers, drop = FALSE]
+      BM_geno_mat <- genotype_AR_mat_list[[i]][1:num_tips,
+                                               BM_keepers,
+                                               drop = FALSE]
+      WN_geno_mat <- genotype_AR_mat_list[[i]][1:num_tips,
+                                               WN_keepers,
+                                               drop = FALSE]
       
       write.table(BM_geno_mat,
                   sep = "\t",
@@ -304,16 +334,25 @@ save_continuous_data <- function(tree_list,
                                         j,
                                         "_cont_gamma.RData"))
       
-      BM_cont_gamma_df <- as.data.frame(matrix(NA, nrow = length(BM_cont_gamma$gamma_percent), ncol = num_cols))
-      WN_cont_gamma_df <- as.data.frame(matrix(NA, nrow = length(WN_cont_gamma$gamma_percent), ncol = num_cols))
+      BM_cont_gamma_df <- 
+        as.data.frame(matrix(NA,
+                             nrow = length(BM_cont_gamma$gamma_percent), 
+                             ncol = num_cols))
+      WN_cont_gamma_df <-
+        as.data.frame(matrix(NA, 
+                             nrow = length(WN_cont_gamma$gamma_percent),
+                             ncol = num_cols))
       
-      colnames(BM_cont_gamma_df) <- colnames(WN_cont_gamma_df) <- summary_col_names
+      colnames(BM_cont_gamma_df) <- 
+        colnames(WN_cont_gamma_df) <- 
+        summary_col_names
       
       BM_cont_gamma_df$test <- WN_cont_gamma_df$test <- "cont"
       
       BM_cont_gamma_df$tree_id <- i
       BM_cont_gamma_df$phenotype_id <- j
-      BM_cont_gamma_df$gamma_avg <- rep(BM_cont_gamma$gamma_avg, nrow(BM_cont_gamma_df))
+      BM_cont_gamma_df$gamma_avg <- 
+        rep(BM_cont_gamma$gamma_avg, nrow(BM_cont_gamma_df))
       BM_cont_gamma_df$gamma_percent <- BM_cont_gamma$gamma_percent
       BM_cont_gamma_df$gamma_count <- BM_cont_gamma$gamma_count
       BM_cont_gamma_df$num_hi_conf_edges <- BM_cont_gamma$num_hi_conf_edges
@@ -324,7 +363,8 @@ save_continuous_data <- function(tree_list,
       
       WN_cont_gamma_df$tree_id <- i
       WN_cont_gamma_df$phenotype_id <- j
-      WN_cont_gamma_df$gamma_avg <- rep(WN_cont_gamma$gamma_avg, nrow(WN_cont_gamma_df))
+      WN_cont_gamma_df$gamma_avg <-
+        rep(WN_cont_gamma$gamma_avg, nrow(WN_cont_gamma_df))
       WN_cont_gamma_df$gamma_percent <- WN_cont_gamma$gamma_percent
       WN_cont_gamma_df$gamma_count <- WN_cont_gamma$gamma_count
       WN_cont_gamma_df$num_hi_conf_edges <- WN_cont_gamma$num_hi_conf_edges
@@ -344,4 +384,3 @@ save_continuous_data <- function(tree_list,
               file = "../data/simulated_continuous_gamma_summary.tsv", 
               row.names = FALSE)
 }
-

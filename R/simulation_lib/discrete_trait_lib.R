@@ -28,14 +28,20 @@ generate_binary_df_list <- function(tree_list, num_genotypes){
       replicate(num_genotypes,
                 ape::rTraitDisc(tree_list[[i]],
                                 ancestor = TRUE,
-                                root.value = sample(x = c(1,2), size = 1, replace = FALSE, prob = c(0.5, 0.5)), # Root.value refers to which factor (1 or 2) of the two states (k=2, states are either 0 or 1).
+                                root.value = sample(x = c(1,2),
+                                                    size = 1, 
+                                                    replace = FALSE,
+                                                    prob = c(0.5, 0.5)), 
+                                # Root.value refers to which factor (1 or 2) of 
+                                # the two states (k=2, states are either 0 or 1).
                                 type = "ER",
                                 k = 2,
                                 states = c(0,1)))
     geno_mat <- geno_tip_and_AR_mat[1:ape::Ntip(tree_list[[i]]), , drop = FALSE]
     storage.mode(geno_mat) <- "numeric"
     storage.mode(geno_tip_and_AR_mat) <- "numeric"
-    cols_to_keep <- colSums(geno_mat) > 1 & colSums(geno_mat) < nrow(geno_mat) - 1
+    cols_to_keep <- 
+      colSums(geno_mat) > 1 & colSums(geno_mat) < nrow(geno_mat) - 1
     geno_tip_and_AR_mat <- geno_tip_and_AR_mat[, cols_to_keep, drop = FALSE]
     geno_tip_and_AR_mat <- unique(geno_tip_and_AR_mat, MARGIN = 2)
     geno_tip_and_AR_mat <- as.data.frame(geno_tip_and_AR_mat)
@@ -46,18 +52,21 @@ generate_binary_df_list <- function(tree_list, num_genotypes){
 }
 
 # Phylogenetic signal functions -------
+
+#' Wrapper function for estimate_d_stat() to work on lists
 calculate_phylo_signal <- function(tree_list, binary_AR_mat_list){
   num_tree <- length(tree_list)
   d_stat_list <- rep(list(), num_tree)
   for (i in 1:num_tree) {
-    bin_no_AR_mat <- binary_AR_mat_list[[i]][1:ape::Ntip(tree_list[[i]]), , drop = FALSE]
+    bin_no_AR_mat <- 
+      binary_AR_mat_list[[i]][1:ape::Ntip(tree_list[[i]]), , drop = FALSE]
     d_stat_list[[i]] <- estimate_d_stat(bin_no_AR_mat, tree_list[[i]])
   }
   return(d_stat_list)
 }
 
+#' Calculate the D statistic for the discrete trait we made
 estimate_d_stat <- function(trait_df, tree){
-  # Calculate the D statistic for the discrete trait we made
   tree$node.label <- NULL
   num_genotype <- ncol(trait_df)
   d_stat_vec <- rep(NA, num_genotype)
@@ -193,6 +202,7 @@ phylo.d2 <- function(data,
 }
 # ----
 
+#' Select the traits that follow Brownian motion
 select_BM_traits <- function(binary_mat_list,
                              phylo_signal_list,
                              num_to_pick = NULL) {
@@ -202,7 +212,7 @@ select_BM_traits <- function(binary_mat_list,
     BM_trait_logical <- phylo_signal_list[[i]] < 0.05 & phylo_signal_list[[i]] > -0.05
     BM_colnames <- colnames(binary_mat_list[[i]][, BM_trait_logical, drop = FALSE])
     if (!is.null(num_to_pick)) {
-      if (num_to_pick <= length(BM_colnames)){
+      if (num_to_pick <= length(BM_colnames)) {
        BM_colnames <- BM_colnames[1:num_to_pick]
       } else {
       stop("Not enough BM traits")
@@ -213,16 +223,19 @@ select_BM_traits <- function(binary_mat_list,
   return(BM_trait_names_list)
 }
 
+#' Select the traits that follow white noise
 select_WN_traits <- function(binary_mat_list,
                              phylo_signal_list,
                              num_to_pick = NULL) {
   num_trees <- length(binary_mat_list)
   WN_trait_names_list <- rep(list(), num_trees)
   for (i in 1:num_trees) {
-    WN_trait_logical <- phylo_signal_list[[i]] < 1.05 & phylo_signal_list[[i]] > 0.95
-    WN_colnames <- colnames(binary_mat_list[[i]][, WN_trait_logical, drop = FALSE])
+    WN_trait_logical <- 
+      phylo_signal_list[[i]] < 1.05 & phylo_signal_list[[i]] > 0.95
+    WN_colnames <- 
+      colnames(binary_mat_list[[i]][, WN_trait_logical, drop = FALSE])
     if (!is.null(num_to_pick)) {
-      if (num_to_pick <= length(WN_colnames)){
+      if (num_to_pick <= length(WN_colnames)) {
         WN_colnames <- WN_colnames[1:num_to_pick]
       } else {
         stop("Not enough WN traits")
@@ -233,20 +246,26 @@ select_WN_traits <- function(binary_mat_list,
   return(WN_trait_names_list)
 }
 
+#' Subset to just those phenotypes in the provided list: phenotype_names_list
 subsample_to_phenotypes <- function(binary_AR_mat_list,
                                     binary_conf_mat_list,
                                     phenotype_names_list){
   num_mat <- length(binary_AR_mat_list)
   AR_mat_list <- conf_mat_list <- rep(list(), num_mat)
   for (i in 1:num_mat) {
-    AR_mat_list[[i]] <- binary_AR_mat_list[[i]][, colnames(binary_AR_mat_list[[i]]) %in% phenotype_names_list[[i]], drop = FALSE]
-    conf_mat_list[[i]] <- binary_conf_mat_list[[i]][, colnames(binary_conf_mat_list[[i]]) %in% phenotype_names_list[[i]], drop = FALSE]
+    AR_mat_list[[i]] <- 
+      binary_AR_mat_list[[i]][, colnames(binary_AR_mat_list[[i]]) %in% phenotype_names_list[[i]], 
+                              drop = FALSE]
+    conf_mat_list[[i]] <- 
+      binary_conf_mat_list[[i]][, colnames(binary_conf_mat_list[[i]]) %in% phenotype_names_list[[i]], 
+                                drop = FALSE]
 
   }
   return(list("AR_mat" = AR_mat_list,
               "conf_mat" = conf_mat_list))
 }
 
+#' Only keep genotypes whose phylogenetic signal is within the given range
 select_geno_within_range <- function(binary_AR_mat_list,
                                      binary_AR_conf_list,
                                      phylo_signal_list,
@@ -259,14 +278,18 @@ select_geno_within_range <- function(binary_AR_mat_list,
     if (!is.null(lower_bound)) {
       greater_than_lower_log <- phylo_signal_list[[i]] > lower_bound
       phylo_signal_list[[i]] <- phylo_signal_list[[i]][greater_than_lower_log]
-      geno_mat_list[[i]] <- geno_mat_list[[i]][, greater_than_lower_log, drop = FALSE]
-      binary_AR_conf_list[[i]] <- binary_AR_conf_list[[i]][, greater_than_lower_log, drop = FALSE]
+      geno_mat_list[[i]] <- 
+        geno_mat_list[[i]][, greater_than_lower_log, drop = FALSE]
+      binary_AR_conf_list[[i]] <- 
+        binary_AR_conf_list[[i]][, greater_than_lower_log, drop = FALSE]
     }
     if (!is.null(upper_bound)) {
       less_than_upper_log <- phylo_signal_list[[i]] < upper_bound
       phylo_signal_list[[i]] <- phylo_signal_list[[i]][less_than_upper_log]
-      geno_mat_list[[i]] <- geno_mat_list[[i]][, less_than_upper_log, drop = FALSE]
-      binary_AR_conf_list[[i]] <- binary_AR_conf_list[[i]][, less_than_upper_log, drop = FALSE]
+      geno_mat_list[[i]] <-
+        geno_mat_list[[i]][, less_than_upper_log, drop = FALSE]
+      binary_AR_conf_list[[i]] <-
+        binary_AR_conf_list[[i]][, less_than_upper_log, drop = FALSE]
 
     }
     if (!is.null(min_genos)) {
@@ -280,6 +303,8 @@ select_geno_within_range <- function(binary_AR_mat_list,
               "AR_mat" = geno_mat_list))
 }
 
+#' Add phenotypes that are modeled by white noise to the origin set that were
+#'   modeled with Brownian motion 
 add_WN <- function(binary_AR_mat_list, tree_list) {
   num_trees <- length(tree_list)
   for (i in 1:num_trees) {
@@ -290,17 +315,25 @@ add_WN <- function(binary_AR_mat_list, tree_list) {
       flipped_to_add_40p <- 
       binary_AR_mat_list[[i]][, 1:num_to_add, drop = FALSE]
     for (j in 1:ncol(random_col_to_add)) {
+      
+      # select some columns to work with
       current_col <- random_col_to_add[1:num_tip, j]
+      
+      # Completely jumble the selected columns
       jumbled_tips <- sample(current_col,
                              size = length(current_col),
                              replace = FALSE)
       random_col_to_add[1:num_tip, j] <- jumbled_tips
+      
+      # Flip 10% of the bits
       flipped_tip_10p <- flip_some_tips(current_col, flip_freq = 0.10)
       flipped_to_add_10p[1:num_tip, j] <- flipped_tip_10p
       
+      # Flip 25% of the bits
       flipped_tip_25p <- flip_some_tips(current_col, flip_freq = 0.25)
       flipped_to_add_25p[1:num_tip, j] <- flipped_tip_25p
       
+      # Flip 40% of the bits
       flipped_tip_40p <- flip_some_tips(current_col, flip_freq = 0.40)
       flipped_to_add_40p[1:num_tip, j] <- flipped_tip_40p
     }
@@ -310,9 +343,12 @@ add_WN <- function(binary_AR_mat_list, tree_list) {
                                      flipped_to_add_25p, 
                                      flipped_to_add_40p)
 
+    # Remove traits found in 0, 1, N, or N-1 samples
     temp_only_tips <- binary_AR_mat_list[[i]][1:num_tip, , drop = FALSE]
-    cols_to_keep <- colSums(temp_only_tips) > 1 & colSums(temp_only_tips) < (nrow(temp_only_tips) - 1)
+    cols_to_keep <-
+      colSums(temp_only_tips) > 1 & colSums(temp_only_tips) < (nrow(temp_only_tips) - 1)
     binary_AR_mat_list[[i]] <- binary_AR_mat_list[[i]][, cols_to_keep, drop = FALSE]
+    
     # Remove duplicate columns (genotypes)
     binary_AR_mat_list[[i]] <- as.data.frame(t(unique(t(binary_AR_mat_list[[i]])))) 
     
@@ -323,8 +359,9 @@ add_WN <- function(binary_AR_mat_list, tree_list) {
   return(binary_AR_mat_list)
 }
 
+#' Flip the bits of some tips given a user provided frequency
+#' flip_freq should be between 0 and 1
 flip_some_tips <- function(numeric_vec, flip_freq = 0.10) {
-  # flip_freq between 0 and 1
   len <- length(numeric_vec)
   index <- 1:len
   indices_to_flip <- sample(index, round(len * flip_freq, 0), replace = FALSE)

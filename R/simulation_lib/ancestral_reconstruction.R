@@ -1,3 +1,4 @@
+#' Wrapper function for ancestral_reconstruction_by_ML() to run on lists
 ancestral_reconstruction <- function(AR_mat_list, tree_list, disc_or_cont){
   num_trees <- length(tree_list)
   geno_recon_and_conf_list <- rep(list(0), num_trees)
@@ -420,19 +421,10 @@ build_better_reconstruction <- function(mat, tr, disc_cont, num, recon_method){
 #' @noRd
 #'
 discretize_conf_with_cutoff <- function(confidence_vector, threshold){
-  # Check inputs ---------------------------------------------------------------
-  # check_is_number(threshold)
-  # if (!is.vector(confidence_vector)) {
-  #   stop("Input must be a numeric vector")
-  # }
-  # check_is_number(confidence_vector[1])
-
   # Function -------------------------------------------------------------------
   confidence_vector[confidence_vector  < threshold] <- 0
   confidence_vector[confidence_vector >= threshold] <- 1
 
-  # Check and return output ----------------------------------------------------
-  # check_if_binary_vector(confidence_vector)
+  # return output --------------------------------------------------------------
   return(confidence_vector)
 } # end discretize_conf_with_cutoff()
-

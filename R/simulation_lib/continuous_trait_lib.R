@@ -1,3 +1,4 @@
+#' Simulate Brownian motion and white noise phenotypes given a set of trees
 make_continuous_phenotypes <- function(tree_list, num_pheno){
   num_trees <- length(tree_list)
   pheno_mat_list_BM <- pheno_mat_list_WN <- rep(list(NULL), num_trees)
@@ -9,6 +10,8 @@ make_continuous_phenotypes <- function(tree_list, num_pheno){
     colnames(pheno_mat_list_WN[[i]]) <- paste0("WN_pheno_", 1:num_pheno)
     
     for (j in 1:num_pheno) {
+      
+      # Make Brownian motion phenotypes: 
       lamdba_not_close_to_1 <- TRUE
       
       while (lamdba_not_close_to_1) {
@@ -17,10 +20,12 @@ make_continuous_phenotypes <- function(tree_list, num_pheno){
         BM_lambda <- phytools::phylosig(tree = tree_list[[i]],
                                         x = continuous_BM_pheno,
                                         method = "lambda")
-        lamdba_not_close_to_1 <- BM_lambda$lambda < 0.95 & BM_lambda$lambda > 1.05
+        lamdba_not_close_to_1 <- 
+          BM_lambda$lambda < 0.95 & BM_lambda$lambda > 1.05
       }
 
-      # When lambda is close to zero, the phylogenetic signal is low (White Noise)
+      # Make white noise phenotypes 
+      # When lambda is close to zero, the phylogenetic signal is low (white noise)
       lambda_has_high_signal <- TRUE
       while (lambda_has_high_signal) {
         jumbled_pheno <- sample(unname(continuous_BM_pheno), 
@@ -30,7 +35,8 @@ make_continuous_phenotypes <- function(tree_list, num_pheno){
         jumbled_lambda <- phytools::phylosig(tree = tree_list[[i]],
                                              x = jumbled_pheno,
                                              method = "lambda")
-        lambda_has_high_signal <- jumbled_lambda$lambda < -0.05 & jumbled_lambda$lambda > 0.05
+        lambda_has_high_signal <- 
+          jumbled_lambda$lambda < -0.05 & jumbled_lambda$lambda > 0.05
       }
       cont_low_signal_pheno <- jumbled_pheno
       
@@ -39,7 +45,8 @@ make_continuous_phenotypes <- function(tree_list, num_pheno){
       row.names(pheno_mat_list_BM[[i]]) <- continuous_BM_pheno[, 1]
       continuous_BM_pheno <- continuous_BM_pheno[, 2, drop = FALSE]
       
-      cont_low_signal_pheno <- matrix(c(names(cont_low_signal_pheno), cont_low_signal_pheno), ncol = 2) 
+      cont_low_signal_pheno <- 
+        matrix(c(names(cont_low_signal_pheno), cont_low_signal_pheno), ncol = 2) 
       row.names(pheno_mat_list_WN[[i]]) <- cont_low_signal_pheno[, 1]
       cont_low_signal_pheno <- cont_low_signal_pheno[, 2, drop = FALSE]
       
@@ -69,16 +76,10 @@ calculate_phenotype_change_on_edge <- function(edge_list, phenotype_by_edges){
   if (max(edge_list) > nrow(phenotype_by_edges)) {
     stop("Cannot calculate phenotype change on edges.")
   }
-  # check_dimensions(phenotype_by_edges,
-  #                  exact_rows = NULL,
-  #                  min_rows = max(edge_list),
-  #                  exact_cols = NULL,
-  #                  min_cols = 2)
   if (!is.vector(edge_list)) {
     stop("edge_list must be a vector of indices of edges")
   }
-  # check_is_number(edge_list[1])
-  
+
   # Function -------------------------------------------------------------------
   delta <- rep(NA, length(unique(edge_list)))
   for (j in 1:length(edge_list)) {
@@ -95,6 +96,19 @@ calculate_phenotype_change_on_edge <- function(edge_list, phenotype_by_edges){
   return(delta)
 }
 
+#' Generate more genotypes based for the continuous data set. 
+#' 
+#' @description This makes additional genotypes by: 
+#' 1. Given a simulated genotype, jumble up the tips to various degrees
+#' 2. Make genotypes based on phenotype ranking
+#' 3. Add genotypes loosely built based on which edges the phenotype changes lot
+#'    A) Given delta phenotype for each edge, identify the edges with high delta
+#'       (3rd quartile)
+#'    B) Starting from a root value of 0 (artibrary) move down each clade and 
+#'       flip all child values when reaching a high delta edge
+#'    C) return genotype at just the tips once this procedure finishes
+#'    D) it won't be perfect b/c this isn't a reverse engineering of the
+#'       ancestral reconstruction process
 
 add_geno_continuous <- function(binary_AR_mat_list,
                                 tree_list, 
@@ -144,24 +158,30 @@ add_geno_continuous <- function(binary_AR_mat_list,
     for (k in 1:num_pheno) {
       # BM
       temp_BM_matrix <- cont_pheno_BM_mat_list[[i]][, k, drop = FALSE]
-      geno_like_BM_pheno <- make_rank_based_geno_mat(temp_BM_matrix, tree_list[[i]])
+      geno_like_BM_pheno <- 
+        make_rank_based_geno_mat(temp_BM_matrix, tree_list[[i]])
         
       # WN
       temp_WN_matrix <- cont_pheno_WN_mat_list[[i]][, k, drop = FALSE]
-      geno_like_WN_pheno <- make_rank_based_geno_mat(temp_WN_matrix, tree_list[[i]])
+      geno_like_WN_pheno <- 
+        make_rank_based_geno_mat(temp_WN_matrix, tree_list[[i]])
       
       rank_based_genos <- cbind(geno_like_BM_pheno, geno_like_WN_pheno)
     }
 
     # Add fake ancestral reconstructions to genotypes based on phenotype ranking
-    rank_based_genos <- rbind(rank_based_genos, 
-                                   matrix(0, nrow = num_node, ncol = ncol(rank_based_genos)))
+    rank_based_genos <-
+      rbind(rank_based_genos, 
+            matrix(0, nrow = num_node, ncol = ncol(rank_based_genos)))
     
     # 3. Add genotypes loosely built based on which edges the phenotype changes lot
-    #    A) Given delta phenotype for each edge, identify the edges with high delta (3rd quartile)
-    #    B) Starting from a root value of 0 (artibrary) move down each clade and flip all child values when reaching a high delta edge
+    #    A) Given delta phenotype for each edge, identify the edges with high 
+    #       delta (3rd quartile)
+    #    B) Starting from a root value of 0 (artibrary) move down each clade and 
+    #       flip all child values when reaching a high delta edge
     #    C) return genotype at just the tips once this procedure finishes
-    #    D) it won't be perfect b/c this isn't a reverse engineering of the ancesral reconstruction process
+    #    D) it won't be perfect b/c this isn't a reverse engineering of the 
+    #       ancestral reconstruction process
     
     pheno_delta_based_genos <- matrix(NA, nrow = num_tip, ncol = 0)
     for (k in 1:num_pheno) {
@@ -181,8 +201,9 @@ add_geno_continuous <- function(binary_AR_mat_list,
     }
     
     # Add fake ancestral reconstructions to genotypes based on phenotype deltas
-    pheno_delta_based_genos <- rbind(pheno_delta_based_genos, 
-                              matrix(0, nrow = num_node, ncol = ncol(pheno_delta_based_genos)))
+    pheno_delta_based_genos <-
+      rbind(pheno_delta_based_genos, 
+            matrix(0, nrow = num_node, ncol = ncol(pheno_delta_based_genos)))
     
     binary_AR_mat_list[[i]] <- cbind(binary_AR_mat_list[[i]],
                                      random_col_to_add,
@@ -242,7 +263,7 @@ calculate_phenotype_change_on_edge <- function(edge_list, phenotype_by_edges){
   return(delta)
 }
                   
-# For constructing a genotype from root to tip, based on phenotype changes
+#' For constructing a genotype from root to tip, based on phenotype changes
 construct_geno_from_pheno <- function(tree, delta_pheno_vec) {
   tips <- ape::Ntip(tree)
   num_edge <- ape::Nedge(tree)
@@ -273,7 +294,7 @@ construct_geno_from_pheno <- function(tree, delta_pheno_vec) {
   return(geno_at_tips)
 }
 
-# make a rank based genotype (sweep all possible values divisions based on rank)
+#' Make a rank based genotype (sweep all possible values divisions based on rank)
 make_rank_based_geno_mat <- function(pheno_vec, tree) {
   num_tips <- ape::Ntip(tree)
   geno_mat <- matrix(rank(pheno_vec), nrow = num_tips, ncol = 2 * num_tips)

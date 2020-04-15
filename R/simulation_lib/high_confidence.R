@@ -27,9 +27,10 @@ assign_high_confidence_to_transition_edges <- function(all_confidence_by_edge,
 
   # Return output --------------------------------------------------------------
   return(edge_confident_and_trans_edge)
-} # end assign_high_confidence_to_transition_edges()
+} 
 
-
+#' This is a wrapper function for prepare_high_confidence_objects()
+#' @noRd
 prepare_high_confidence_objects_lists <- function(genotype_trans_by_edge_mat_list,
                                                   tree_list,
                                                   phenotype_conf_by_edge_mat_list,
@@ -50,21 +51,29 @@ prepare_high_confidence_objects_lists <- function(genotype_trans_by_edge_mat_lis
 
     # convert matrices to lists of vectors
     geno_conf_edge <- geno_conf_edge_mat_list[[i]]
-    geno_conf_edge <- tapply(geno_conf_edge, rep(1:ncol(geno_conf_edge), each = nrow(geno_conf_edge)), function(i) i)
+    geno_conf_edge <- tapply(geno_conf_edge, 
+                             rep(1:ncol(geno_conf_edge),
+                                 each = nrow(geno_conf_edge)), 
+                             function(i) i)
 
     geno_recon_edge <- geno_recon_edge_mat_list[[i]]
-    geno_recon_edge <- tapply(geno_recon_edge, rep(1:ncol(geno_recon_edge), each = nrow(geno_recon_edge)), function(i) i)
+    geno_recon_edge <- tapply(geno_recon_edge,
+                              rep(1:ncol(geno_recon_edge), 
+                                  each = nrow(geno_recon_edge)), 
+                              function(i) i)
 
     for (j in 1:num_pheno) {
-      temp_pheno_conf_by_edge_vec <- phenotype_conf_by_edge_mat_list[[i]][, j, drop = TRUE]
-      mini_results[[j]] <- prepare_high_confidence_objects(genotype_transition,
-                                                           tree,
-                                                           temp_pheno_conf_by_edge_vec,
-                                                           boot_threshold,
-                                                           geno_mat,
-                                                           geno_conf_edge,
-                                                           geno_recon_edge,
-                                                           snps_in_each_gene)
+      temp_pheno_conf_by_edge_vec <-
+        phenotype_conf_by_edge_mat_list[[i]][, j, drop = TRUE]
+      mini_results[[j]] <- 
+        prepare_high_confidence_objects(genotype_transition,
+                                        tree,
+                                        temp_pheno_conf_by_edge_vec,
+                                        boot_threshold,
+                                        geno_mat,
+                                        geno_conf_edge,
+                                        geno_recon_edge,
+                                        snps_in_each_gene)
       
     }
     overall_results[[i]] <- mini_results
@@ -185,6 +194,7 @@ prepare_high_confidence_objects <- function(genotype_transition,
   return(results)
 } # end prepare_high_confidence_objects()
 
+#' Wrapper function for reorder_tip_and_node_to_edge() to work on lists
 reorder_tip_and_node_to_edge_lists <- function(geno_conf_mat_list, tree_list) {
   num_mat <- length(geno_conf_mat_list)
   geno_conf_by_edges_mat_list <- rep(list(0), num_mat)
@@ -192,13 +202,17 @@ reorder_tip_and_node_to_edge_lists <- function(geno_conf_mat_list, tree_list) {
     tree <- tree_list[[i]]
     num_edge <- ape::Nedge(tree)
     num_geno <- ncol(geno_conf_mat_list[[i]])
-    geno_conf_by_edges_mat_list[[i]] <- matrix(NA, nrow = num_edge, ncol = num_geno)
+    geno_conf_by_edges_mat_list[[i]] <- 
+      matrix(NA, nrow = num_edge, ncol = num_geno)
     for (k in 1:num_geno) {
-      temp_column <- reorder_tip_and_node_to_edge(unname(geno_conf_mat_list[[i]][, k, drop = TRUE]), tree)
+      temp_column <- 
+        reorder_tip_and_node_to_edge(unname(geno_conf_mat_list[[i]][, k, drop = TRUE]),
+                                     tree)
       geno_conf_by_edges_mat_list[[i]][, k] <- temp_column
     }
     colnames(geno_conf_by_edges_mat_list[[i]]) <- colnames(geno_conf_mat_list[[i]])
-    row.names(geno_conf_by_edges_mat_list[[i]]) <- paste0("edge", 1:nrow(geno_conf_by_edges_mat_list[[i]]))
+    row.names(geno_conf_by_edges_mat_list[[i]]) <- 
+      paste0("edge", 1:nrow(geno_conf_by_edges_mat_list[[i]]))
   }
   return(geno_conf_by_edges_mat_list)
 }
@@ -255,7 +269,8 @@ convert_conf_obj_to_conf_mat <- function(conf_obj) {
     num_pheno <- length(conf_obj[[i]])
     conf_mat <- rep(list(NULL), num_pheno)
     for (j in 1:num_pheno) {
-      conf_mat[[j]] <- list_to_matrix_columns(conf_obj[[i]][[j]]$high_conf_ordered_by_edges)
+      conf_mat[[j]] <-
+        list_to_matrix_columns(conf_obj[[i]][[j]]$high_conf_ordered_by_edges)
     }
     big_conf_mat_list[[i]] <- conf_mat
   }

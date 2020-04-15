@@ -1,3 +1,5 @@
+# This function writes the .sbat file needed to calculate the Spearman's rank 
+# correlation coefficient for -log(p) vs. epsilon for each hogwash run.
 write_spearman_sbat <- function(path) {
   writeLines(c("#!/bin/sh",
                paste0("#SBATCH --job-name=spearman_sim_data"),
@@ -6,7 +8,7 @@ write_spearman_sbat <- function(path) {
                "#SBATCH --mail-type=END",
                "#SBATCH --export=ALL",
                "#SBATCH --partition=standard",
-               "#SBATCH --account=esnitkin1",
+               "#SBATCH --account=ACCOUNT_NAME",
                "#SBATCH --nodes=1 --ntasks=1 --cpus-per-task=1 --mem=8G --time=00:30:00",
                "cd $SLURM_SUBMIT_DIR",
                "echo $SLURM_SUBMIT_DIR",

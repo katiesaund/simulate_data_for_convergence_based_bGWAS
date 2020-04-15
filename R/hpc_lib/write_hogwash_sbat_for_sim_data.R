@@ -1,6 +1,4 @@
-# Katie Saund
-# 
-# Write sbat scripts for hogwash on simulated data. 
+# Write sbat scripts to run hogwash on simulated data. 
 write_hogwash_sbat_for_sim <- function(num_tree, num_pheno, path) {
   data_dir <- "../data/"
   perm <- 100000
@@ -39,7 +37,7 @@ write_hogwash_sbat_for_sim <- function(num_tree, num_pheno, path) {
                    "#SBATCH --mail-type=END",
                    "#SBATCH --export=ALL",
                    "#SBATCH --partition=standard",
-                   "#SBATCH --account=esnitkin1",
+                   "#SBATCH --account=ACCOUNT_NAME",
                    paste0("#SBATCH --nodes=1 --ntasks=1 --cpus-per-task=1 --mem=", memory, " --time=", time),
                    "cd $SLURM_SUBMIT_DIR",
                    "echo $SLURM_SUBMIT_DIR",
@@ -74,7 +72,7 @@ write_hogwash_sbat_for_sim <- function(num_tree, num_pheno, path) {
                    "#SBATCH --mail-type=END",
                    "#SBATCH --export=ALL",
                    "#SBATCH --partition=standard",
-                   "#SBATCH --account=esnitkin1",
+                   "#SBATCH --account=ACCOUNT_NAME",
                    paste0("#SBATCH --nodes=1 --ntasks=1 --cpus-per-task=1 --mem=", memory, " --time=", time),
                    "cd $SLURM_SUBMIT_DIR",
                    "echo $SLURM_SUBMIT_DIR",
@@ -110,7 +108,7 @@ write_hogwash_sbat_for_sim <- function(num_tree, num_pheno, path) {
                    "#SBATCH --mail-type=END",
                    "#SBATCH --export=ALL",
                    "#SBATCH --partition=standard",
-                   "#SBATCH --account=esnitkin1",
+                   "#SBATCH --account=ACCOUNT_NAME",
                    paste0("#SBATCH --nodes=1 --ntasks=1 --cpus-per-task=1 --mem=", memory, " --time=", time),
                    "cd $SLURM_SUBMIT_DIR",
                    "echo $SLURM_SUBMIT_DIR",
@@ -146,7 +144,7 @@ write_hogwash_sbat_for_sim <- function(num_tree, num_pheno, path) {
                    "#SBATCH --mail-type=END",
                    "#SBATCH --export=ALL",
                    "#SBATCH --partition=standard",
-                   "#SBATCH --account=esnitkin1",
+                   "#SBATCH --account=ACCOUNT_NAME",
                    paste0("#SBATCH --nodes=1 --ntasks=1 --cpus-per-task=1 --mem=", memory, " --time=", time),
                    "cd $SLURM_SUBMIT_DIR",
                    "echo $SLURM_SUBMIT_DIR",
@@ -181,7 +179,7 @@ write_hogwash_sbat_for_sim <- function(num_tree, num_pheno, path) {
                    "#SBATCH --mail-type=END",
                    "#SBATCH --export=ALL",
                    "#SBATCH --partition=standard",
-                   "#SBATCH --account=esnitkin1",
+                   "#SBATCH --account=ACCOUNT_NAME",
                    paste0("#SBATCH --nodes=1 --ntasks=1 --cpus-per-task=1 --mem=", memory, " --time=", time),
                    "cd $SLURM_SUBMIT_DIR",
                    "echo $SLURM_SUBMIT_DIR",
@@ -215,7 +213,7 @@ write_hogwash_sbat_for_sim <- function(num_tree, num_pheno, path) {
                    "#SBATCH --mail-type=END",
                    "#SBATCH --export=ALL",
                    "#SBATCH --partition=standard",
-                   "#SBATCH --account=esnitkin1",
+                   "#SBATCH --account=ACCOUNT_NAME",
                    paste0("#SBATCH --nodes=1 --ntasks=1 --cpus-per-task=1 --mem=", memory, " --time=", time),
                    "cd $SLURM_SUBMIT_DIR",
                    "echo $SLURM_SUBMIT_DIR",

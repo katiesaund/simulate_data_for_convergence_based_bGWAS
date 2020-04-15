@@ -1,3 +1,5 @@
+# This function writes the two .sbat files necessary to simulate the trees, 
+# phenotypes, and genotypes. 
 write_simulate_sbat <- function(num_tree, num_pheno, num_tip, num_geno, path) {
   writeLines(c("#!/bin/sh",
                paste0("#SBATCH --job-name=sim_disc_data"),
@@ -6,7 +8,7 @@ write_simulate_sbat <- function(num_tree, num_pheno, num_tip, num_geno, path) {
                "#SBATCH --mail-type=END",
                "#SBATCH --export=ALL",
                "#SBATCH --partition=standard",
-               "#SBATCH --account=esnitkin1",
+               "#SBATCH --account=ACCOUNT_NAME",
                "#SBATCH --nodes=1 --ntasks=1 --cpus-per-task=1 --mem=40G --time=24:00:00",
                "cd $SLURM_SUBMIT_DIR",
                "echo $SLURM_SUBMIT_DIR",
@@ -28,7 +30,7 @@ write_simulate_sbat <- function(num_tree, num_pheno, num_tip, num_geno, path) {
                "#SBATCH --mail-type=END",
                "#SBATCH --export=ALL",
                "#SBATCH --partition=standard",
-               "#SBATCH --account=esnitkin1",
+               "#SBATCH --account=ACCOUNT_NAME",
                "#SBATCH --nodes=1 --ntasks=1 --cpus-per-task=1 --mem=22G --time=24:00:00",
                "cd $SLURM_SUBMIT_DIR",
                "echo $SLURM_SUBMIT_DIR",

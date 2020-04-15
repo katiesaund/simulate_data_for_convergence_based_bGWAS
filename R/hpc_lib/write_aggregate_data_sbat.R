@@ -9,7 +9,7 @@ write_aggregate_data_sbat <- function(num_tree, num_pheno, path) {
                "#SBATCH --mail-type=END",
                "#SBATCH --export=ALL",
                "#SBATCH --partition=standard",
-               "#SBATCH --account=esnitkin1",
+               "#SBATCH --account=ACCOUNT_NAME",
                "#SBATCH --nodes=1 --ntasks=1 --cpus-per-task=1 --mem=10G --time=7:00:00",
                "cd $SLURM_SUBMIT_DIR",
                "echo $SLURM_SUBMIT_DIR",

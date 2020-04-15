@@ -7,7 +7,7 @@ write_resource_usage_sbat <- function(path) {
                "#SBATCH --export=ALL",
                "#SBATCH --partition=standard",
                "#SBATCH --account=esnitkin1",
-               "#SBATCH --nodes=1 --ntasks=1 --cpus-per-task=1 --mem=0.1G --time=00:10:00",
+               "#SBATCH --nodes=1 --ntasks=1 --cpus-per-task=1 --mem=100M --time=00:10:00",
                "cd $SLURM_SUBMIT_DIR",
                "echo $SLURM_SUBMIT_DIR",
                "echo $SLURM_JOB_ID",

@@ -44,6 +44,13 @@ These simulated data are being created to specifically benchmark the performance
       - `simulated_discrete_pheno_WN_tree_NUMBER_pheno_NUMBER_phyc_convergence.RData`
       - `simulated_continuous_convergence_summary.RData`
       - `simulated_discrete_convergence_summary.RData`
+      - These summary files contain information about the: 
+        - intersection: pheno_beta intersection geno_beta
+        - num_hi_conf_edges: number of high confidence tree edges
+        - pheno_beta: beta(phenotype} value
+        - geno_beta: beta(genotype) value
+        - epsilon: epsilon value
+        - genotype: genotype name
       
 - Run hogwash on the simulated data
   - Install the hogwash package to your computer. 

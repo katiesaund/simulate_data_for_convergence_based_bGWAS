@@ -37,6 +37,14 @@ These simulated data are being created to specifically benchmark the performance
       - `simulated_continuous_pheno_BM_tree_NUMBER_pheno_NUMBER.tsv`
       - `simulated_discrete_pheno_WN_tree_NUMBER_pheno_NUMBER.tsv`
       - `simulated_discrete_pheno_WN_tree_NUMBER_pheno_NUMBER.tsv`
+    - Convergence summary files: 
+      - `simulated_continuous_pheno_BM_tree_NUMBER_pheno_NUMBER_cont_convergence.RData`
+      - `simulated_continuous_pheno_WN_tree_NUMBER_pheno_NUMBER_cont_convergence.RData`
+      - `simulated_discrete_pheno_BM_tree_NUMBER_pheno_NUMBER_phyc_convergence.RData`
+      - `simulated_discrete_pheno_WN_tree_NUMBER_pheno_NUMBER_phyc_convergence.RData`
+      - `simulated_continuous_convergence_summary.RData`
+      - `simulated_discrete_convergence_summary.RData`
+      
 - Run hogwash on the simulated data
   - Install the hogwash package to your computer. 
     ```

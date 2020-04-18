@@ -13,7 +13,7 @@ rel_path <- args[5]
 source(paste0(rel_path, "/simulate_data_for_convergence_based_bGWAS/R/simulation_lib/tree.R"))
 source(paste0(rel_path, "/simulate_data_for_convergence_based_bGWAS/R/simulation_lib/discrete_trait_lib.R"))
 source(paste0(rel_path, "/simulate_data_for_convergence_based_bGWAS/R/simulation_lib/transition_edges.R"))
-source(paste0(rel_path, "/simulate_data_for_convergence_based_bGWAS/R/simulation_lib/gamma.R"))
+source(paste0(rel_path, "/simulate_data_for_convergence_based_bGWAS/R/simulation_lib/convergence.R"))
 source(paste0(rel_path, "/simulate_data_for_convergence_based_bGWAS/R/simulation_lib/save_data.R"))
 source(paste0(rel_path, "/simulate_data_for_convergence_based_bGWAS/R/simulation_lib/keep_interesting_genotypes.R"))
 source(paste0(rel_path, "/simulate_data_for_convergence_based_bGWAS/R/simulation_lib/ancestral_reconstruction.R"))

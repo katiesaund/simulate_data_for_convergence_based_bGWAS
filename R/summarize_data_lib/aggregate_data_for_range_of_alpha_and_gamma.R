@@ -57,7 +57,7 @@ column_names <- c("phenotype_type",
                   "num_geno", 
                   "alpha_threshold",
                   "epsilon_threshold",
-                  "observed_gamma_value", 
+                  "observed_intersection", 
                   "observed_delta_epsilon", 
                   "observed_mean_pheno_beta", 
                   "observed_mean_geno_beta", 
@@ -115,13 +115,12 @@ for (h in 1:length(pheno_index)) {
           hogwash_results <- local(get(load(current_file_name)))
           pvals <- rownames_to_column(hogwash_results$hit_pvals, 
                                       var = "genotype") 
-          pvals_epsilon_tb <- cbind(pvals, hogwash_results$gamma$epsilon)
+          pvals_epsilon_tb <- cbind(pvals, hogwash_results$convergence$epsilon)
           colnames(pvals_epsilon_tb) <- 
             c("genotype", "fdr_corrected_pvals", "epsilon")
           
-          gamma_value <- hogwash_results$gamma$gamma_avg
-          mean_beta_pheno <- mean(hogwash_results$gamma$pheno_beta)
-          mean_beta_geno <- mean(hogwash_results$gamma$geno_beta)
+          mean_beta_pheno <- mean(hogwash_results$convergence$pheno_beta)
+          mean_beta_geno <- mean(hogwash_results$convergence$geno_beta)
           pheno_presence <- pheno_absence <- NULL 
           for (p in 1:length(hogwash_results$contingency_table)) {
             pheno_presence <- c(pheno_presence, sum(hogwash_results$contingency_table[[p]][, 1]))
@@ -181,7 +180,6 @@ for (h in 1:length(pheno_index)) {
               discrete_f1_tb$false_negative[current_disc_row] <- big_tb$false_negative <- false_negative
               discrete_f1_tb$false_positive[current_disc_row] <- big_tb$false_positive <- false_positive
               discrete_f1_tb$num_geno[current_disc_row] <- big_tb$num_geno <- nrow(pvals_epsilon_tb)
-              discrete_f1_tb$observed_gamma_value[current_disc_row] <- big_tb$observed_gamma_value <- gamma_value
               discrete_f1_tb$recall[current_disc_row] <- big_tb$recall <- recall
               discrete_f1_tb$precision[current_disc_row] <- big_tb$precision <- precision
               discrete_f1_tb$false_positive_rate[current_disc_row] <- big_tb$false_positive_rate <- false_positive_rate
@@ -226,13 +224,12 @@ for (h in 1:length(pheno_index)) {
           hogwash_results <- local(get(load(current_file_name)))
           pvals <- rownames_to_column(hogwash_results$hit_pvals, 
                                       var = "genotype") 
-          pvals_epsilon_tb <- cbind(pvals, hogwash_results$gamma$epsilon)
+          pvals_epsilon_tb <- cbind(pvals, hogwash_results$convergence$epsilon)
           colnames(pvals_epsilon_tb) <- 
             c("genotype", "fdr_corrected_pvals", "epsilon")
           
-          gamma_value <- hogwash_results$gamma$gamma_avg
-          mean_beta_pheno <- mean(hogwash_results$gamma$pheno_beta)
-          mean_beta_geno <- mean(hogwash_results$gamma$geno_beta)
+          mean_beta_pheno <- mean(hogwash_results$convergence$pheno_beta)
+          mean_beta_geno <- mean(hogwash_results$convergence$geno_beta)
           hogwash_results <- NULL
           for (p in 1:length(alphas)) {
             for (q in 1:length(epsilons)) {
@@ -282,7 +279,6 @@ for (h in 1:length(pheno_index)) {
               continuous_f1_tb$false_negative[current_cont_row] <- big_tb$false_negative <- false_negative
               continuous_f1_tb$false_positive[current_cont_row] <- big_tb$false_positive <- false_positive
               continuous_f1_tb$num_geno[current_cont_row] <- big_tb$num_geno <- nrow(pvals_epsilon_tb)
-              continuous_f1_tb$observed_gamma_value[current_cont_row] <- big_tb$observed_gamma_value <- gamma_value
               continuous_f1_tb$recall[current_cont_row] <- big_tb$recall <- recall
               continuous_f1_tb$precision[current_cont_row] <- big_tb$precision <- precision
               continuous_f1_tb$false_positive_rate[current_cont_row] <- big_tb$false_positive_rate <- false_positive_rate
@@ -313,29 +309,29 @@ discrete_f1_tb_and_geno <- discrete_f1_tb_and_geno %>% filter(!is.na(phenotype_t
 
 # Save output ----
 write_tsv(discrete_f1_tb,
-          path = "../data/aggregated_hogwash_data_range_of_alpha_gamma_discrete.tsv",
+          path = "../data/aggregated_hogwash_data_range_of_alpha_epsilon_discrete.tsv",
           col_names = TRUE)
 
 write_tsv(discrete_f1_tb_and_geno,
-          path = "../data/aggregated_hogwash_data_by_genotype_range_of_alpha_gamma_discrete.tsv",
+          path = "../data/aggregated_hogwash_data_by_genotype_range_of_alpha_epsilon_discrete.tsv",
           col_names = TRUE)
 
 write_tsv(continuous_f1_tb,
-          path = "../data/aggregated_hogwash_data_range_of_alpha_gamma_continuous.tsv",
+          path = "../data/aggregated_hogwash_data_range_of_alpha_epsilon_continuous.tsv",
           col_names = TRUE)
 
 write_tsv(continuous_f1_tb_and_geno,
-          path = "../data/aggregated_hogwash_data_by_genotype_range_of_alpha_gamma_continuous.tsv",
+          path = "../data/aggregated_hogwash_data_by_genotype_range_of_alpha_epsilon_continuous.tsv",
           col_names = TRUE)
 
 combined_f1_tb_and_geno <- rbind(discrete_f1_tb_and_geno, continuous_f1_tb_and_geno)
 combined_f1_tb <- rbind(discrete_f1_tb, continuous_f1_tb)
 
 write_tsv(combined_f1_tb,
-          path = "../data/aggregated_hogwash_data_range_of_alpha_gamma_combined.tsv",
+          path = "../data/aggregated_hogwash_data_range_of_alpha_epsilon_combined.tsv",
           col_names = TRUE)
 
 write_tsv(combined_f1_tb_and_geno,
-          path = "../data/aggregated_hogwash_data_by_genotype_range_of_alpha_gamma_combined.tsv",
+          path = "../data/aggregated_hogwash_data_by_genotype_range_of_alpha_epsilon_combined.tsv",
           col_names = TRUE)
 

@@ -40,10 +40,7 @@ calc_phyc_gamma_list <- function(tree_list,
 #'  == number of genotypes. Length of individual vectors within == Nedge(tree).
 #'  Individual vectors are binary.
 #' @return results. List of three objects:
-#'   $gamma_avg Numeric. Average gamma value of all genotypes. A single value.
-#'   $gamma_percent Numeric vector. Gamma value for each genotype. Length ==
-#'     number of genotypes.
-#'  $gamma_count Numeric vector. Raw gamma value for each genotype. Length ==
+#'  $intersection Numeric vector. Raw gamma value for each genotype. Length ==
 #'    number of genotypes.
 #' @noRd
 #'
@@ -51,7 +48,7 @@ calculate_phyc_gamma <- function(geno_names,
                                  geno_trans_edge_list,
                                  pheno_recon_vec,
                                  high_conf_edge_list){
-  epsilon <- geno_beta <- pheno_beta <- gamma_count <- gamma_percent <-
+  epsilon <- geno_beta <- pheno_beta <- intersection <- 
     rep(0, length(geno_trans_edge_list))
 
   for (i in 1:length(geno_trans_edge_list)) {
@@ -59,19 +56,15 @@ calculate_phyc_gamma <- function(geno_names,
       sum(pheno_recon_vec == 1 &
             geno_trans_edge_list[[i]]$transition == 1 &
             high_conf_edge_list[[i]] == 1)
-    gamma_count[i] <- pheno_1_geno_0_to_1
-    gamma_percent[i] <- gamma_count[i] / sum(high_conf_edge_list[[i]])
+    intersection[i] <- pheno_1_geno_0_to_1
     geno_beta[i] <- sum(geno_trans_edge_list[[i]]$transition == 1 &
                           high_conf_edge_list[[i]] == 1)
     pheno_beta[i] <- sum(pheno_recon_vec == 1 & high_conf_edge_list[[i]] == 1)
 
-    epsilon[i] <- (2 * gamma_count[i]) / (pheno_beta[i] + geno_beta[i])
+    epsilon[i] <- (2 * intersection[i]) / (pheno_beta[i] + geno_beta[i])
   }
-  gamma_avg <- mean(gamma_percent)
   num_hi_conf_edges <- unlist(lapply(high_conf_edge_list, sum))
-  results <- list("gamma_avg" = gamma_avg,
-                  "gamma_percent" = gamma_percent,
-                  "gamma_count" = gamma_count,
+  results <- list("intersection" = intersection,
                   "num_hi_conf_edges" = num_hi_conf_edges,
                   "pheno_beta" = pheno_beta,
                   "geno_beta" = geno_beta,
@@ -131,10 +124,7 @@ calc_sync_gamma_list <- function(tree_list,
 #'  Individual vectors are binary.
 #'
 #' @return results. List of three objects:
-#'   $gamma_avg Numeric. Average gamma value of all genotypes. A single value.
-#'   $gamma_percent Numeric vector. Gamma value for each genotype. Length ==
-#'     number of genotypes.
-#'  $gamma_count Numeric vector. Raw gamma value for each genotype. Length ==
+#'  $intersection Numeric vector. Raw gamma value for each genotype. Length ==
 #'    number of genotypes.
 #' @noRd
 #'
@@ -142,7 +132,7 @@ calculate_synchronous_gamma <- function(geno_names,
                                         geno_trans_edge_list,
                                         pheno_trans_vec,
                                         high_conf_edge_list){
-  epsilon <- geno_beta <- gamma_count <- gamma_percent <- pheno_beta <-
+  epsilon <- geno_beta <- intersection <- gamma_percent <- pheno_beta <-
     rep(0, length(geno_trans_edge_list))
 
   for (i in 1:length(geno_trans_edge_list)) {
@@ -150,19 +140,15 @@ calculate_synchronous_gamma <- function(geno_names,
       sum(pheno_trans_vec$transition == 1 &
             geno_trans_edge_list[[i]]$transition == 1 &
             high_conf_edge_list[[i]] == 1)
-    gamma_count[i] <- pheno_trans_and_geno_trans
-    gamma_percent[i] <- gamma_count[i] / sum(high_conf_edge_list[[i]])
+    intersection[i] <- pheno_trans_and_geno_trans
     geno_beta[i] <- sum(geno_trans_edge_list[[i]]$transition == 1 &
                           high_conf_edge_list[[i]] == 1)
     pheno_beta[i] <-
       sum(pheno_trans_vec$transition == 1 & high_conf_edge_list[[i]] == 1)
-    epsilon[i] <- (2 * gamma_count[i]) / (pheno_beta[i] + geno_beta[i])
+    epsilon[i] <- (2 * intersection[i]) / (pheno_beta[i] + geno_beta[i])
   }
-  gamma_avg <- mean(gamma_percent)
   num_hi_conf_edges <- unlist(lapply(high_conf_edge_list, sum))
-  results <- list("gamma_avg" = gamma_avg,
-                  "gamma_percent" = gamma_percent,
-                  "gamma_count" = gamma_count,
+  results <- list("intersection" = intersection,
                   "num_hi_conf_edges" = num_hi_conf_edges,
                   "pheno_beta" = pheno_beta,
                   "geno_beta" = geno_beta,
@@ -214,10 +200,7 @@ calc_cont_gamma_list <- function(tree_list,
 #'  Individual vectors are binary.
 #'
 #' @return results. List of three objects:
-#'   $gamma_avg Numeric. Average gamma value of all genotypes. A single value.
-#'   $gamma_percent Numeric vector. Gamma value for each genotype. Length ==
-#'     number of genotypes.
-#'  $gamma_count Numeric vector. Raw gamma value for each genotype. Length ==
+#'  $intersection Numeric vector. Raw gamma value for each genotype. Length ==
 #'    number of genotypes.
 #'    # TODO THIS LIST IT TOO SHORT
 #' @noRd
@@ -254,7 +237,7 @@ calculate_continuous_gamma <- function(pheno_recon_mat,
   }
   
   pheno_beta <-
-    epsilon <- geno_beta <- gamma_count <- gamma_percent <- rep(0, num_geno)
+    epsilon <- geno_beta <- intersection <- gamma_percent <- rep(0, num_geno)
   
   for (i in 1:num_geno) {
     scaled_pheno <- rescale(pheno_delta[[i]], to = c(0, 1))
@@ -263,20 +246,16 @@ calculate_continuous_gamma <- function(pheno_recon_mat,
     
     geno_beta[i] <- sum(geno_trans_edge_list[[i]]$transition == 1 &
                           high_conf_edge_list[[i]] == 1)
-    gamma_count[i] <- 
+    intersection[i] <- 
       sum(
         (scaled_pheno * (1 * (high_conf_edge_list[[i]] == 1))) *
           (geno_trans_edge_list[[i]]$transition == 1 &
              high_conf_edge_list[[i]] == 1))
-    gamma_percent[i] <- gamma_count[i] / sum(high_conf_edge_list[[i]])
     epsilon[i] <- 
-      gamma_count[i] / (geno_beta[i] + pheno_beta[i] - gamma_count[i])
+      intersection[i] / (geno_beta[i] + pheno_beta[i] - intersection[i])
   }
-  gamma_avg <- mean(gamma_percent)
   num_hi_conf_edges <- unlist(lapply(high_conf_edge_list, sum))
-  results <- list("gamma_avg" = gamma_avg,
-                  "gamma_percent" = gamma_percent,
-                  "gamma_count" = gamma_count,
+  results <- list("intersection" = intersection,
                   "num_hi_conf_edges" = num_hi_conf_edges,
                   "pheno_beta" = pheno_beta,
                   "geno_beta" = geno_beta,

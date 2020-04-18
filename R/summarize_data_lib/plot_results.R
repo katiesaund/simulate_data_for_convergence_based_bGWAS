@@ -2,7 +2,7 @@ library(tidyverse)
 library(gridExtra)
 
 df <- 
-  read_tsv(file = "../data/aggregated_hogwash_data_by_genotype_range_of_alpha_gamma_combined.tsv",
+  read_tsv(file = "../data/aggregated_hogwash_data_by_genotype_range_of_alpha_epsilon_combined.tsv",
            col_names = TRUE)
 
 df$phenotype_id <- paste0("pheno_", df$phenotype_id)
@@ -280,22 +280,6 @@ df %>%
   xlab("Epsilon Threshold") + 
   ylab("False Negative Rate")
 ggsave("../figures/FNR_vs_epsilon_line_plot.pdf", height = 6, width = 8.5, units = "in")
-
-# observed gamma_value
-# Save as line plots
-df %>% 
-  filter(alpha_threshold < 3) %>% 
-  select(observed_gamma_value, epsilon, phenotype_phylogenetic_signal, test) %>%
-  filter(!is.na(observed_gamma_value)) %>% 
-  group_by(phenotype_phylogenetic_signal, test) %>% 
-  mutate(g_median = median(observed_gamma_value), e_median = median(epsilon)) %>% 
-  ggplot(mapping = aes(x = g_median, y = e_median, shape = phenotype_phylogenetic_signal, col = test)) +  
-  geom_point() + 
-  theme_bw() + 
-  labs(title = "Median Gamma vs Median Epsilon by group") + 
-  xlab("Median Epsilon") + 
-  ylab("Median Gamma")
-ggsave("../figures/Median_gamma_vs_median_epsilon_dot_plot.pdf", height = 6, width = 8.5, units = "in")
 
 # Save as line plots
 df %>% 

@@ -6,26 +6,26 @@
 #'   beta(genotype) & beta(phenotype) value pair. The hope is to reduce the size
 #'   of the dataset while maintaining the diversity of the dataset.
 #'
-#' @param gamma_list Gamme values
+#' @param convergence_list Convergence values
 #' @param bin_size Integer
 #'
 #' @return
 #' @noRd
-keep_good_genotypes <- function(gamma_list, bin_size){
+keep_good_genotypes <- function(convergence_list, bin_size){
 
   # Initialize list of genotypes to keep 
   keepers <- list()
-  num_trees <- length(gamma_list)
+  num_trees <- length(convergence_list)
   
   for (i in 1:num_trees) {
-    num_pheno <- length(gamma_list[[i]])
+    num_pheno <- length(convergence_list[[i]])
     temp_keepers <- list()
     
     for (j in 1:num_pheno) {
       current_index <- NULL
-      num_geno <- length(gamma_list[[i]][[j]]$geno_beta)
-      unique_geno_beta <- unique(gamma_list[[i]][[j]]$geno_beta)
-      unique_pheno_beta <- unique(gamma_list[[i]][[j]]$pheno_beta)
+      num_geno <- length(convergence_list[[i]][[j]]$geno_beta)
+      unique_geno_beta <- unique(convergence_list[[i]][[j]]$geno_beta)
+      unique_pheno_beta <- unique(convergence_list[[i]][[j]]$pheno_beta)
       
       for (k in 1:length(unique_geno_beta)) {
         
@@ -33,8 +33,8 @@ keep_good_genotypes <- function(gamma_list, bin_size){
           
           # Find the indices of the genotypes inside this beta value bin
           temp_index <- 
-            which(gamma_list[[i]][[j]]$geno_beta == unique_geno_beta[k] &
-                    gamma_list[[i]][[j]]$pheno_beta == unique_pheno_beta[l])
+            which(convergence_list[[i]][[j]]$geno_beta == unique_geno_beta[k] &
+                    convergence_list[[i]][[j]]$pheno_beta == unique_pheno_beta[l])
           if (length(temp_index) > bin_size) {
             temp_index <- temp_index[1:bin_size]
           }

@@ -85,4 +85,4 @@ These simulated data are being created to specifically benchmark the performance
     - `Fig_5C_pval_vs_epsilon_dot_plot_only_continuous.pdf`   
   
 ## Questions or bugs? 
-Please see the hogwash methods preprint (to be released soon) for more details on the data simulation process. Feel free to contact me at katiephd@umich.edu or open an issue here on github. 
+Please see the hogwash methods preprint (to be released soon) for more details on the data simulation process. Feel free to contact me at katiephd@umich.edu or [open an issue here on github](https://github.com/katiesaund/simulate_data_for_convergence_based_bGWAS/issues). 

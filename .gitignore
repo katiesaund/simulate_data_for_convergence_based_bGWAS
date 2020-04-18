@@ -1,10 +1,8 @@
 *Rdata
 *.rda
-*.tsv
 *.csv
 ._*
 *.Rhistory
-*.tree
 .Rproj.user
 .DS_Store
 R/.DS_store

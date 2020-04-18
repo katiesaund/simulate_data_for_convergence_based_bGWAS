@@ -14,7 +14,7 @@ These simulated data are being created to specifically benchmark the performance
 ## How to use this repository: 
 - Fork or clone the repo to your computer. 
 - Simulate data:  
-  - Data simulation is slow so I ran it on University of Michigan's high performance computer cluster (HPC), which uses the slurm scheduling system. I've included all of the scripts to create the batch files. You can use these with minimal changes if you use slurm, but a larger overhaul of the scheduling scripts will be required if you use a different scheduler. 
+  - Data simulation is slow so I ran it on University of Michigan's high performance computer cluster (HPC), which uses the slurm scheduling system. I've included all of the scripts to create the batch files. You can use these with minimal changes if you use slurm, but a larger overhaul of the scheduling scripts will be required if you use a different scheduler. If you don't want to recreate the simulated data used in the manuscript they are available for download in the `data/` directory. 
   - The two scripts that simulate data are simulate_continuous_data.R and simulate_discrete_data.R. 
   - Before you can run these two scripts you'll need to: 
     - Create a `data/` directory in the location where you'll the data simulation

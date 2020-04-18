@@ -7,7 +7,7 @@ hogwash: Three Methods for Genome-Wide Association Studies in Bacteria
 [Katie Saund](https://orcid.org/0000-0002-6214-6713) and Evan Snitkin
 
 # Repo contents
-This repository contains the R code necessary to generate simulated tree, genotype, and phenotype data for use in bGWAS. In addition to simulating data, this code also reports the amount of genotype convergence, phenotype convergence, and their intersection on a phylogenetic tree. 
+This repository contains the R code necessary to generate simulated tree, genotype, and phenotype data for use in bGWAS. In addition to simulating data, this code also reports the amount of genotype convergence, phenotype convergence, and their intersection on a phylogenetic tree. The simulated data are available in the `data/` directory.
 
 These simulated data are being created to specifically benchmark the performance of [hogwash](https://github.com/katiesaund/hogwash). The results of the benchmarking will be reported in a methods paper (check back later in April for a manuscript posted to bioRxiv).
 

@@ -97,52 +97,52 @@ save_data <- function(tree_list,
                                 j,
                                 ".tsv"))
 
-      # Save gamma results ----
-      BM_phyc_gamma <- BM_phyc_convergence_list[[i]][[j]]
-      save(BM_phyc_gamma, file = paste0("../data/",
+      # Save convergence results ----
+      BM_phyc_convergence <- BM_phyc_convergence_list[[i]][[j]]
+      save(BM_phyc_convergence, file = paste0("../data/",
                                         "simulated_discrete_pheno_BM_tree_",
                                         i,
                                         "_pheno_",
                                         j,
-                                        "_phyc_gamma.RData"))
-      BM_sync_gamma <- BM_sync_convergence_list[[i]][[j]]
-      save(BM_sync_gamma, file = paste0("../data/",
+                                        "_phyc_convergence.RData"))
+      BM_sync_convergence <- BM_sync_convergence_list[[i]][[j]]
+      save(BM_sync_convergence, file = paste0("../data/",
                                         "simulated_discrete_pheno_BM_tree_",
                                         i,
                                         "_pheno_",
                                         j,
-                                        "_sync_gamma.RData"))
+                                        "_sync_convergence.RData"))
 
-      WN_phyc_gamma <- WN_phyc_convergence_list[[i]][[j]]
-      save(WN_phyc_gamma, file = paste0("../data/",
+      WN_phyc_convergence <- WN_phyc_convergence_list[[i]][[j]]
+      save(WN_phyc_convergence, file = paste0("../data/",
                                         "simulated_discrete_pheno_WN_tree_",
                                         i,
                                         "_pheno_",
                                         j,
-                                        "_phyc_gamma.RData"))
-      WN_sync_gamma <- WN_sync_convergence_list[[i]][[j]]
-      save(WN_sync_gamma, file = paste0("../data/",
+                                        "_phyc_convergence.RData"))
+      WN_sync_convergence <- WN_sync_convergence_list[[i]][[j]]
+      save(WN_sync_convergence, file = paste0("../data/",
                                         "simulated_discrete_pheno_WN_tree_",
                                         i,
                                         "_pheno_",
                                         j,
-                                        "_sync_gamma.RData"))
+                                        "_sync_convergence.RData"))
 
       BM_phyc_convergence_df <- 
         as.data.frame(matrix(NA, 
-                             nrow = length(BM_phyc_gamma$gamma_percent),
+                             nrow = length(BM_phyc_convergence$intersection),
                              ncol = num_cols))
       BM_sync_convergence_df <- 
         as.data.frame(matrix(NA, 
-                             nrow = length(BM_sync_gamma$gamma_percent), 
+                             nrow = length(BM_sync_convergence$intersection), 
                              ncol = num_cols))
       WN_phyc_convergence_df <- 
         as.data.frame(matrix(NA, 
-                             nrow = length(WN_phyc_gamma$gamma_percent), 
+                             nrow = length(WN_phyc_convergence$intersection), 
                              ncol = num_cols))
       WN_sync_convergence_df <-
         as.data.frame(matrix(NA, 
-                             nrow = length(WN_sync_gamma$gamma_percent), 
+                             nrow = length(WN_sync_convergence$intersection), 
                              ncol = num_cols))
 
       colnames(BM_phyc_convergence_df) <- colnames(BM_sync_convergence_df) <-
@@ -159,39 +159,39 @@ save_data <- function(tree_list,
 
       BM_phyc_convergence_df$tree_id <- i
       BM_phyc_convergence_df$phenotype_id <- j
-      BM_phyc_convergence_df$intersection <- BM_phyc_gamma$intersection
-      BM_phyc_convergence_df$num_hi_conf_edges <- BM_phyc_gamma$num_hi_conf_edges
-      BM_phyc_convergence_df$pheno_beta <- BM_phyc_gamma$pheno_beta
-      BM_phyc_convergence_df$geno_beta <- BM_phyc_gamma$geno_beta
-      BM_phyc_convergence_df$epsilon <- BM_phyc_gamma$epsilon
-      BM_phyc_convergence_df$genotype <- BM_phyc_gamma$genotype
+      BM_phyc_convergence_df$intersection <- BM_phyc_convergence$intersection
+      BM_phyc_convergence_df$num_hi_conf_edges <- BM_phyc_convergence$num_hi_conf_edges
+      BM_phyc_convergence_df$pheno_beta <- BM_phyc_convergence$pheno_beta
+      BM_phyc_convergence_df$geno_beta <- BM_phyc_convergence$geno_beta
+      BM_phyc_convergence_df$epsilon <- BM_phyc_convergence$epsilon
+      BM_phyc_convergence_df$genotype <- BM_phyc_convergence$genotype
       
       BM_sync_convergence_df$tree_id <- i
       BM_sync_convergence_df$phenotype_id <- j
-      BM_sync_convergence_df$intersection <- BM_sync_gamma$intersection
-      BM_sync_convergence_df$num_hi_conf_edges <- BM_sync_gamma$num_hi_conf_edges
-      BM_sync_convergence_df$pheno_beta <- BM_sync_gamma$pheno_beta
-      BM_sync_convergence_df$geno_beta <- BM_sync_gamma$geno_beta
-      BM_sync_convergence_df$epsilon <- BM_sync_gamma$epsilon
-      BM_sync_convergence_df$genotype <- BM_sync_gamma$genotype
+      BM_sync_convergence_df$intersection <- BM_sync_convergence$intersection
+      BM_sync_convergence_df$num_hi_conf_edges <- BM_sync_convergence$num_hi_conf_edges
+      BM_sync_convergence_df$pheno_beta <- BM_sync_convergence$pheno_beta
+      BM_sync_convergence_df$geno_beta <- BM_sync_convergence$geno_beta
+      BM_sync_convergence_df$epsilon <- BM_sync_convergence$epsilon
+      BM_sync_convergence_df$genotype <- BM_sync_convergence$genotype
       
       WN_phyc_convergence_df$tree_id <- i
       WN_phyc_convergence_df$phenotype_id <- j
-      WN_phyc_convergence_df$intersection <- WN_phyc_gamma$intersection
-      WN_phyc_convergence_df$num_hi_conf_edges <- WN_phyc_gamma$num_hi_conf_edges
-      WN_phyc_convergence_df$pheno_beta <- WN_phyc_gamma$pheno_beta
-      WN_phyc_convergence_df$geno_beta <- WN_phyc_gamma$geno_beta
-      WN_phyc_convergence_df$epsilon <- WN_phyc_gamma$epsilon
-      WN_phyc_convergence_df$genotype <- WN_phyc_gamma$genotype
+      WN_phyc_convergence_df$intersection <- WN_phyc_convergence$intersection
+      WN_phyc_convergence_df$num_hi_conf_edges <- WN_phyc_convergence$num_hi_conf_edges
+      WN_phyc_convergence_df$pheno_beta <- WN_phyc_convergence$pheno_beta
+      WN_phyc_convergence_df$geno_beta <- WN_phyc_convergence$geno_beta
+      WN_phyc_convergence_df$epsilon <- WN_phyc_convergence$epsilon
+      WN_phyc_convergence_df$genotype <- WN_phyc_convergence$genotype
       
       WN_sync_convergence_df$tree_id <- i
       WN_sync_convergence_df$phenotype_id <- j
-      WN_sync_convergence_df$intersection <- WN_sync_gamma$intersection
-      WN_sync_convergence_df$num_hi_conf_edges <- WN_sync_gamma$num_hi_conf_edges
-      WN_sync_convergence_df$pheno_beta <- WN_sync_gamma$pheno_beta
-      WN_sync_convergence_df$geno_beta <- WN_sync_gamma$geno_beta
-      WN_sync_convergence_df$epsilon <- WN_sync_gamma$epsilon
-      WN_sync_convergence_df$genotype <- WN_sync_gamma$genotype
+      WN_sync_convergence_df$intersection <- WN_sync_convergence$intersection
+      WN_sync_convergence_df$num_hi_conf_edges <- WN_sync_convergence$num_hi_conf_edges
+      WN_sync_convergence_df$pheno_beta <- WN_sync_convergence$pheno_beta
+      WN_sync_convergence_df$geno_beta <- WN_sync_convergence$geno_beta
+      WN_sync_convergence_df$epsilon <- WN_sync_convergence$epsilon
+      WN_sync_convergence_df$genotype <- WN_sync_convergence$genotype
       
       summary_df <- rbind(summary_df,
                           BM_phyc_convergence_df, 
@@ -300,31 +300,31 @@ save_continuous_data <- function(tree_list,
                                 j,
                                 ".tsv"))
       
-      # Save gamma results ----
-      BM_cont_gamma <- BM_cont_convergence_list[[i]][[j]]
-      save(BM_cont_gamma, file = paste0("../data/",
+      # Save convergence results ----
+      BM_cont_convergence <- BM_cont_convergence_list[[i]][[j]]
+      save(BM_cont_convergence, file = paste0("../data/",
                                         "simulated_continuous_pheno_BM_tree_",
                                         i,
                                         "_pheno_",
                                         j,
-                                        "_cont_gamma.RData"))
+                                        "_cont_convergence.RData"))
       
 
-      WN_cont_gamma <- WN_cont_convergence_list[[i]][[j]]
-      save(WN_cont_gamma, file = paste0("../data/",
+      WN_cont_convergence <- WN_cont_convergence_list[[i]][[j]]
+      save(WN_cont_convergence, file = paste0("../data/",
                                         "simulated_continuous_pheno_WN_tree_",
                                         i,
                                         "_pheno_",
                                         j,
-                                        "_cont_gamma.RData"))
+                                        "_cont_convergence.RData"))
       
       BM_cont_convergence_df <- 
         as.data.frame(matrix(NA,
-                             nrow = length(BM_cont_gamma$gamma_percent), 
+                             nrow = length(BM_cont_convergence$intersection), 
                              ncol = num_cols))
       WN_cont_convergence_df <-
         as.data.frame(matrix(NA, 
-                             nrow = length(WN_cont_gamma$gamma_percent),
+                             nrow = length(WN_cont_convergence$intersection),
                              ncol = num_cols))
       
       colnames(BM_cont_convergence_df) <- 
@@ -335,21 +335,21 @@ save_continuous_data <- function(tree_list,
       
       BM_cont_convergence_df$tree_id <- i
       BM_cont_convergence_df$phenotype_id <- j
-      BM_cont_convergence_df$intersection <- BM_cont_gamma$intersection
-      BM_cont_convergence_df$num_hi_conf_edges <- BM_cont_gamma$num_hi_conf_edges
-      BM_cont_convergence_df$pheno_beta <- BM_cont_gamma$pheno_beta
-      BM_cont_convergence_df$geno_beta <- BM_cont_gamma$geno_beta
-      BM_cont_convergence_df$epsilon <- BM_cont_gamma$epsilon
-      BM_cont_convergence_df$genotype <- BM_cont_gamma$genotype
+      BM_cont_convergence_df$intersection <- BM_cont_convergence$intersection
+      BM_cont_convergence_df$num_hi_conf_edges <- BM_cont_convergence$num_hi_conf_edges
+      BM_cont_convergence_df$pheno_beta <- BM_cont_convergence$pheno_beta
+      BM_cont_convergence_df$geno_beta <- BM_cont_convergence$geno_beta
+      BM_cont_convergence_df$epsilon <- BM_cont_convergence$epsilon
+      BM_cont_convergence_df$genotype <- BM_cont_convergence$genotype
       
       WN_cont_convergence_df$tree_id <- i
       WN_cont_convergence_df$phenotype_id <- j
-      WN_cont_convergence_df$intersection <- WN_cont_gamma$intersection
-      WN_cont_convergence_df$num_hi_conf_edges <- WN_cont_gamma$num_hi_conf_edges
-      WN_cont_convergence_df$pheno_beta <- WN_cont_gamma$pheno_beta
-      WN_cont_convergence_df$geno_beta <- WN_cont_gamma$geno_beta
-      WN_cont_convergence_df$epsilon <- WN_cont_gamma$epsilon
-      WN_cont_convergence_df$genotype <- WN_cont_gamma$genotype
+      WN_cont_convergence_df$intersection <- WN_cont_convergence$intersection
+      WN_cont_convergence_df$num_hi_conf_edges <- WN_cont_convergence$num_hi_conf_edges
+      WN_cont_convergence_df$pheno_beta <- WN_cont_convergence$pheno_beta
+      WN_cont_convergence_df$geno_beta <- WN_cont_convergence$geno_beta
+      WN_cont_convergence_df$epsilon <- WN_cont_convergence$epsilon
+      WN_cont_convergence_df$genotype <- WN_cont_convergence$genotype
       
       summary_df <- rbind(summary_df, BM_cont_convergence_df, WN_cont_convergence_df)
     }

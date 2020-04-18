@@ -1,32 +1,32 @@
-#' Wrapper function for calculate_phyc_gamma() to work on lists
-calc_phyc_gamma_list <- function(tree_list,
+#' Wrapper function for calculate_phyc_convergence() to work on lists
+calc_phyc_convergence_list <- function(tree_list,
                                  phenotype_AR_vec_list,
                                  hi_conf_obj_list) {
   num_tree <- length(tree_list)
-  phyc_gamma_list <- list()
+  phyc_convergence_list <- list()
   high_conf_edge_list <- list()
 
   for (i in 1:num_tree) {
     num_pheno <- length(phenotype_AR_vec_list[[i]])
-    temp_gamma_list <- list()
+    temp_convergence_list <- list()
     num_tip <- ape::Ntip(tree_list[[i]])
     for (j in 1:num_pheno) {
       high_conf_edge_list <- 
         hi_conf_obj_list[[i]][[j]]$high_conf_ordered_by_edges
       geno_trans_list <- hi_conf_obj_list[[i]][[j]]$genotype_transition
       geno_names <- names(hi_conf_obj_list[[i]][[j]]$genotype_transition)
-      temp_gamma_list[[j]] <-
-        calculate_phyc_gamma(geno_names, 
-                             geno_trans_list,
-                             phenotype_AR_vec_list[[i]][[j]],
-                             high_conf_edge_list)
+      temp_convergence_list[[j]] <-
+        calculate_phyc_convergence(geno_names, 
+                                   geno_trans_list,
+                                   phenotype_AR_vec_list[[i]][[j]],
+                                   high_conf_edge_list)
     }
-    phyc_gamma_list[[i]] <- temp_gamma_list
+    phyc_convergence_list[[i]] <- temp_convergence_list
   }
-  return(phyc_gamma_list)
+  return(phyc_convergence_list)
 }
 
-#' Calculate gamma within PhyC test
+#' Calculate convergence within PhyC test
 #'
 #' @param geno_trans_edge_list A list of genotypes. Length == number of
 #'   genotypes. Length of individual vectors within == Nedge(tree). Individual
@@ -39,15 +39,30 @@ calc_phyc_gamma_list <- function(tree_list,
 #'  $high_conf_ordered_by_edges A list of high confidence edges. Length of list
 #'  == number of genotypes. Length of individual vectors within == Nedge(tree).
 #'  Individual vectors are binary.
-#' @return results. List of three objects:
-#'  $intersection Numeric vector. Raw gamma value for each genotype. Length ==
-#'    number of genotypes.
+#' @return results. List of six objects:
+#'   \describe{
+#'     \item{intersection}{Numeric vector. Intersection of the geno_beta and
+#'      pheno_beta  for each genotype. Length == number of genotypes.}
+#'     \item{num_hi_conf_edges}{Numeric vector. Number of high confidence
+#'     edges per genotype. Length == number of genotypes.}
+#'     \item{pheno_beta}{Number. Count of how many tree edges are phenotype
+#'     transitions and the phenotype ancestral reconstruction and tree edge are
+#'     high confidence. Length == 1.}
+#'     \item{geno_beta}{Numeric vector. count of how many tree edges are
+#'     gentoype transitions and the genotype ancestral reconstruction and tree
+#'     edge are high confidence. Length == number of genotypes.}
+#'     \item{epsilon}{Numeric vector. 2 x (edges with both high confidence
+#'      genotype transition and phenotype presence) / sum(edges with high
+#'      confidence gentoype transition and/or phenotype presence). Length ==
+#'      number of genotypes.}
+#'     \item{genotype}{Genotype names.}
+#'   }
 #' @noRd
 #'
-calculate_phyc_gamma <- function(geno_names, 
-                                 geno_trans_edge_list,
-                                 pheno_recon_vec,
-                                 high_conf_edge_list){
+calculate_phyc_convergence <- function(geno_names, 
+                                       geno_trans_edge_list,
+                                       pheno_recon_vec,
+                                       high_conf_edge_list){
   epsilon <- geno_beta <- pheno_beta <- intersection <- 
     rep(0, length(geno_trans_edge_list))
 
@@ -73,17 +88,17 @@ calculate_phyc_gamma <- function(geno_names,
   return(results)
 }
 
-#' Wrapper function for calculate_synchronous_gamma() to work on lists
-calc_sync_gamma_list <- function(tree_list,
+#' Wrapper function for calculate_synchronous_convergence() to work on lists
+calc_sync_convergence_list <- function(tree_list,
                                  phenotype_sync_trans_list,
                                  hi_conf_obj_list) {
   num_tree <- length(tree_list)
-  sync_gamma_list <- list()
+  sync_convergence_list <- list()
   high_conf_edge_list <- list()
 
   for (i in 1:num_tree) {
     num_pheno <- length(phenotype_sync_trans_list[[i]])
-    temp_gamma_list <- list()
+    temp_convergence_list <- list()
     num_tip <- ape::Ntip(tree_list[[i]])
     for (j in 1:num_pheno) {
       high_conf_edge_list <-
@@ -91,18 +106,18 @@ calc_sync_gamma_list <- function(tree_list,
       genotype_sync_trans_list <- hi_conf_obj_list[[i]][[j]]$genotype_transition
       geno_names <- names(hi_conf_obj_list[[i]][[j]]$genotype_transition)
       
-      temp_gamma_list[[j]] <-
-        calculate_synchronous_gamma(geno_names, 
+      temp_convergence_list[[j]] <-
+        calculate_synchronous_convergence(geno_names, 
                                     genotype_sync_trans_list,
                                     phenotype_sync_trans_list[[i]][[j]],
                                     high_conf_edge_list)
     }
-    sync_gamma_list[[i]] <- temp_gamma_list
+    sync_convergence_list[[i]] <- temp_convergence_list
   }
-  return(sync_gamma_list)
+  return(sync_convergence_list)
 }
 
-#' Calculate gamma within synchronous test
+#' Calculate convergence within synchronous test
 #'
 #' @description Given phenotype and genotype information, calculate a summary
 #'   statistic that describes the number of edges on the tree where the
@@ -123,16 +138,30 @@ calc_sync_gamma_list <- function(tree_list,
 #'  == number of genotypes. Length of individual vectors within == Nedge(tree).
 #'  Individual vectors are binary.
 #'
-#' @return results. List of three objects:
-#'  $intersection Numeric vector. Raw gamma value for each genotype. Length ==
-#'    number of genotypes.
+#' @return results. List of six objects:
+#'   \describe{
+#'     \item{intersection}{Numeric vector. Intersection of the geno_beta and
+#'      pheno_beta for each genotype. Length == number of genotypes.}
+#'     \item{num_hi_conf_edges}{Numeric vector. Number of high confidence
+#'     edges per genotype. Length == number of genotypes.}
+#'     \item{pheno_beta}{Number. Count of how many tree edges are phenotype
+#'     transitions and the phenotype ancestral reconstruction and tree edge are
+#'     high confidence. Length == 1.}
+#'     \item{geno_beta}{Numeric vector. count of how many tree edges are
+#'     gentoype transitions and the genotype ancestral reconstruction and tree
+#'     edge are high confidence. Length == number of genotypes.}
+#'     \item{epsilon}{Numeric vector. 2 x (edges with both high confidence
+#'     genotype AND phenotype transition) / sum(edges with high confidence
+#'     gentoype and/or phenotype transitions). Length == number of genotypes.}
+#'     \item{genotype}{Genotype names.}
+#'   }
 #' @noRd
 #'
-calculate_synchronous_gamma <- function(geno_names, 
+calculate_synchronous_convergence <- function(geno_names, 
                                         geno_trans_edge_list,
                                         pheno_trans_vec,
                                         high_conf_edge_list){
-  epsilon <- geno_beta <- intersection <- gamma_percent <- pheno_beta <-
+  epsilon <- geno_beta <- intersection <- pheno_beta <-
     rep(0, length(geno_trans_edge_list))
 
   for (i in 1:length(geno_trans_edge_list)) {
@@ -157,30 +186,30 @@ calculate_synchronous_gamma <- function(geno_names,
   return(results)
 }
 
-#' Wrapper function for calculate_continuous_gamma() to work on lists
-calc_cont_gamma_list <- function(tree_list,
+#' Wrapper function for calculate_continuous_convergence() to work on lists
+calc_cont_convergence_list <- function(tree_list,
                                  phenotype_cont_recon_mat_list,
                                  hi_conf_obj_list) {
   num_tree <- length(tree_list)
-  cont_gamma_list <- list()
+  cont_convergence_list <- list()
   high_conf_edge_list <- list()
   
   for (i in 1:num_tree) {
     num_pheno <- length(phenotype_cont_recon_mat_list[[i]])
-    temp_gamma_list <- list()
+    temp_convergence_list <- list()
     num_tip <- ape::Ntip(tree_list[[i]])
     for (j in 1:num_pheno) {
       high_conf_edge_list <- hi_conf_obj_list[[i]][[j]]
-      temp_gamma_list[[j]] <-
-        calculate_continuous_gamma(phenotype_cont_recon_mat_list[[i]][[j]],
-                                   high_conf_edge_list)
+      temp_convergence_list[[j]] <-
+        calculate_continuous_convergence(phenotype_cont_recon_mat_list[[i]][[j]],
+                                         high_conf_edge_list)
     }
-    cont_gamma_list[[i]] <- temp_gamma_list
+    cont_convergence_list[[i]] <- temp_convergence_list
   }
-  return(cont_gamma_list)
+  return(cont_convergence_list)
 }
 
-#' Calculate gamma within continuous test
+#' Calculate convergence within continuous test
 #'
 #' @description Given phenotype and genotype information, calculate a summary
 #'   statistic that describes the elementwise intersection of genotype
@@ -199,14 +228,23 @@ calc_cont_gamma_list <- function(tree_list,
 #'  == number of genotypes. Length of individual vectors within == Nedge(tree).
 #'  Individual vectors are binary.
 #'
-#' @return results. List of three objects:
-#'  $intersection Numeric vector. Raw gamma value for each genotype. Length ==
-#'    number of genotypes.
-#'    # TODO THIS LIST IT TOO SHORT
+#' @return results. List of five objects:
+#'   \describe{
+#'     \item{intersection}{Numeric vector. Intersection of the geno_beta and
+#'      pheno_beta for each genotype. Length == number of genotypes.}
+#'     \item{num_hi_conf_edges}{Number of high confidence edges.}
+#'     \item{pheno_beta}{Numeric vector. Beta(phenotype). Length == number of
+#'     genotypes.}
+#'     \item{geno_beta}{Numeric vector. Beta(genotype). Length == number of
+#'     genotypes.}
+#'     \item{epsilon}{Numeric vector. Epsilon value for each genotype. Length ==
+#'     number of genotypes.}
+#'     \item{genotype}{Genotype names.}
+#'   }
 #' @noRd
 #'
-calculate_continuous_gamma <- function(pheno_recon_mat,
-                                       high_conf){
+calculate_continuous_convergence <- function(pheno_recon_mat,
+                                             high_conf){
   high_conf_edge_list <- high_conf$high_conf_ordered_by_edges
   geno_trans_edge_list <- high_conf$genotype_transition
   geno_names <- colnames(high_conf$genotype)
@@ -237,7 +275,7 @@ calculate_continuous_gamma <- function(pheno_recon_mat,
   }
   
   pheno_beta <-
-    epsilon <- geno_beta <- intersection <- gamma_percent <- rep(0, num_geno)
+    epsilon <- geno_beta <- intersection <- rep(0, num_geno)
   
   for (i in 1:num_geno) {
     scaled_pheno <- rescale(pheno_delta[[i]], to = c(0, 1))

@@ -148,34 +148,34 @@ sync_geno_trans_WM_trans_hi_conf_obj_list <-
 
 print("Finish high confidence objects")
 
-# Calculate gamma ----
-BM_phyc_gamma_list <- 
-  calc_phyc_gamma_list(tree_list,
-                       BM_pheno_recon_by_edge_list,
-                       phyc_geno_trans_BM_recon_hi_conf_obj_list)
-WN_phyc_gamma_list <- 
-  calc_phyc_gamma_list(tree_list,
-                       WN_pheno_recon_by_edge_list,
-                       phyc_geno_trans_WN_recon_hi_conf_obj_list)
-BM_sync_gamma_list <- 
-  calc_sync_gamma_list(tree_list,
+# Calculate convergence ----
+BM_phyc_convergence_list <- 
+  calc_phyc_convergence_list(tree_list,
+                             BM_pheno_recon_by_edge_list,
+                             phyc_geno_trans_BM_recon_hi_conf_obj_list)
+WN_phyc_convergence_list <- 
+  calc_phyc_convergence_list(tree_list,
+                            WN_pheno_recon_by_edge_list,
+                             phyc_geno_trans_WN_recon_hi_conf_obj_list)
+BM_sync_convergence_list <- 
+  calc_sync_convergence_list(tree_list,
                        BM_pheno_sync_trans_by_edge_list, 
                        sync_geno_trans_BM_trans_hi_conf_obj_list)
-WN_sync_gamma_list <- 
-  calc_sync_gamma_list(tree_list, 
+WN_sync_convergence_list <- 
+  calc_sync_convergence_list(tree_list, 
                        WN_pheno_sync_trans_by_edge_list, 
                        sync_geno_trans_WM_trans_hi_conf_obj_list)
-print("Finish calculating gamma")
+print("Finish calculating convergence")
 
 # Subset genotype matrix for each tree - phenotype combo ----
 BM_phyc_genotype_keeper_list <-
-  keep_good_genotypes(BM_phyc_gamma_list, bin_size)
+  keep_good_genotypes(BM_phyc_convergence_list, bin_size)
 BM_sync_genotype_keeper_list <-
-  keep_good_genotypes(BM_sync_gamma_list, bin_size)
+  keep_good_genotypes(BM_sync_convergence_list, bin_size)
 WN_phyc_genotype_keeper_list <- 
-  keep_good_genotypes(WN_phyc_gamma_list, bin_size)
+  keep_good_genotypes(WN_phyc_convergence_list, bin_size)
 WN_sync_genotype_keeper_list <- 
-  keep_good_genotypes(WN_sync_gamma_list, bin_size)
+  keep_good_genotypes(WN_sync_convergence_list, bin_size)
 
 # Save data ----
 print("Begin to save data")
@@ -185,12 +185,12 @@ save_data(tree_list = tree_list,
           genotype_sync_trans_list = genotype_sync_trans_by_edge_list,
           BM_phenotype_AR_mat_list = BM_phenotype_AR_mat_list,
           BM_pheno_recon_by_edge_list = BM_pheno_recon_by_edge_list,
-          BM_phyc_gamma_list = BM_phyc_gamma_list,
-          BM_sync_gamma_list = BM_sync_gamma_list,
+          BM_phyc_convergence_list = BM_phyc_convergence_list,
+          BM_sync_convergence_list = BM_sync_convergence_list,
           WN_phenotype_AR_mat_list = WN_phenotype_AR_mat_list,
           WN_pheno_recon_by_edge_list = WN_pheno_recon_by_edge_list,
-          WN_phyc_gamma_list = WN_phyc_gamma_list,
-          WN_sync_gamma_list = WN_sync_gamma_list,
+          WN_phyc_convergence_list = WN_phyc_convergence_list,
+          WN_sync_convergence_list = WN_sync_convergence_list,
           BM_phyc_genotype_keeper_list = BM_phyc_genotype_keeper_list,
           BM_sync_genotype_keeper_list = BM_sync_genotype_keeper_list,
           WN_phyc_genotype_keeper_list = WN_phyc_genotype_keeper_list,

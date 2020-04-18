@@ -153,7 +153,7 @@ disc_geno_sync_cont_edge_color <- disc_geno_trans_sync_and_cont
 disc_geno_sync_cont_edge_color[disc_geno_sync_cont_edge_color == 1] <- "blue"
 disc_geno_sync_cont_edge_color[disc_geno_sync_cont_edge_color == 0] <- "black"
 
-# Calculate overlap (gamma) -----
+# Calculate intersection -----
 phyc_overlap_color <- 
   as.numeric(disc_pheno_recon_by_edges + disc_geno_trans_phyc == 2)
 phyc_overlap_color[phyc_overlap_color == 1] <- "purple"

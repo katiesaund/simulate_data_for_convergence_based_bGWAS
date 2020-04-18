@@ -144,22 +144,22 @@ cont_geno_trans_WM_trans_hi_conf_obj_list <-
 
 print("Finish high confidence objects")
 
-# Calculate gamma
+# Calculate convergence
 
-BM_cont_gamma_list <-
-  calc_cont_gamma_list(tree_list, 
+BM_cont_convergence_list <-
+  calc_cont_convergence_list(tree_list, 
                        BM_phenotype_recon_edge_mat_list,
                        cont_geno_trans_BM_trans_hi_conf_obj_list)
-WN_cont_gamma_list <- 
-  calc_cont_gamma_list(tree_list, 
+WN_cont_convergence_list <- 
+  calc_cont_convergence_list(tree_list, 
                        WN_phenotype_recon_edge_mat_list, 
                        cont_geno_trans_WM_trans_hi_conf_obj_list)
-print("Finish calculating gamma")
+print("Finish calculating convergence")
 
 # Subset genotype matrix for each tree - phenotype combo
-BM_cont_genotype_keeper_list <- keep_good_genotypes(BM_cont_gamma_list, 
+BM_cont_genotype_keeper_list <- keep_good_genotypes(BM_cont_convergence_list, 
                                                     bin_size)
-WN_cont_genotype_keeper_list <- keep_good_genotypes(WN_cont_gamma_list, 
+WN_cont_genotype_keeper_list <- keep_good_genotypes(WN_cont_convergence_list, 
                                                     bin_size)
 
 # Save data
@@ -170,10 +170,10 @@ save_continuous_data(
   genotype_cont_trans_list = genotype_cont_trans_by_edge_list,
   BM_phenotype_AR_mat_list = BM_phenotype_AR_mat_list,
   BM_pheno_recon_by_edge_list = BM_pheno_recon_by_edge_list,
-  BM_cont_gamma_list = BM_cont_gamma_list,
+  BM_cont_convergence_list = BM_cont_convergence_list,
   WN_phenotype_AR_mat_list = WN_phenotype_AR_mat_list,
   WN_pheno_recon_by_edge_list = WN_pheno_recon_by_edge_list,
-  WN_cont_gamma_list = WN_cont_gamma_list,
+  WN_cont_convergence_list = WN_cont_convergence_list,
   BM_cont_genotype_keeper_list = BM_cont_genotype_keeper_list,
   WN_cont_genotype_keeper_list = WN_cont_genotype_keeper_list)
 print("Finished")

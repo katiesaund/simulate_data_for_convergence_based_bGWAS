@@ -1,7 +1,7 @@
 # Simulate data for convergence based bacterial GWAS method benchmarking paper
 
 ### Manuscript Title
-hogwash: Three Methods for Genome-Wide Association Studies in Bacteria 
+[hogwash: Three Methods for Genome-Wide Association Studies in Bacteria](https://www.biorxiv.org/content/10.1101/2020.04.19.048421v1)
 
 ### Mansucript Authors
 [Katie Saund](https://orcid.org/0000-0002-6214-6713) and Evan Snitkin
@@ -85,4 +85,4 @@ These simulated data are being created to specifically benchmark the performance
     - `Fig_5C_pval_vs_epsilon_dot_plot_only_continuous.pdf`   
   
 ## Questions or bugs? 
-Please see the hogwash methods preprint (to be released soon) for more details on the data simulation process. Feel free to contact me at katiephd@umich.edu or [open an issue here on github](https://github.com/katiesaund/simulate_data_for_convergence_based_bGWAS/issues). 
+Please see the [hogwash methods preprint](https://www.biorxiv.org/content/10.1101/2020.04.19.048421v1) for more details on the data simulation process. Feel free to contact me at katiephd@umich.edu or [open an issue here on github](https://github.com/katiesaund/simulate_data_for_convergence_based_bGWAS/issues). 

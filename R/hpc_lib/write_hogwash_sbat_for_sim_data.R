@@ -223,4 +223,41 @@ write_hogwash_sbat_for_sim <- function(num_tree, num_pheno, path) {
                  sep = "\n")
     }
   }
+  
+  # Also write one hogash sbatch file for the grouped hogwash analysis
+  # Discrete BM GROUPED ---- PHYC
+  temp_tree <- paste0(data_dir, "simulated_discrete_tree_1.tree")
+  temp_geno <- paste0(data_dir, "simulated_genotype_for_discrete_pheno_BM_tree_1_pheno_1.tsv")
+  temp_pheno <- paste0(data_dir, "simulated_discrete_pheno_BM_tree_1_pheno_1.tsv")
+  temp_name <- "phyc_discrete_pheno_BM_tree_1_pheno_1_grouped"
+  temp_key <-  paste0(data_dir, "group_key_for_phyc_BM_tree_1_pheno_1.tsv")
+  temp_test <- "phyc"
+  command <- paste(paste0("Rscript ", path, "/simulate_data_for_convergence_based_bGWAS/R/hpc_lib/run_hogwash_sbatch.R "),
+                   temp_pheno,
+                   temp_geno, 
+                   temp_tree,
+                   temp_name,
+                   getwd(),
+                   perm, 
+                   binary_fdr,
+                   bootstrap, 
+                   temp_test, 
+                   temp_key,
+                   sep = " ")
+  fname <- paste0(getwd(), "/", "2G_hogwash_", temp_name, ".sbat")
+  writeLines(c("#!/bin/sh",
+               paste0("#SBATCH --job-name=", temp_name),
+               paste0("#SBATCH --output=", temp_name, ".out"),
+               "#SBATCH --mail-user=katiephd@umich.edu",  
+               "#SBATCH --mail-type=END",
+               "#SBATCH --export=ALL",
+               "#SBATCH --partition=standard",
+               "#SBATCH --account=ACCOUNT_NAME",
+               paste0("#SBATCH --nodes=1 --ntasks=1 --cpus-per-task=1 --mem=", memory, " --time=", time),
+               "cd $SLURM_SUBMIT_DIR",
+               "echo $SLURM_SUBMIT_DIR",
+               "echo $SLURM_JOB_ID",
+               command),
+             fname,
+             sep = "\n")
 }

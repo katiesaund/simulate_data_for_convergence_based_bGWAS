@@ -2,7 +2,7 @@
 # beta-phenotype are defined as well as their intersection. 
 
 # Source functions ----
-source("fig_2_3_plot_lib.R")
+source("plot_lib.R")
 
 # Simulate data -----
 set.seed(10)

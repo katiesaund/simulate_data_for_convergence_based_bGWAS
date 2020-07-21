@@ -2,7 +2,7 @@
 # grouping feature. This figure is made from simulated data.  
 
 # Import functions ----
-source("fig_2_3_plot_lib.R")
+source("plot_lib.R")
 
 # Set up tree and genotypes ----
 set.seed(10)

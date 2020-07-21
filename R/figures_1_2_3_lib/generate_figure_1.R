@@ -3,7 +3,7 @@
 # 1C: Two trees used to introduce the concept of convergence
 
 # Source functions ----
-source("fig_2_3_plot_lib.R")
+source("plot_lib.R")
 
 # Simulate data -----
 set.seed(10)

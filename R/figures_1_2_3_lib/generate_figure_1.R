@@ -8,7 +8,7 @@ source("plot_lib.R")
 # Simulate data -----
 set.seed(10)
 tree <- ape::rcoal(n = 12)
-genotype_w_convergence <- c(0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1)
+genotype_w_convergence <- c(0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0)
 genotype_no_convergence <- c(0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1)
 
 # Genotype ancestral reconstruction and transition edges ----
@@ -50,7 +50,28 @@ disc_geno_recon_edge_color_no_convergence <-
 cex_value <- 1
 edge_width <- 2.5
 tip_label_log <- FALSE
+star <- "*"
+dot_size <- 1.5
 
+# Make tree tip dots for no convergence tree: 
+blue_no_con <- purple_no_con <- green_no_con <- c("t7", "t12", "t9", "t5") 
+yellow_no_con <- c("t7", "t12")
+orange_no_con <- c("t2", "t11", "t6")
+teal_no_con <- c("t8", "t3")
+
+# Tree tip dots for convergence tree
+blue_con <- c("t5", "t3", "t4", "t2")
+purple_con <- "t2"
+green_con <- c("t1", "t10", "t5") 
+yellow_con <- c("t8", "t3", "t4", "t10", "t11")
+orange_con <-  c("t7", "t12", "t9", "t5") 
+teal_con <- c("t2", "t11")
+
+
+first_offset <- 0.2
+second_offset <- 0.4
+third_offset <- 0.6
+fourth_offset <- 0.8
 # Make small tree
 small_tree <- drop.tip(tree, 1:8)
 small_tree$tip.label <- paste0("tip ", 4:1)
@@ -70,6 +91,36 @@ graphics::plot(tree,
                label.offset = 0.25,
                adj = 0,
                cex = cex_value)
+# tiplabels(tip = c(1:Ntip(tree))[tree$tip.label %in% blue_no_con],
+#           pch = star, 
+#           cex = dot_size, 
+#           col = "deepskyblue1",
+#           offset = first_offset)
+# tiplabels(tip = c(1:Ntip(tree))[tree$tip.label %in% purple_no_con],
+#           pch = star, 
+#           cex = dot_size, 
+#           col = "darkmagenta",
+#           offset = second_offset)
+# tiplabels(tip = c(1:Ntip(tree))[tree$tip.label %in% green_no_con],
+#           pch = star, 
+#           cex = dot_size, 
+#           col = "palegreen3",
+#           offset = third_offset)
+# tiplabels(tip = c(1:Ntip(tree))[tree$tip.label %in% yellow_no_con],
+#           pch = star, 
+#           cex = dot_size, 
+#           col = "yellow",
+#           offset = fourth_offset)
+# tiplabels(tip = c(1:Ntip(tree))[tree$tip.label %in% orange_no_con],
+#           pch = star, 
+#           cex = dot_size, 
+#           col = "orange",
+#           offset = first_offset)
+# tiplabels(tip = c(1:Ntip(tree))[tree$tip.label %in% teal_no_con],
+#           pch = star, 
+#           cex = dot_size, 
+#           col = "snow4",
+#           offset = first_offset)
 
 # Tree - with convergence
 graphics::plot(tree,
@@ -81,6 +132,38 @@ graphics::plot(tree,
                label.offset = 0.25,
                adj = 0,
                cex = cex_value)
+# tiplabels(tip = c(1:Ntip(tree))[tree$tip.label %in% blue_con],
+#           pch = star, 
+#           cex = dot_size, 
+#           col = "deepskyblue1",
+#           offset = third_offset)
+# tiplabels(tip = c(1:Ntip(tree))[tree$tip.label %in% purple_con],
+#           pch = star, 
+#           cex = dot_size, 
+#           col = "darkmagenta",
+#           offset = fourth_offset)
+# tiplabels(tip = c(1:Ntip(tree))[tree$tip.label %in% green_con],
+#           pch = star, 
+#           cex = dot_size, 
+#           col = "palegreen3",
+#           offset = second_offset)
+# tiplabels(tip = c(1:Ntip(tree))[tree$tip.label %in% yellow_con],
+#           pch = star, 
+#           cex = dot_size, 
+#           col = "yellow",
+#           offset = first_offset)
+# tiplabels(tip = c(1:Ntip(tree))[tree$tip.label %in% orange_con],
+#           pch = star, 
+#           cex = dot_size, 
+#           col = "orange",
+#           offset = first_offset)
+# tiplabels(tip = c(1:Ntip(tree))[tree$tip.label %in% teal_con],
+#           pch = star, 
+#           cex = dot_size, 
+#           col = "snow4",
+#           offset = second_offset)
+# 
+
 dev.off()
 
 pdf(file = "../../img/Figure_1B_nomeclature.pdf", width = 2.5, height = 2.5)
@@ -88,10 +171,10 @@ graphics::par(mfrow = c(1, 1), mar = c(1, 1, 1, 1))
 
 # Tree - no convergence
 graphics::plot(small_tree, 
-               show.node.label = TRUE,
+               show.node.label = FALSE,
                font = 1,
                edge.width = edge_width, 
-               show.tip.label = TRUE,
+               show.tip.label = FALSE,
                use.edge.length = FALSE,
                label.offset = 0.25,
                adj = 0,

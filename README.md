@@ -56,7 +56,7 @@ These simulated data are being created to specifically benchmark the performance
   - Install the hogwash package to your computer. 
     ```
          $ R
-         > devtools::install_github("katiesaund/hogwash", ref = "1.0.0")
+         > devtools::install_github("katiesaund/hogwash")
          > library(hogwash) 
     ```
   - Submit the hogwash jobs to the scheduler. Ex: `$ for i in 2*sbat; do sbatch $i; done`

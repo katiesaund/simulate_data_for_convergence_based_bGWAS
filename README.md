@@ -20,7 +20,7 @@ These simulated data are being created to specifically benchmark the performance
     - Create a `data/` directory in the location where you'll the data simulation
     - Write a file called `data/simulation_input_values.tsv` 
       - In this file include: the number of trees, number of phenotypes per tree, number of tips per tree, and number of genotypes to generate. The values should be in that specific order and each value on its own line.
-    - Create the batch scheduler job files that call these two scripts. In your `data/` dir run: `$ Rscript /relative/path/to/simulation_data_for_convergence_based_bGWAS/R/run write_all_sbat.R "/relative/path/to/"`
+    - Create the batch scheduler job files that call these two scripts. In your `data/` dir run: `$ Rscript /relative/path/to/simulation_data_for_convergence_based_bGWAS/R/hpc_lib/write_all_sbat.R "/relative/path/to/"`
   - Submit the 1A_simulate_discrete_data.sbat and 1B_simulate_continuous_data.sbat files to the scheduling system (ex: `$ sbatch 1B_simulate_continuous_data.sbat`)
     - Note: all of the .sbat files are written with the order of submission as the file prefix. 
   - When the two simulation jobs are finished running you'll create several kinds of data files. For each tree-phenotype pair you have you'll generate:

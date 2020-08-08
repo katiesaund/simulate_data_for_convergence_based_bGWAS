@@ -25,9 +25,11 @@ bootstrap_threshold <- as.numeric(args[8])
 
 test_type <- as.character(args[9])
 
+group_method <- as.character(args[10])
+
 key <- NULL
-if (!is.na(args[10])) {
-  key <- read.table(args[10],
+if (!is.na(args[11])) {
+  key <- read.table(args[11],
                     sep = "\t",
                     row.names = 1,
                     header = TRUE,
@@ -44,5 +46,6 @@ hogwash(pheno = phenotype,
         perm = perm_num,
         fdr = fdr_value,
         bootstrap = bootstrap_threshold,
-        test = test_type, 
+        test = test_type,
+        grouping_method = group_method, 
         group_genotype_key = key)

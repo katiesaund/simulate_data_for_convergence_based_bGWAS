@@ -59,7 +59,7 @@ dev.off()
 
 # Repeat for pre-ar
 # Get SNPs of interest for pre- and post-ar approaches
-pre_ar_snp_ids <- as.character(gene_key[gene_key$group == "GENE1", 1])
+pre_ar_snp_ids <- as.character(gene_key[gene_key$group == "GENE37", 1])
 pre_ar_geno_mat <- geno_mat[, colnames(geno_mat) %in% pre_ar_snp_ids, drop = FALSE]
 # Let's plot a tree where the tips show the presence/absence of the tree snps
 
@@ -75,7 +75,7 @@ pre_ar_snp3_tips <- pre_ar_geno_mat[, 3, drop = FALSE]
 pre_ar_snp3_tips <- pre_ar_snp3_tips[pre_ar_snp3_tips == 1, , drop = FALSE]
 pre_ar_snp3_tips <- row.names(pre_ar_snp3_tips)
 
-pdf("../../img/supp_pre_ar_GENE1_snps.pdf", 
+pdf("../../img/supp_pre_ar_GENE37_snps.pdf", 
     width = 8, 
     height = 8)
 plot(tree, show.tip.label = FALSE, use.edge.length = FALSE)

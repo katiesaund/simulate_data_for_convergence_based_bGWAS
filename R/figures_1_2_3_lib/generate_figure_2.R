@@ -288,18 +288,16 @@ plot(plot_p_recon,
      ftype = "off",
      offset = 1.7)
 
+plot(plot_p_recon,
+     add = TRUE,
+     ylim = c(-1 / 25 * ape::Ntip(tree), ape::Ntip(tree)),
+     colors = plot_p_recon$cols,
+     lwd = 3,
+     outline = FALSE,
+     ftype = "off",
+     offset = 1.7)
 
 graphics::par(mar = c(1, 1, 1, 1))
-
-graphics::plot(tree,
-               font = 1,
-               edge.width = edge_width, 
-               show.tip.label = tip_label_log,
-               edge.color = cont_pheno_high_delta_color,
-               use.edge.length = FALSE,
-               label.offset = 0.25,
-               adj = 0,
-               cex = cex_value)
 
 graphics::plot(tree,
                font = 1,
@@ -319,11 +317,13 @@ graphics::plot(tree,
                label.offset = 0.25,
                adj = 0,
                cex = cex_value)
+
+disc_geno_sync_cont_edge_color[disc_geno_sync_cont_edge_color == "blue"] <- "purple"
 graphics::plot(tree,
                show.tip.label = tip_label_log,
                font = 1,
                edge.width = edge_width, 
-               edge.color = cont_overlap_color,
+               edge.color = disc_geno_sync_cont_edge_color,
                use.edge.length = FALSE,
                label.offset = 0.25,
                adj = 0,

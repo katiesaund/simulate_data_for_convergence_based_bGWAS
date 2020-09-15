@@ -1,7 +1,7 @@
 # Simulate data for convergence based bacterial GWAS method benchmarking paper
 
 ### Manuscript Title
-[hogwash: Three Methods for Genome-Wide Association Studies in Bacteria](https://www.biorxiv.org/content/10.1101/2020.04.19.048421v1)
+[hogwash: Three Methods for Genome-Wide Association Studies in Bacteria](https://www.biorxiv.org/content/10.1101/2020.04.19.048421v2)
 
 ### Mansucript Authors
 [Katie Saund](https://orcid.org/0000-0002-6214-6713) and Evan Snitkin

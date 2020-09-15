@@ -7,9 +7,9 @@
 [Katie Saund](https://orcid.org/0000-0002-6214-6713) and Evan Snitkin
 
 # Repo contents
-This repository contains the R code necessary to generate simulated tree, genotype, and phenotype data for use in bGWAS. In addition to simulating data, this code also reports the amount of genotype convergence, phenotype convergence, and their intersection on a phylogenetic tree. The simulated data are available in the `data/` directory.
+This repository contains the R code necessary to generate simulated tree, genotype, and phenotype data for use in bGWAS. In addition to simulating data, this code also reports the amount of genotype convergence, phenotype convergence, and their overlap on a phylogenetic tree. The simulated data are available in the `data/` directory.
 
-These simulated data are being created to specifically benchmark the performance of [hogwash](https://github.com/katiesaund/hogwash). The results of the benchmarking will be reported in a methods paper (check back later in April for a manuscript posted to bioRxiv).
+These simulated data were created to specifically benchmark the performance of the bacterial GWAS software tool [hogwash](https://github.com/katiesaund/hogwash). The results of this benchmarking can be reviewed in the [preprint](https://www.biorxiv.org/content/10.1101/2020.04.19.048421v2). 
 
 ## How to use this repository: 
 - Fork or clone the repo to your computer. 
@@ -56,6 +56,7 @@ These simulated data are being created to specifically benchmark the performance
   - Install the hogwash package to your computer. 
     ```
          $ R
+         > install.packages("devtools")
          > devtools::install_github("katiesaund/hogwash")
          > library(hogwash) 
     ```
@@ -82,7 +83,10 @@ These simulated data are being created to specifically benchmark the performance
   - The plots generated in `figures` summarize the hogwash output from the simulated data in many forms. Of particular interest are the three subfigures that make up Figure 5 from the hogwash methods paper. 
     - `Fig_5A_pval_vs_epsilon_dot_plot_only_phyc.pdf` 
     - `Fig_5B_pval_vs_epsilon_dot_plot_only_sync.pdf`   
-    - `Fig_5C_pval_vs_epsilon_dot_plot_only_continuous.pdf`   
+    - `Fig_5C_pval_vs_epsilon_dot_plot_only_continuous.pdf` 
+    
+### A note on the grouping key used for the paper
+There is a file, `group_key_for_phyc_BM_tree_1_pheno_1.tsv`, in the `data/` directory that was generated specifically to demonstrate the strenghts of hogwash's burden testing (grouping) feature. This is specific to the specifications of the `simulation_input_values.tsv` used for the paper. 
   
 ## Questions or bugs? 
-Please see the [hogwash methods preprint](https://www.biorxiv.org/content/10.1101/2020.04.19.048421v1) for more details on the data simulation process. Feel free to contact me at katiephd@umich.edu or [open an issue here on github](https://github.com/katiesaund/simulate_data_for_convergence_based_bGWAS/issues). 
+Please see the [hogwash methods preprint](https://www.biorxiv.org/content/10.1101/2020.04.19.048421v2) for more details on the data simulation process. Feel free to contact me at katiephd@umich.edu or [open an issue here on github](https://github.com/katiesaund/simulate_data_for_convergence_based_bGWAS/issues). 

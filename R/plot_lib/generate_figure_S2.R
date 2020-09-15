@@ -1,8 +1,6 @@
-# Goal: generate a multipanel figure for the supplement that provides an 
-#       intuitive understanding of lamda, D, and phylogenetic signal. 
+# Generate Figure S2 A-F to provide an intuitive understanding of lamda, D, and 
+# phylogenetic signal. 
 
-# TODO: fix the remaining two continuous phenotypes and then migrate to illustrator
- 
 # Source functions ----
 source("plot_lib.R")
 library(hogwash)

@@ -1,4 +1,4 @@
-
+# Generate Figure S1 B, C, E, and F.
 # Import functions ----
 source("plot_lib.R")
 

@@ -1,10 +1,5 @@
-# Goal: create New Supplementary Figure S3 which will highlight how the grouping
-#       method can create genotypes with higher significance than the individual
-#       constituent loci. 
-
-# What we need: Single locus genotype transition plots for the 6 SNPs. 
-# Pre-AR: need simluation genotypes #, #, #
-# Post-AR: need simulation genotypes that map to GENE 1. 
+# Creat Figure S3 which will highlight how the grouping method can create 
+# genotypes with higher significance than the individual constituent loci. 
 
 # Import functions ----
 source("plot_lib.R")
@@ -95,5 +90,3 @@ tiplabels(tip = c(1:Ntip(tree))[tree$tip.label %in% pre_ar_snp3_tips],
           col = "orange", 
           offset = 3)
 dev.off()
-
-

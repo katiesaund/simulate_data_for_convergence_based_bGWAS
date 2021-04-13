@@ -1,7 +1,7 @@
 # Simulate data for convergence based bacterial GWAS method benchmarking paper
 
 ### Manuscript
-["Hogwash: three methods for genome-wide association studies in bacteria"](https://www.microbiologyresearch.org/content/journal/mgen/10.1099/mgen.0.000469)
+[Hogwash: three methods for genome-wide association studies in bacteria](https://www.microbiologyresearch.org/content/journal/mgen/10.1099/mgen.0.000469)
 
 ### Mansucript Authors
 [Katie Saund](https://orcid.org/0000-0002-6214-6713) and Evan Snitkin
@@ -9,7 +9,7 @@
 # Repo contents
 This repository contains the R code necessary to generate simulated tree, genotype, and phenotype data for use in bGWAS. In addition to simulating data, this code also reports the amount of genotype convergence, phenotype convergence, and their overlap on a phylogenetic tree. The simulated data are available in the `data/` directory.
 
-These simulated data were created to specifically benchmark the performance of the bacterial GWAS software tool [hogwash](https://github.com/katiesaund/hogwash). The results of this benchmarking can be reviewed in the [preprint](https://www.biorxiv.org/content/10.1101/2020.04.19.048421v2). 
+These simulated data were created to specifically benchmark the performance of the bacterial GWAS software tool [hogwash](https://github.com/katiesaund/hogwash).
 
 ## How to use this repository: 
 - Fork or clone the repo to your computer. 
